@@ -1,0 +1,72 @@
+import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
+import { ObjectId } from "mongoose";
+import { ObjectType, Field, ID, Float, Int } from "type-graphql";
+import { DecimalScalar } from "../types/decimalScalar";
+import Decimal from "decimal.js";
+import { LiquidityPosition } from "./liquidityPosition";
+import { User } from "./user";
+import { Pair } from "./pair";
+import { Ref } from "../types/ref";
+
+@ObjectType()
+export class LiquidityPositionSnapshot {
+  @Field()
+  @Property({ default: "", required: true })
+  readonly _id: ObjectId;
+
+  @Field((type) => ID)
+  @Property({ default: "", required: true })
+  id: string;
+
+  @Field((type) => LiquidityPosition)
+  @Property({ ref: LiquidityPosition, required: true })
+  liquidityPosition: Ref<LiquidityPosition>;
+
+  @Field((type) => DecimalScalar)
+  @Property({ default: new Decimal("0"), required: true })
+  timestamp: Decimal;
+
+  @Field((type) => DecimalScalar)
+  @Property({ default: new Decimal("0"), required: true })
+  blockNumber: Decimal;
+
+  @Field((type) => User)
+  @Property({ ref: User, required: true })
+  user: Ref<User>;
+
+  @Field((type) => Pair)
+  @Property({ ref: Pair, required: true })
+  pair: Ref<Pair>;
+
+  @Field((type) => DecimalScalar)
+  @Property({ default: new Decimal("0"), required: true })
+  token0PriceUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  @Property({ default: new Decimal("0"), required: true })
+  token1PriceUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  @Property({ default: new Decimal("0"), required: true })
+  reserve0: Decimal;
+
+  @Field((type) => DecimalScalar)
+  @Property({ default: new Decimal("0"), required: true })
+  reserve1: Decimal;
+
+  @Field((type) => DecimalScalar)
+  @Property({ default: new Decimal("0"), required: true })
+  reserveUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  @Property({ default: new Decimal("0"), required: true })
+  liquidityTokenTotalSupply: Decimal;
+
+  @Field((type) => DecimalScalar)
+  @Property({ default: new Decimal("0"), required: true })
+  liquidityTokenBalance: Decimal;
+}
+
+export const LiquidityPositionSnapshotModel = getModelForClass(
+  LiquidityPositionSnapshot
+);

@@ -1,4 +1,4 @@
-import { Prop as Property } from "@typegoose/typegoose";
+import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
 import { ObjectId } from "mongoose";
 import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
@@ -42,3 +42,5 @@ export class StableswapFactory {
   @Property({ default: new Decimal("0"), required: true })
   txCount: Decimal;
 }
+
+export const StableswapFactoryModel = getModelForClass(StableswapFactory);
