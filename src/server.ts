@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 import loaders from "./loaders";
 import { Config } from "./config";
+import { PairCreatedLogSubscriber } from "./subscribers/baseV1FactorySubscribers";
 
 async function bootsrap() {
   const app = express();
@@ -29,6 +30,10 @@ async function bootsrap() {
   );
   
   // HISTORICAL EVENTS
+
+
+  // SUBSCRIPTIONS
+  PairCreatedLogSubscriber();
 };
 
 bootsrap();

@@ -24,5 +24,20 @@ export const Config = {
   },
 
   // CANTO NODE
-  jsonRpcUrl: process.env.JSON_RPC_URL || "",
+  canto: {
+    jsonRpcUrl: process.env.JSON_RPC_URL || "",
+    websocketUrl: process.env.WEBSOCKET_URL || ""
+  },
+
+  // CONTRACT ADDRESSES
+  contracts: {
+    baseV1Factory: {
+      address: "0xF5C085044e5e86B61Ebd0fBE978aC6FCeeeD3F4f",
+      events: {
+        pairCreated: {
+          signature: ""
+        }
+      }
+    }
+  }
 };
