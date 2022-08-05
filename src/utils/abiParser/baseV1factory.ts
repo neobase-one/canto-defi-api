@@ -1,4 +1,10 @@
-export const BaseV1FactoryABI: Object = [
+import { AbiItem } from "web3-utils";
+
+export const PairCreated = "PairCreated";
+
+export const PairCreatedEventSignature = "PairCreated(address,address,bool,address,uint256)";
+
+export const BaseV1FactoryABI: AbiItem[] = [
   {
     "inputs": [],
     "stateMutability": "nonpayable",
@@ -298,8 +304,6 @@ export const BaseV1FactoryABI: Object = [
     "type": "function"
   }
 ];
-
-export const PairCreated = "PairCreated";
 
 export const PairCreatedEventAbiInputs = [
   {

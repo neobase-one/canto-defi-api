@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 import loaders from "./loaders";
 import { Config } from "./config";
-import { PairCreatedLogSubscriber } from "./subscribers/baseV1FactorySubscribers";
+import { indexHistoricalEvents, initSubscribers } from "./subscribers";
 
 async function bootsrap() {
   const app = express();
@@ -30,10 +30,11 @@ async function bootsrap() {
   );
   
   // HISTORICAL EVENTS
+  indexHistoricalEvents(Config.canto.latestBlockNumber);
 
 
   // SUBSCRIPTIONS
-  PairCreatedLogSubscriber();
+  initSubscribers();
 };
 
 bootsrap();
