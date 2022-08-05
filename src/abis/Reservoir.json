@@ -1,0 +1,245 @@
+{
+  "address": "0xb8C72F79e5Ed0d8Ce6C71d06c112Deb18FFd7fA8",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "dripRate_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "contract WETH",
+          "name": "wcanto_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "target_",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "drip",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dripRate",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dripStart",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dripped",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "target",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "wcanto",
+      "outputs": [
+        {
+          "internalType": "contract WETH",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ],
+  "transactionHash": "0x2b2d8b2628daea408475c02ac8c5c69842840e29d5e250f51428ec76f6ad6383",
+  "receipt": {
+    "to": null,
+    "from": "0x2fA8e44e9A3D833019FCc52D62B4dD05125cA1b1",
+    "contractAddress": "0xb8C72F79e5Ed0d8Ce6C71d06c112Deb18FFd7fA8",
+    "transactionIndex": 0,
+    "gasUsed": "437771",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xce6d507b7132971373c40eef4bd3deb03b468c4fe34c73ecbe4147b89ebad4ea",
+    "transactionHash": "0x2b2d8b2628daea408475c02ac8c5c69842840e29d5e250f51428ec76f6ad6383",
+    "logs": [],
+    "blockNumber": 85397,
+    "cumulativeGasUsed": "437771",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "143777317700000000000",
+    "0x826551890Dc65655a0Aceca109aB11AbDbD7a07B",
+    "0x3fEb7411f5cb71Ff8cc5E0b1f298866327a15BF1"
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "ed32bda1e8ee7c1e01355cdbba45d1b0",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"dripRate_\",\"type\":\"uint256\"},{\"internalType\":\"contract WETH\",\"name\":\"wcanto_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"target_\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"drip\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"dripRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"dripStart\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"dripped\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"target\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"wcanto\",\"outputs\":[{\"internalType\":\"contract WETH\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"author\":\"Compound\",\"details\":\"This contract must be poked via the `drip()` function every so often.\",\"kind\":\"dev\",\"methods\":{\"constructor\":{\"params\":{\"dripRate_\":\"Numer of wcantos per block to drip\",\"target_\":\"The recipient of dripped wcantos\",\"wcanto_\":\"The wcanto to drip\"}},\"drip()\":{\"details\":\"Note: this will only drip up to the amount of wcantos available.\",\"returns\":{\"_0\":\"The amount of wcantos dripped in this call\"}}},\"title\":\"Reservoir Contract\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"constructor\":{\"notice\":\"Constructs a Reservoir\"},\"drip()\":{\"notice\":\"Drips the maximum amount of wcantos to match the drip rate since inception\"},\"dripRate()\":{\"notice\":\"wcantos per block that to drip to target (immutable)\"},\"dripStart()\":{\"notice\":\"The block number when the Reservoir started (immutable)\"},\"dripped()\":{\"notice\":\"Amount that has already been dripped\"},\"target()\":{\"notice\":\"Target to receive dripped wcantos (immutable)\"},\"wcanto()\":{\"notice\":\"Reference to wcanto to drip (immutable)\"}},\"notice\":\"Distributes a wcanto to a different contract at a fixed rate.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/Reservoir.sol\":\"Reservoir\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x0000000000000031363539333737343533303638\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"src/EIP20Interface.sol\":{\"content\":\"// SPDX-License-Identifier: BSD-3-Clause\\npragma solidity ^0.8.10;\\n\\n/**\\n * @title ERC 20 Token Standard Interface\\n *  https://eips.ethereum.org/EIPS/eip-20\\n */\\ninterface EIP20Interface {\\n    function name() external view returns (string memory);\\n    function symbol() external view returns (string memory);\\n    function decimals() external view returns (uint8);\\n\\n    /**\\n      * @notice Get the total number of tokens in circulation\\n      * @return The supply of tokens\\n      */\\n    function totalSupply() external view returns (uint256);\\n\\n    /**\\n     * @notice Gets the balance of the specified address\\n     * @param owner The address from which the balance will be retrieved\\n     * @return balance The balance\\n     */\\n    function balanceOf(address owner) external view returns (uint256 balance);\\n\\n    /**\\n      * @notice Transfer `amount` tokens from `msg.sender` to `dst`\\n      * @param dst The address of the destination account\\n      * @param amount The number of tokens to transfer\\n      * @return success Whether or not the transfer succeeded\\n      */\\n    function transfer(address dst, uint256 amount) external returns (bool success);\\n\\n    /**\\n      * @notice Transfer `amount` tokens from `src` to `dst`\\n      * @param src The address of the source account\\n      * @param dst The address of the destination account\\n      * @param amount The number of tokens to transfer\\n      * @return success Whether or not the transfer succeeded\\n      */\\n    function transferFrom(address src, address dst, uint256 amount) external returns (bool success);\\n\\n    /**\\n      * @notice Approve `spender` to transfer up to `amount` from `src`\\n      * @dev This will overwrite the approval amount for `spender`\\n      *  and is subject to issues noted [here](https://eips.ethereum.org/EIPS/eip-20#approve)\\n      * @param spender The address of the account which may transfer tokens\\n      * @param amount The number of tokens that are approved (-1 means infinite)\\n      * @return success Whether or not the approval succeeded\\n      */\\n    function approve(address spender, uint256 amount) external returns (bool success);\\n\\n    /**\\n      * @notice Get the current allowance from `owner` for `spender`\\n      * @param owner The address of the account which owns the tokens to be spent\\n      * @param spender The address of the account which may transfer tokens\\n      * @return remaining The number of tokens allowed to be spent (-1 means infinite)\\n      */\\n    function allowance(address owner, address spender) external view returns (uint256 remaining);\\n\\n    event Transfer(address indexed from, address indexed to, uint256 amount);\\n    event Approval(address indexed owner, address indexed spender, uint256 amount);\\n}\\n\",\"keccak256\":\"0xf44fc7783d4a0060119f0096a122c3f305c7a03da75aa21408393d8d7a2e649b\",\"license\":\"BSD-3-Clause\"},\"src/Reservoir.sol\":{\"content\":\"// SPDX-License-Identifier: BSD-3-Clause\\npragma solidity ^0.8.10;\\n\\nimport \\\"src/WETH.sol\\\"; \\n\\n/**\\n * @title Reservoir Contract\\n * @notice Distributes a wcanto to a different contract at a fixed rate.\\n * @dev This contract must be poked via the `drip()` function every so often.\\n * @author Compound\\n */\\ncontract Reservoir {\\n\\n  /// @notice The block number when the Reservoir started (immutable)\\n  uint public dripStart;\\n\\n  /// @notice wcantos per block that to drip to target (immutable)\\n  uint public dripRate;\\n\\n  /// @notice Reference to wcanto to drip (immutable)\\n  WETH public wcanto; //WCanto\\n\\n  /// @notice Target to receive dripped wcantos (immutable)\\n  address public target;\\n\\n  /// @notice Amount that has already been dripped\\n  uint public dripped;\\n\\n  /**\\n    * @notice Constructs a Reservoir\\n    * @param dripRate_ Numer of wcantos per block to drip\\n    * @param wcanto_ The wcanto to drip\\n    * @param target_ The recipient of dripped wcantos\\n    */\\n  constructor(uint dripRate_, WETH wcanto_, address target_) public {\\n    dripStart = block.number;\\n    dripRate = dripRate_;\\n    wcanto = wcanto_;\\n    target = target_;\\n    dripped = 0;\\n  }\\n\\n  /**\\n    * @notice Drips the maximum amount of wcantos to match the drip rate since inception\\n    * @dev Note: this will only drip up to the amount of wcantos available.\\n    * @return The amount of wcantos dripped in this call\\n    */\\n  function drip() public returns (uint) {\\n    // First, read storage into memory\\n    WETH wcanto_ = wcanto;\\n    uint reservoirBalance_ = wcanto_.balanceOf(address(this)); // TODO: Verify this is a static call\\n    uint dripRate_ = dripRate;\\n    uint dripStart_ = dripStart;\\n    uint dripped_ = dripped;\\n    address target_ = target;\\n    uint blockNumber_ = block.number;\\n\\n    // Next, calculate intermediate values\\n    uint dripTotal_ = mul(dripRate_, blockNumber_ - dripStart_, \\\"dripTotal overflow\\\");\\n    uint deltaDrip_ = sub(dripTotal_, dripped_, \\\"deltaDrip underflow\\\");\\n    uint toDrip_ = min(reservoirBalance_, deltaDrip_);\\n    uint drippedNext_ = add(dripped_, toDrip_, \\\"tautological\\\");\\n\\n    // Finally, write new `dripped` value and transfer wcantos to target\\n    dripped = drippedNext_;\\n    wcanto_.transfer(target_, toDrip_);\\n\\n    return toDrip_;\\n  }\\n\\n  receive() external payable {\\n    WETH wcanto_ = wcanto;\\n    wcanto_.deposit{value: msg.value}(); // deposit what was sent to this contract and receive the requisite amount of wcanto\\n  }\\n\\n  /* Internal helper functions for safe math */\\n\\n  function add(uint a, uint b, string memory errorMessage) internal pure returns (uint) {\\n    uint c;\\n    unchecked { c = a + b; }\\n    require(c >= a, errorMessage);\\n    return c;\\n  }\\n\\n  function sub(uint a, uint b, string memory errorMessage) internal pure returns (uint) {\\n    require(b <= a, errorMessage);\\n    uint c = a - b;\\n    return c;\\n  }\\n\\n  function mul(uint a, uint b, string memory errorMessage) internal pure returns (uint) {\\n    if (a == 0) {\\n      return 0;\\n    }\\n    uint c;\\n    unchecked { c = a * b; }\\n    require(c / a == b, errorMessage);\\n    return c;\\n  }\\n\\n  function min(uint a, uint b) internal pure returns (uint) {\\n    if (a <= b) {\\n      return a;\\n    } else {\\n      return b;\\n    }\\n  }\\n}\\n\\nimport \\\"./EIP20Interface.sol\\\";\\n\",\"keccak256\":\"0x811a50873dbb868035c21f8e22a40b9dade1e4d273cdc478c53cca6c42938cc9\",\"license\":\"BSD-3-Clause\"},\"src/WETH.sol\":{\"content\":\"pragma solidity ^0.8.10;\\n\\nimport \\\"./EIP20Interface.sol\\\";\\n\\ncontract WETH is EIP20Interface {\\n    string private _name;\\n    string private _symbol;\\n    uint8  private _decimals = 18;\\n    mapping (address => uint)                       public  _balanceOf;\\n    mapping (address => mapping (address => uint))  public  _allowance;\\n\\n\\n    constructor(string memory name_, string memory symbol_) {\\n\\t    _name = name_;\\n\\t    _symbol = symbol_;\\n    }\\n\\n    receive() external payable {\\n        deposit();\\n    }\\n\\n    function deposit() public payable {\\n        _balanceOf[msg.sender] += msg.value;\\n        emit Deposit(msg.sender, msg.value);\\n    }\\n\\n    \\n    function withdraw(uint wamount) public {\\n        require(_balanceOf[msg.sender] >= wamount, \\\"sender balance insufficient for withdrawal\\\");\\n        _balanceOf[msg.sender] -= wamount;\\n        payable(msg.sender).transfer(wamount); // rentrant attack must be less than 2300 gas\\n        emit Withdrawal(msg.sender, wamount);\\n    }\\n\\n    \\n    function name() external view returns (string memory) {\\n\\treturn _name;\\n    }\\n    function symbol() external view returns (string memory) {\\n\\treturn _symbol;\\n    }\\n    function decimals() external view returns (uint8) {\\n\\treturn _decimals;\\n    }\\n    \\n    function totalSupply() public view returns (uint) {\\n        return address(this).balance;\\n    }\\n\\n    function balanceOf(address owner) external view returns(uint256) {\\n\\t    return _balanceOf[owner];\\n    }\\n    \\n    \\n    function approve(address spender, uint amount) public returns (bool) {\\n        _approve(msg.sender, spender, amount);\\n        emit Approval(msg.sender, spender, amount);\\n        return true;\\n    }\\n\\n    function transfer(address dst, uint wad) public returns (bool) {\\n        return transferFrom(msg.sender, dst, wad);\\n    }\\n\\n    function transferFrom(address src, address dst, uint wad)\\n        public\\n        returns (bool)\\n    {\\n        require(_balanceOf[src] >= wad, \\\"WETH::transfeFrom: balance insufficient\\\");\\n\\n        if (src != msg.sender && _allowance[src][msg.sender] != type(uint).max) {\\n            require(_allowance[src][msg.sender] >= wad, \\\"WETH::transferFrom:allowance insufficient\\\");\\n            _allowance[src][msg.sender] -= wad;\\n        }\\n\\n        _balanceOf[src] -= wad;\\n        _balanceOf[dst] += wad;\\n\\n        emit Transfer(src, dst, wad);\\n\\n        return true;\\n    }\\n    \\n    function _approve(\\n        address owner,\\n        address spender,\\n        uint256 amount\\n    ) internal   {\\n        require(owner != address(0), \\\"ERC20: approve from the zero address\\\");\\n        require(spender != address(0), \\\"ERC20: approve to the zero address\\\");\\n\\n        _allowance[owner][spender] = amount;\\n        emit Approval(owner, spender, amount);\\n    }\\n\\n    function allowance(address owner, address spender) external view returns (uint256) {\\n\\t    return _allowance[owner][spender];\\n    }\\n    \\n    event  Deposit(address indexed dst, uint wad);\\n    event  Withdrawal(address indexed src, uint wad);\\n}\\n\\n\",\"keccak256\":\"0xb5070727af982749bd6710e66ab660b88362b70e3ed1bb62234610bb6d4e986b\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060405161061738038061061783398101604081905261002f91610087565b436000908155600193909355600280546001600160a01b039384166001600160a01b031991821617909155600380549290931691161790556004556100ca565b6001600160a01b038116811461008457600080fd5b50565b60008060006060848603121561009c57600080fd5b8351925060208401516100ae8161006f565b60408501519092506100bf8161006f565b809150509250925092565b61053e806100d96000396000f3fe6080604052600436106100595760003560e01c80637aa497d9146100c957806388a91a8a1461010657806395f632b31461012a5780639f678cca14610140578063d326159214610155578063d4b839921461016b57600080fd5b366100c45760025460408051630d0e30db60e41b815290516001600160a01b0390921691829163d0e30db091349160048082019260009290919082900301818588803b1580156100a857600080fd5b505af11580156100bc573d6000803e3d6000fd5b505050505050005b600080fd5b3480156100d557600080fd5b506002546100e9906001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b34801561011257600080fd5b5061011c60005481565b6040519081526020016100fd565b34801561013657600080fd5b5061011c60045481565b34801561014c57600080fd5b5061011c61018b565b34801561016157600080fd5b5061011c60015481565b34801561017757600080fd5b506003546100e9906001600160a01b031681565b6002546040516370a0823160e01b81523060048201526000916001600160a01b031690829082906370a0823190602401602060405180830381865afa1580156101d8573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101fc9190610431565b6001546000805460045460035494955092939092916001600160a01b0390911690439061025d8661022d878561044a565b6040518060400160405280601281526020017164726970546f74616c206f766572666c6f7760701b815250610366565b9050600061029782866040518060400160405280601381526020017264656c74614472697020756e646572666c6f7760681b8152506103b7565b905060006102a589836103f1565b905060006102d887836040518060400160405280600c81526020016b1d185d5d1bdb1bd9da58d85b60a21b81525061040a565b600481815560405163a9059cbb60e01b81526001600160a01b0389811692820192909252602481018590529192508c169063a9059cbb906044016020604051808303816000875af1158015610331573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610355919061046f565b50909b9a5050505050505050505050565b600083610375575060006103b0565b838302836103838683610491565b1483906103ac5760405162461bcd60e51b81526004016103a391906104b3565b60405180910390fd5b5090505b9392505050565b600081848411156103db5760405162461bcd60e51b81526004016103a391906104b3565b5060006103e8848661044a565b95945050505050565b6000818311610401575081610404565b50805b92915050565b600083830182858210156103ac5760405162461bcd60e51b81526004016103a391906104b3565b60006020828403121561044357600080fd5b5051919050565b60008282101561046a57634e487b7160e01b600052601160045260246000fd5b500390565b60006020828403121561048157600080fd5b815180151581146103b057600080fd5b6000826104ae57634e487b7160e01b600052601260045260246000fd5b500490565b600060208083528351808285015260005b818110156104e0578581018301518582016040015282016104c4565b818111156104f2576000604083870101525b50601f01601f191692909201604001939250505056fea26469706673582212200d50eb63f9f0e42276c2bc5fd1c8f70771590f1b3d5fe5e0116ee9fc62b640e364736f6c634300080b0033",
+  "deployedBytecode": "0x6080604052600436106100595760003560e01c80637aa497d9146100c957806388a91a8a1461010657806395f632b31461012a5780639f678cca14610140578063d326159214610155578063d4b839921461016b57600080fd5b366100c45760025460408051630d0e30db60e41b815290516001600160a01b0390921691829163d0e30db091349160048082019260009290919082900301818588803b1580156100a857600080fd5b505af11580156100bc573d6000803e3d6000fd5b505050505050005b600080fd5b3480156100d557600080fd5b506002546100e9906001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b34801561011257600080fd5b5061011c60005481565b6040519081526020016100fd565b34801561013657600080fd5b5061011c60045481565b34801561014c57600080fd5b5061011c61018b565b34801561016157600080fd5b5061011c60015481565b34801561017757600080fd5b506003546100e9906001600160a01b031681565b6002546040516370a0823160e01b81523060048201526000916001600160a01b031690829082906370a0823190602401602060405180830381865afa1580156101d8573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101fc9190610431565b6001546000805460045460035494955092939092916001600160a01b0390911690439061025d8661022d878561044a565b6040518060400160405280601281526020017164726970546f74616c206f766572666c6f7760701b815250610366565b9050600061029782866040518060400160405280601381526020017264656c74614472697020756e646572666c6f7760681b8152506103b7565b905060006102a589836103f1565b905060006102d887836040518060400160405280600c81526020016b1d185d5d1bdb1bd9da58d85b60a21b81525061040a565b600481815560405163a9059cbb60e01b81526001600160a01b0389811692820192909252602481018590529192508c169063a9059cbb906044016020604051808303816000875af1158015610331573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610355919061046f565b50909b9a5050505050505050505050565b600083610375575060006103b0565b838302836103838683610491565b1483906103ac5760405162461bcd60e51b81526004016103a391906104b3565b60405180910390fd5b5090505b9392505050565b600081848411156103db5760405162461bcd60e51b81526004016103a391906104b3565b5060006103e8848661044a565b95945050505050565b6000818311610401575081610404565b50805b92915050565b600083830182858210156103ac5760405162461bcd60e51b81526004016103a391906104b3565b60006020828403121561044357600080fd5b5051919050565b60008282101561046a57634e487b7160e01b600052601160045260246000fd5b500390565b60006020828403121561048157600080fd5b815180151581146103b057600080fd5b6000826104ae57634e487b7160e01b600052601260045260246000fd5b500490565b600060208083528351808285015260005b818110156104e0578581018301518582016040015282016104c4565b818111156104f2576000604083870101525b50601f01601f191692909201604001939250505056fea26469706673582212200d50eb63f9f0e42276c2bc5fd1c8f70771590f1b3d5fe5e0116ee9fc62b640e364736f6c634300080b0033",
+  "devdoc": {
+    "author": "Compound",
+    "details": "This contract must be poked via the `drip()` function every so often.",
+    "kind": "dev",
+    "methods": {
+      "constructor": {
+        "params": {
+          "dripRate_": "Numer of wcantos per block to drip",
+          "target_": "The recipient of dripped wcantos",
+          "wcanto_": "The wcanto to drip"
+        }
+      },
+      "drip()": {
+        "details": "Note: this will only drip up to the amount of wcantos available.",
+        "returns": {
+          "_0": "The amount of wcantos dripped in this call"
+        }
+      }
+    },
+    "title": "Reservoir Contract",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "constructor": {
+        "notice": "Constructs a Reservoir"
+      },
+      "drip()": {
+        "notice": "Drips the maximum amount of wcantos to match the drip rate since inception"
+      },
+      "dripRate()": {
+        "notice": "wcantos per block that to drip to target (immutable)"
+      },
+      "dripStart()": {
+        "notice": "The block number when the Reservoir started (immutable)"
+      },
+      "dripped()": {
+        "notice": "Amount that has already been dripped"
+      },
+      "target()": {
+        "notice": "Target to receive dripped wcantos (immutable)"
+      },
+      "wcanto()": {
+        "notice": "Reference to wcanto to drip (immutable)"
+      }
+    },
+    "notice": "Distributes a wcanto to a different contract at a fixed rate.",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 21109,
+        "contract": "src/Reservoir.sol:Reservoir",
+        "label": "dripStart",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 21112,
+        "contract": "src/Reservoir.sol:Reservoir",
+        "label": "dripRate",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 21116,
+        "contract": "src/Reservoir.sol:Reservoir",
+        "label": "wcanto",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_contract(WETH)29700"
+      },
+      {
+        "astId": 21119,
+        "contract": "src/Reservoir.sol:Reservoir",
+        "label": "target",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_address"
+      },
+      {
+        "astId": 21122,
+        "contract": "src/Reservoir.sol:Reservoir",
+        "label": "dripped",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_uint256"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_contract(WETH)29700": {
+        "encoding": "inplace",
+        "label": "contract WETH",
+        "numberOfBytes": "20"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}
