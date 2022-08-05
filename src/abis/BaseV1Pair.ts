@@ -1,4 +1,4 @@
-{
+export const BaseV1PairMetadata = {
   "abi": [
     {
       "inputs": [],

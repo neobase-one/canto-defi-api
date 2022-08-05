@@ -6,12 +6,12 @@ dotenv.config();
 // default -> NODE_ENV: development
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
-export default {
+export const Config = {
   // server port
   port: parseInt(process.env.PORT || "8080"),
 
   // database url
-  databaseUrl: process.env.MONGODB_URI,
+  databaseUrl: process.env.MONGODB_URI || "",
 
   // logs
   logs: {
@@ -22,4 +22,7 @@ export default {
   api: {
     prefix: "/",
   },
+
+  // CANTO NODE
+  jsonRpcUrl: process.env.JSON_RPC_URL || "",
 };

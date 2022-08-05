@@ -1,4 +1,4 @@
-{
+export const BaseV1FactoryMetadata = {
   "address": "0xE007cAc018C8bFFc70dFD0E8f6C24b2E7CFcefB9",
   "abi": [
     {
