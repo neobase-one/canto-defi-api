@@ -5,6 +5,7 @@
     "build": "rimraf ./build && tsc",
     "dev-server": "NODE_ENV=development nodemon",
     "start": "node build/server.js",
+    "redo": "rimraf ./build && tsc && node build/server.js",
     "test": "jest",
     "fix-lint": "./node_modules/eslint/bin/eslint.js  src --ext .ts --fix"
   },
@@ -22,6 +23,7 @@
     "express": "^4.18.1",
     "graphql": "^15.3.0",
     "mongoose": "^6.5.1",
+    "node": "16",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "type-graphql": "^1.1.1",

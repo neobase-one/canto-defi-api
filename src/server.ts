@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
-import { buildSchema } from "type-graphql";
+import { buildSchema, Int } from "type-graphql";
 import Decimal from "decimal.js";
 import { DecimalScalar } from "./types/decimalScalar";
 import { ObjectIdScalar } from "./types/objectIdScalar";
@@ -10,6 +10,8 @@ import { TypegooseMiddleware } from "./api/middlewares/typegoose";
 import * as path from "path";
 import { HealthResolver } from "./api/resolvers/healthResolver";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import { TextEncoder, TextDecoder } from "util";
+import { typeDefs } from "./schema";
 
 const PORT = process.env.PORT || 4001;
 
@@ -29,9 +31,17 @@ async function bootsrap() {
     validate: false,
   });
 
+  const mocks = {
+    Int: () => Math.floor(Math.random() * 10000),
+    BigDecimal: () => Decimal.random().times(new Decimal(10000)),
+  }
+
   const server = new ApolloServer({
-    schema,
+    typeDefs: typeDefs,
+    // schema,
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+    mocks: mocks,
+    mockEntireSchema: true
   });
 
   await server.start();
