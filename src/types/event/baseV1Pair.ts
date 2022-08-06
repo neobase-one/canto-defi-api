@@ -1,9 +1,11 @@
-export class PairCreatedInput {
+import Decimal from "decimal.js";
+
+export class PairCreatedEventInput {
   token0: string;
   token1: string;
   stable: boolean;
   pair: string;
-  int: number;
+  int: Decimal;
 
   constructor(eventObj: any) {
     this.token0 = eventObj[0];

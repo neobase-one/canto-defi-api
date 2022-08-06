@@ -47,5 +47,43 @@ export async function baseV1PairIndexHistoricalEvents(
   latestBlockNumber: number
 ) {
   console.log("BaseV1Pair");
+  const iter = Math.floor(latestBlockNumber / 10_000);
+  // console.log(iter);
+  for(var i=0; i<iter; i++) {
+    // Mint
+    mintRangeEventHandler(i);
+
+    // Burn
+    burnRangeEventHandler(i);
+
+    // Swap
+    swapRangeEventHandler(i);
+
+    // Transfer
+    transferRangeEventHandler(i);
+
+    // Sync
+    syncRangeEventHandler(i);
+  }
+  // web3.eth.clearSubscriptions(); // todo
+}
+
+async function mintRangeEventHandler(start: number) {
+  
+}
+
+async function burnRangeEventHandler(start: number) {
+  
+}
+
+async function swapRangeEventHandler(start: number) {
+  
+}
+
+async function transferRangeEventHandler(start: number) {
+  
+}
+
+async function syncRangeEventHandler(start: number) {
 
 }

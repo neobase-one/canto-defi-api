@@ -1,9 +1,9 @@
 import { Log } from "web3-core";
-import { PairCreatedInput } from "../../types/event/PairCreatedEvent";
+import { PairCreatedEventInput } from "../../types/event/baseV1Factory";
 
 export async function pairCreatedEventHandler(
   log: Log,
-  inputs: PairCreatedInput
+  inputs: PairCreatedEventInput
 ) {
   
 }

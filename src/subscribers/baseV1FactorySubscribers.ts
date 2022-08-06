@@ -2,7 +2,7 @@ import { Log } from "web3-core";
 import { Config } from "../config";
 import { web3 } from "../loaders/web3";
 import { pairCreatedEventHandler } from "../services/eventHandlers/baseV1Factory";
-import { PairCreatedInput } from "../types/event/PairCreatedEvent";
+import { PairCreatedEventInput } from "../types/event/baseV1Factory";
 import { PairCreatedEventAbiInputs } from "../utils/abiParser/baseV1factory";
 
 export async function baseV1FactoryIndexHistoricalEvents(
@@ -34,7 +34,7 @@ async function pairCreatedRangeEventHandler(start: number) {
         log.data,
         log.topics.slice(1)
       );
-      const input = new PairCreatedInput(eventObj);
+      const input = new PairCreatedEventInput(eventObj);
       // console.log("Class", input)
       console.log(`New PairCreated!`, log.blockNumber, eventObj);
       pairCreatedEventHandler(log, input);
