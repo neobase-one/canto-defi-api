@@ -466,7 +466,8 @@ export const typeDefs = gql`
     id: String!
   }
   input BundlesInput {
-    id: String!
+    id: String
+    blockNumber: Int
   }
   input StableswapDayDataInput {
     id: String!
