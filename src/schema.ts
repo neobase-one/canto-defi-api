@@ -304,8 +304,15 @@ type TokenDayData {
   priceUSD: BigDecimal!
 }
 
+type Block {
+  id: ID
+  number: Int
+  timestamp: Int
+}
+
 type Query {
   health: String
+  blocks(input: BlocksInput): [Block!]!
   stableswapFactory(input: StableswapFactoryInput): StableswapFactory
   stableswapFactories(input: StableswapFactoriesInput): [StableswapFactory!]!
   token(input: TokenInput): Token
@@ -337,23 +344,32 @@ type Query {
   tokenDayData(input: TokenDayDataInput): TokenDayData
   tokenDayDatas(input: TokenDayDatasInput): [TokenDayData!]
 }
+input BlocksInput {
+  timestampFrom: Int!
+  timestampTo: Int!
+}
 input StableswapFactoryInput {
   id: String!
 }
 input StableswapFactoriesInput {
-  id: String!
+  id: String
+  blockNumber: Int
 }
 input TokenInput {
   id: String!
 }
 input TokensInput {
-  id: String!
+  id: [String!]
 }
 input PairInput {
   id: String!
 }
 input PairsInput {
-  id: String!
+  id: [String!]
+  blockNumber: Int
+  # expect: "reserveUSD", "trackedReserveETH"
+  orderBy: String
+  orderDirection: OrderDirection
 }
 input UserInput {
   id: String!
@@ -377,7 +393,10 @@ input TransactionInput {
   id: String!
 }
 input TransactionsInput {
-  id: String!
+  id: [String!]
+  # expect: "timestamp"
+  orderBy: String
+  orderDirection: OrderDirection
 }
 input MintInput {
   id: String!
@@ -407,7 +426,11 @@ input StableswapDayDataInput {
   id: String!
 }
 input StableswapDayDatasInput {
-  id: String!
+  startTime: Int
+  # expect: "date", 
+  orderBy: String
+  orderDirection: OrderDirection
+  date_gt: Int
 }
 input PairDayDataInput {
   id: String!
@@ -425,6 +448,14 @@ input TokenDayDataInput {
   id: String!
 }
 input TokenDayDatasInput {
-  id: String!
+  tokenAddress: String
+  # expect: "date", "totalLiquidityUSD"
+  orderBy: String
+  orderDirection: OrderDirection
+  date_gt: Int
+}
+enum OrderDirection {
+  ASC,
+  DES
 }
 `;
