@@ -10,51 +10,51 @@ import { ObjectIdScalar } from "../types/objectIdScalar";
 @ObjectType()
 export class TokenDayData {
   @Field((type) => ObjectIdScalar)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
   @Field((type) => ID)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   id: string;
 
   @Field()
-  @Property({ default: new Date(), required: true })
+  @Property({ default: new Date(), required: false })
   date: Date;
 
   @Field((type) => Token)
-  @Property({ ref: Token, required: true })
+  @Property({ ref: Token, required: false })
   token: Ref<Token>;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   dailyVolumeToken: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   dailyVolumeCANTO: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   dailyVolumeUSD: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   dailyTxns: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   totalLiquidityToken: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   totalLiquidityCANTO: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   totalLiquidityUSD: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   priceUSD: Decimal;
 }
 

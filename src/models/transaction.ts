@@ -11,31 +11,31 @@ import { ObjectIdScalar } from "../types/objectIdScalar";
 @ObjectType()
 export class Transaction {
   @Field((type) => ObjectIdScalar)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
   @Field((type) => ID)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   id: string;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   blockNumber: Decimal;
 
   @Field((type) => [Mint])
-  @Property({ default: [], required: true, type: () => Mint })
+  @Property({ default: [], required: false, type: () => Mint })
   mints: Mint[];
 
   @Field((type) => [Burn])
-  @Property({ default: [], required: true, type: () => Burn })
+  @Property({ default: [], required: false, type: () => Burn })
   burns: Burn[];
 
   @Field((type) => [Swap])
-  @Property({ default: [], required: true, type: () => Swap })
+  @Property({ default: [], required: false, type: () => Swap })
   swaps: Swap[];
 }
 

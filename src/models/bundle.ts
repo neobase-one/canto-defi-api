@@ -12,11 +12,11 @@ export class Bundle {
   readonly _id: ObjectId;
 
   @Field((type) => ID)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   id: string;
 
   @Field((type) => DecimalScalar)
-  @Property({ name: "ethPrice", default: new Decimal("0"), required: true })
+  @Property({ name: "ethPrice", default: new Decimal("0"), required: false })
   cantoPrice: Decimal;
 
   constructor (id: string) {

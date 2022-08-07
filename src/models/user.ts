@@ -13,15 +13,15 @@ export class User {
   readonly _id: ObjectId;
 
   @Field((type) => ID)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   id: string;
 
   @Field((type) => LiquidityPosition)
-  @Property({ ref: LiquidityPosition, required: true })
+  @Property({ ref: LiquidityPosition, required: false })
   liquidityPosition: Ref<LiquidityPosition>;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   usdSwapped: Decimal; // todo: change to canto
 }
 

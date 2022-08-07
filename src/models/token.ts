@@ -1,4 +1,4 @@
-import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
+import { getModelForClass, Prop as Property } from "@typegoose/false ";
 import { ObjectId } from "mongodb";
 import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
@@ -13,47 +13,47 @@ export class Token {
   readonly _id: ObjectId;
 
   @Field((type) => ID)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   id: string;
 
   @Field((type) => String)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   name: string;
   
   @Field((type) => String)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   symbol: string;
 
   @Field((type) => Int)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   decimals: number;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   totalSupply: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   tradeVolume: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   tradeVolumeUSD: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   untrackedVolumeUSD: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   txCount: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   totalLiquididty: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   derivedCANTO: Decimal;
 
   constructor (address: string) {

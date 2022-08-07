@@ -10,84 +10,84 @@ import { ObjectIdScalar } from "../types/objectIdScalar";
 @ObjectType()
 export class Pair {
   @Field((type) => ObjectIdScalar)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
   @Field((type) => ID)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   id: string;
 
   @Field((type) => Token)
-  @Property({ ref: Token, required: true })
+  @Property({ ref: Token, required: false })
   // token0: Ref<Token>;
   token0: string;
 
   @Field((type) => Token)
-  @Property({ ref: Token, required: true })
+  @Property({ ref: Token, required: false })
   token1: string;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   reserve0: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   reserve1: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   totalSupply: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   reserveCANTO: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   reserveUSD: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   trackedReserveCANTO: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   token0Price: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   token1Price: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   volumeToken0: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   volumeToken1: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   volumeUSD: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   untrackedVolumeUSD: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   txCount: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   createdAtTimestamp: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   createdAtBlockNumber: Decimal;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   liquidityProviderCount: Decimal;
 }
 
