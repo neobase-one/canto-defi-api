@@ -11,6 +11,7 @@ import {
   StableswapFactory,
   StableswapFactoryModel,
 } from "../../models/stableswapFactory";
+import { Swap } from "../../models/swap";
 import { Token, TokenModel } from "../../models/token";
 import { Transaction } from "../../models/transaction";
 import {
@@ -179,7 +180,172 @@ export async function burnEventHandler(
 export async function swapEventHandler(
   event: EventData,
   input: SwapEventInput
-) {}
+) {
+  const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+  const txHash = event.transactionHash;
+  
+  // service
+  const factoryService = Container.get(StableswapFactoryService);
+  const pairService = Container.get(PairService);
+  const tokenService = Container.get(TokenService);
+  const bundleService = Container.get(BundleService);
+  const transactionService = Container.get(TransactionService);
+  const burnService = Container.get(BurnService);
+  const mintService = Container.get(MintService);
+
+  // load
+  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
+  let pair: any = await pairService.getByAddress(event.address);
+  let token0: any = await tokenService.getByAddress(pair.token0);
+  let token1: any = await tokenService.getByAddress(pair.token1);
+
+  // 
+  let amount0In = convertTokenToDecimal(input.amount0In, token0.decimals)
+  let amount1In = convertTokenToDecimal(input.amount1In, token1.decimals)
+  let amount0Out = convertTokenToDecimal(input.amount0Out, token0.decimals)
+  let amount1Out = convertTokenToDecimal(input.amount1Out, token1.decimals)
+
+  // totals for volume updates
+  let amount0Total = amount0Out.plus(amount0In)
+  let amount1Total = amount1Out.plus(amount1In)
+
+  // get new amount of USD and ETH for tracking
+  let bundle: any = await bundleService.get();
+
+  // get total amounts of derived USD and ETH for tracking
+  let derivedAmountETH = token1.derivedETH
+    .times(amount1Total)
+    .plus(token0.derivedETH.times(amount0Total))
+    .div(new Decimal("2"))
+  let derivedAmountUSD = derivedAmountETH.times(bundle.ethPrice);
+
+  // only accounts for volume through white listed tokens
+  let trackedAmountUSD = getTrackedVolumeUSD(amount0Total, token0, amount1Total, token1, pair)
+
+  let trackedAmountETH: Decimal
+  if (bundle.ethPrice.equals(ZERO_BD)) {
+    trackedAmountETH = ZERO_BD
+  } else {
+    trackedAmountETH = trackedAmountUSD.div(bundle.ethPrice)
+  }
+  
+  // update token0 global volume and token liquidity stats
+  token0.tradeVolume = token0.tradeVolume.plus(amount0In.plus(amount0Out))
+  token0.tradeVolumeUSD = token0.tradeVolumeUSD.plus(trackedAmountUSD)
+  token0.untrackedVolumeUSD = token0.untrackedVolumeUSD.plus(derivedAmountUSD)
+
+  // update token1 global volume and token liquidity stats
+  token1.tradeVolume = token1.tradeVolume.plus(amount1In.plus(amount1Out))
+  token1.tradeVolumeUSD = token1.tradeVolumeUSD.plus(trackedAmountUSD)
+  token1.untrackedVolumeUSD = token1.untrackedVolumeUSD.plus(derivedAmountUSD)
+
+  // update txn counts
+  token0.txCount = token0.txCount.plus(ONE_BD)
+  token1.txCount = token1.txCount.plus(ONE_BD)
+
+  // update pair volume data, use tracked amount if we have it as its probably more accurate
+  pair.volumeUSD = pair.volumeUSD.plus(trackedAmountUSD)
+  pair.volumeToken0 = pair.volumeToken0.plus(amount0Total)
+  pair.volumeToken1 = pair.volumeToken1.plus(amount1Total)
+  pair.untrackedVolumeUSD = pair.untrackedVolumeUSD.plus(derivedAmountUSD)
+  pair.txCount = pair.txCount.plus(ONE_BD)
+  await pair.save()
+
+  // update global values, only used tracked amounts for volume
+  factory.totalVolumeUSD = factory.totalVolumeUSD.plus(trackedAmountUSD);
+  factory.totalVolumeETH = factory.totalVolumeETH.plus(trackedAmountETH);
+  factory.untrackedVolumeUSD = factory.untrackedVolumeUSD.plus(derivedAmountUSD);
+  factory.txCount = factory.txCount.plus(ONE_BD);
+
+  // save entities
+  await pair.save()
+  await token0.save()
+  await token1.save()
+  await factory.save()
+
+  // update transaction
+  let transaction: any = await transactionService.getByHash(txHash);
+  if (transaction === null) {
+    transaction = new Transaction(txHash)
+    transaction.blockNumber = new Decimal(event.blockNumber);
+    transaction.timestamp = ZERO_BD; // todo: remove?
+    transaction.mints = []
+    transaction.swaps = []
+    transaction.burns = []
+  }
+
+  // swaps
+  let swaps = transaction.swaps
+  const swapId = txHash.concat('-').concat(new Decimal(swaps.length).toString())
+  let swap = new Swap(swapId);
+
+  // update swap
+  swap.transaction = transaction.id
+  swap.pair = pair.id
+  swap.timestamp = transaction.timestamp
+  swap.sender = input.sender
+  swap.amount0In = amount0In
+  swap.amount1In = amount1In
+  swap.amount0Out = amount0Out
+  swap.amount1Out = amount1Out
+  swap.to = input.to
+  // swap.from = event.transaction.from
+  swap.from = input.sender;
+  swap.logIndex = new Decimal(event.logIndex)
+  if (trackedAmountUSD === ZERO_BD) {
+    swap.amountUSD = derivedAmountUSD
+  } else {
+    swap.amountUSD = trackedAmountUSD;
+  }
+  await new SwapModel(swap).save();
+
+  // update transaction
+  swaps.push(swap.id);
+  transaction.swaps = swaps;
+  transaction.save();
+
+  // update day entities
+  let pairDayData = updatePairDayData(event)
+  let pairHourData = updatePairHourData(event)
+  let stableswapDayData = updateStableswapDayData(event)
+  let token0DayData = updateTokenDayData(token0 as Token, event)
+  let token1DayData = updateTokenDayData(token1 as Token, event)
+
+  // swap specific updating
+  stableswapDayData.dailyVolumeUSD = stableswapDayData.dailyVolumeUSD.plus(trackedAmountUSD)
+  stableswapDayData.dailyVolumeETH = stableswapDayData.dailyVolumeETH.plus(trackedAmountETH)
+  stableswapDayData.dailyVolumeUntracked = stableswapDayData.dailyVolumeUntracked.plus(derivedAmountUSD)
+  stableswapDayData.save()
+
+  // swap specific updating for pair
+  pairDayData.dailyVolumeToken0 = pairDayData.dailyVolumeToken0.plus(amount0Total)
+  pairDayData.dailyVolumeToken1 = pairDayData.dailyVolumeToken1.plus(amount1Total)
+  pairDayData.dailyVolumeUSD = pairDayData.dailyVolumeUSD.plus(trackedAmountUSD)
+  pairDayData.save()
+
+  // update hourly pair data
+  pairHourData.hourlyVolumeToken0 = pairHourData.hourlyVolumeToken0.plus(amount0Total)
+  pairHourData.hourlyVolumeToken1 = pairHourData.hourlyVolumeToken1.plus(amount1Total)
+  pairHourData.hourlyVolumeUSD = pairHourData.hourlyVolumeUSD.plus(trackedAmountUSD)
+  pairHourData.save()
+
+  // swap specific updating for token0
+  token0DayData.dailyVolumeToken = token0DayData.dailyVolumeToken.plus(amount0Total)
+  token0DayData.dailyVolumeETH = token0DayData.dailyVolumeETH.plus(amount0Total.times(token0.derivedETH))
+  token0DayData.dailyVolumeUSD = token0DayData.dailyVolumeUSD.plus(
+    amount0Total.times(token0.derivedETH).times(bundle.ethPrice)
+  )
+  token0DayData.save()
+
+  // swap specific updating
+  token1DayData.dailyVolumeToken = token1DayData.dailyVolumeToken.plus(amount1Total)
+  token1DayData.dailyVolumeETH = token1DayData.dailyVolumeETH.plus(amount1Total.times(token1.derivedETH))
+  token1DayData.dailyVolumeUSD = token1DayData.dailyVolumeUSD.plus(
+    amount1Total.times(token1.derivedETH).times(bundle.ethPrice)
+  )
+  token1DayData.save()
+
+}
 
 export async function transferEventHandler(
   event: EventData,

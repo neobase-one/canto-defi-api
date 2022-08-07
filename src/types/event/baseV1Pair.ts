@@ -30,7 +30,7 @@ export class SwapEventInput {
   sender: string;
   amount0In: Decimal;
   amount1In: Decimal;
-  amoun0Out: Decimal;
+  amount0Out: Decimal;
   amount1Out: Decimal;
   to: string;
 
@@ -38,7 +38,7 @@ export class SwapEventInput {
     this.sender = eventObj[0];
     this.amount0In = new Decimal(eventObj[1]);
     this.amount1In = new Decimal(eventObj[2]);
-    this.amoun0Out = new Decimal(eventObj[3]);
+    this.amount0Out = new Decimal(eventObj[3]);
     this.amount1Out = new Decimal(eventObj[4]);
     this.to = eventObj[5];
   }

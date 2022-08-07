@@ -6,6 +6,7 @@ import Decimal from "decimal.js";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
+import { ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class Swap {
@@ -23,7 +24,7 @@ export class Swap {
 
   @Field((type) => Pair)
   @Property({ ref: Pair, required: false })
-  pair: Ref<Pair>;
+  pair: string; // todo: Ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -54,6 +55,34 @@ export class Swap {
   amountUSD: Decimal;
 
   // todo: transaction, pair - ref; to, sender, from - Bytes
+  @Field((type) => String)
+  @Property({ default: "", required: false })
+  to: string;
+
+  @Field((type) => String)
+  @Property({ default: "", required: false })
+  sender: string;
+
+  @Field((type) => String)
+  @Property({ default: "", required: false })
+  from: string;
+
+  constructor (id: string) {
+    this._id = new ObjectId();
+    this.id = id;
+    this.timestamp = ZERO_BD;
+    this.pair = "";
+    this.liquidity = ZERO_BD;
+    this.amount0In = ZERO_BD;
+    this.amount1In = ZERO_BD;
+    this.amount0Out = ZERO_BD;
+    this.amount1Out = ZERO_BD;
+    this.logIndex = ZERO_BD;
+    this.amountUSD = ZERO_BD;
+    this.to = "";
+    this.sender = "";
+    this.from = "";
+  }
 }
 
 export const SwapModel = getModelForClass(Swap);
