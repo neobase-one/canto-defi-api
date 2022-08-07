@@ -85,7 +85,7 @@ export async function mintEventHandler(
   mint.sender = input.sender;
   mint.amount0 = token0Amount;
   mint.amount1 = token1Amount;
-  mint.logIndex = event.logIndex;
+  mint.logIndex = new Decimal(event.logIndex);
   mint.amountUSD = amountTotalUSD; // todo: add amountTotalETH
   await mint.save();
 
@@ -104,7 +104,77 @@ export async function mintEventHandler(
 export async function burnEventHandler(
   event: EventData,
   input: BurnEventInput
-) {}
+) {
+  const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+  const txHash = event.transactionHash;
+
+  // service
+  const factoryService = Container.get(StableswapFactoryService);
+  const pairService = Container.get(PairService);
+  const tokenService = Container.get(TokenService);
+  const bundleService = Container.get(BundleService);
+  const transactionService = Container.get(TransactionService);
+  const burnService = Container.get(BurnService);
+  const mintService = Container.get(MintService);
+
+  // load
+  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
+  let transaction: any = await transactionService.getByHash(txHash);
+  if (transaction === null) {
+    return;
+  }
+  let pair: any = await pairService.getByAddress(event.address);
+  let token0: any = await tokenService.getByAddress(pair.token0);
+  let token1: any = await tokenService.getByAddress(pair.token1);
+
+  // burns
+  let burns = transaction.burns;
+  let burn: any = await burnService.getById(burns[burns.length - 1]);
+
+  // update token info
+  let token0Amount = convertTokenToDecimal(input.amount0, token0.decimals)
+  let token1Amount = convertTokenToDecimal(input.amount1, token1.decimals)
+
+  // update txn counts
+  token0.txCount = token0.txCount.plus(ONE_BD)
+  token1.txCount = token1.txCount.plus(ONE_BD)
+
+  // get new amount of USD and ETH for tracking
+  let bundle: any = await bundleService.get();
+  let amountTotalETH = token1.derivedETH
+    .times(token1Amount)
+    .plus(token0.derivedETH.times(token0Amount));
+  let amountTotalUSD = amountTotalETH.times(bundle.ethPrice);
+
+  // update txn counts
+  pair.txCount = pair.txCount.plus(ONE_BD);
+  factory.txCount = factory.txCount.plus(ONE_BD);
+
+  // save entities
+  await token0.save();
+  await token1.save();
+  await pair.save();
+  await factory.save();
+
+  // update burn
+  burn.amount0 = token0Amount;
+  burn.amount1 = token1Amount;
+  burn.logIndex = new Decimal(event.logIndex);
+  burn.amountUSD = amountTotalUSD; // todo: add amountTotalETH field
+  await burn.save();
+
+
+  // update LP position
+  let liquidityPosition = createLiquidityPosition(event.address, burn.sender);
+  createLiquiditySnapshot(liquidityPosition, event);
+
+  // update day metric objects
+  updatePairDayData(event);
+  updatePairHourData(event);
+  updateFactoryDatData(event);
+  updateTokenDayData(token0, event);
+  updateTokenDayData(token1, event);
+}
 
 export async function swapEventHandler(
   event: EventData,
