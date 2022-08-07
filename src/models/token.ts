@@ -1,14 +1,15 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongoose";
+import { ObjectId } from "mongodb";
 import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { ObjectIdScalar } from "../types/objectIdScalar";
+import { ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class Token {
   @Field((type) => ObjectIdScalar)
-  @Property({ default: "", required: true })
+  @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
   @Field((type) => ID)
@@ -54,6 +55,21 @@ export class Token {
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: true })
   derivedCANTO: Decimal;
+
+  constructor (address: string) {
+    this._id = new ObjectId();
+    this.id = address;
+    this.name = "";
+    this.symbol = "";
+    this.decimals = 0;
+    this.totalSupply = ZERO_BD;
+    this.tradeVolume = ZERO_BD;
+    this.tradeVolumeUSD = ZERO_BD;
+    this.untrackedVolumeUSD = ZERO_BD;
+    this.txCount = ZERO_BD;
+    this.totalLiquididty = ZERO_BD;
+    this.derivedCANTO = ZERO_BD;
+  }
 }
 
 export const TokenModel = getModelForClass(Token);
