@@ -11,7 +11,7 @@ import {
   StableswapFactory,
   StableswapFactoryModel,
 } from "../../models/stableswapFactory";
-import { TokenModel } from "../../models/token";
+import { Token, TokenModel } from "../../models/token";
 import { Transaction } from "../../models/transaction";
 import {
   BurnEventInput,
@@ -21,7 +21,7 @@ import {
   TransferEventInput,
 } from "../../types/event/baseV1Pair";
 import { MintEventSignature } from "../../utils/abiParser/baseV1Pair";
-import { ADDRESS_ZERO, BI_18, ZERO_BD } from "../../utils/constants";
+import { ADDRESS_ZERO, BI_18, ONE_BD, ZERO_BD } from "../../utils/constants";
 import { BundleService } from "./models/bundle";
 import { BurnService } from "./models/burn";
 import { MintService } from "./models/mint";
@@ -33,7 +33,73 @@ import { TransactionService } from "./models/transaction";
 export async function mintEventHandler(
   event: EventData,
   input: MintEventInput
-) {}
+) {
+  const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+  const txHash = event.transactionHash;
+
+  // service
+  const factoryService = Container.get(StableswapFactoryService);
+  const pairService = Container.get(PairService);
+  const tokenService = Container.get(TokenService);
+  const bundleService = Container.get(BundleService);
+  const transactionService = Container.get(TransactionService);
+  const burnService = Container.get(BurnService);
+  const mintService = Container.get(MintService);
+
+  // load
+  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
+  let transaction: any = await transactionService.getByHash(txHash);
+  let pair: any = await pairService.getByAddress(event.address);
+  let token0: any = await tokenService.getByAddress(pair.token0);
+  let token1: any = await tokenService.getByAddress(pair.token1);
+
+  let mints = transaction.mints;
+  let mint: any = await mintService.getById(mints[mints.length - 1]);
+
+  // update exchange info (excpet balances, sync will cover that)
+  let token0Amount = converTokenToDecimal(input.amount0, token0.decimal);
+  let token1Amount = converTokenToDecimal(input.amount1, token1.decimal);
+
+  // update txn counts
+  token0.txCount = token0.txCount.plus(ONE_BD);
+  token1.txCount = token1.txCount.plus(ONE_BD);
+
+  // get new amount of USD and ETH for tracking
+  let bundle: any = await bundleService.get();
+  let amountTotalETH = token1.derivedETH
+    .times(token1Amount)
+    .plus(token0.derivedETH.times(token0Amount));
+  let amountTotalUSD = amountTotalETH.times(bundle.ethPrice);
+
+  // update txn counts
+  pair.txCount = pair.txCount.plus(ONE_BD);
+  factory.txCount = factory.txCount.plus(ONE_BD);
+
+  // save entities
+  await token0.save();
+  await token1.save();
+  await pair.save();
+  await factory.save();
+
+  // update mint
+  mint.sender = input.sender;
+  mint.amount0 = token0Amount;
+  mint.amount1 = token1Amount;
+  mint.logIndex = event.logIndex;
+  mint.amountUSD = amountTotalUSD; // todo: add amountTotalETH
+  await mint.save();
+
+  // update LP position
+  let liquidityPosition = createLiquidityPosition(event.address, mint.to);
+  createLiquiditySnapshot(liquidityPosition, event);
+
+  // update day metric objects
+  updatePairDayData(event);
+  updatePairHourData(event);
+  updateFactoryDatData(event);
+  updateTokenDayData(token0, event);
+  updateTokenDayData(token1, event);
+}
 
 export async function burnEventHandler(
   event: EventData,
