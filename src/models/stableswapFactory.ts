@@ -26,7 +26,7 @@ export class StableswapFactory {
 
   @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
-  totalVolumeCANTO: Decimal;
+  totalVolumeETH: Decimal;
 
   @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
@@ -38,7 +38,7 @@ export class StableswapFactory {
 
   @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
-  totalLiquidityCANTO: Decimal;
+  totalLiquidityETH: Decimal;
 
   @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
@@ -53,10 +53,10 @@ export class StableswapFactory {
     this.address = address;
     this.pairCount = 0;
     this.totalVolumeUSD = ZERO_BD;
-    this.totalVolumeCANTO = ZERO_BD;
+    this.totalVolumeETH = ZERO_BD;
     this.untrackedVolumeUSD = ZERO_BD;
     this.totalLiquidityUSD = ZERO_BD;
-    this.totalLiquidityCANTO = ZERO_BD;
+    this.totalLiquidityETH = ZERO_BD;
     this.txCount = ZERO_BD;
   }
 }

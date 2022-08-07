@@ -31,7 +31,7 @@ export class TokenDayData {
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  dailyVolumeCANTO: Decimal;
+  dailyVolumeETH: Decimal;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -47,7 +47,7 @@ export class TokenDayData {
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  totalLiquidityCANTO: Decimal;
+  totalLiquidityETH: Decimal;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
