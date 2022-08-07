@@ -7,6 +7,7 @@ import { Pair } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { ZERO_BD } from "../utils/constants";
+import { Transaction } from "./transaction";
 
 @ObjectType()
 export class Swap {
@@ -17,6 +18,10 @@ export class Swap {
   @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
+
+  @Field((type) => Transaction)
+  @Property({ ref: Transaction, required: false })
+  transaction: string; // todo: Ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -70,6 +75,7 @@ export class Swap {
   constructor (id: string) {
     this._id = new ObjectId();
     this.id = id;
+    this.transaction = "";
     this.timestamp = ZERO_BD;
     this.pair = "";
     this.liquidity = ZERO_BD;

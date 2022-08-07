@@ -11,7 +11,7 @@ import {
   StableswapFactory,
   StableswapFactoryModel,
 } from "../../models/stableswapFactory";
-import { Swap } from "../../models/swap";
+import { Swap, SwapModel } from "../../models/swap";
 import { Token, TokenModel } from "../../models/token";
 import { Transaction } from "../../models/transaction";
 import {
@@ -30,6 +30,8 @@ import { PairService } from "./models/pair";
 import { StableswapFactoryService } from "./models/stableswapFactory";
 import { TokenService } from "./models/token";
 import { TransactionService } from "./models/transaction";
+
+// todo: remove unused services
 
 export async function mintEventHandler(
   event: EventData,
