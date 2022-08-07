@@ -11,4 +11,8 @@ export class PairService {
     }
     return doc;
   }
+
+  async getByAddress(address: string) {
+    return await PairModel.findOne({id: address}).exec();
+  }
 }

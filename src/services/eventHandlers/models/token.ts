@@ -11,4 +11,8 @@ export class TokenService {
     }
     return doc;
   }
+
+  async getByAddress(address: string) {
+    return await TokenModel.findOne({id: address}).exec();
+  }
 }

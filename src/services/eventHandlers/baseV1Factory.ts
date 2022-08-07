@@ -42,7 +42,7 @@ export async function pairCreatedEventHandler(
   const pairService = Container.get(PairService);
 
   // update factory
-  let factory: any = await factoryService.getStablewsapFactory(FACTORY_ADDRESS);
+  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
   factory.pairCount = factory.pairCount + 1;
   factory.block = new Decimal(event.blockNumber);
   // console.log(factory);
