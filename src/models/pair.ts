@@ -6,6 +6,7 @@ import Decimal from "decimal.js";
 import { Token } from "./token";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
+import { ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class Pair {
@@ -89,6 +90,29 @@ export class Pair {
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   liquidityProviderCount: Decimal;
+
+  constructor(address: string) {
+    this._id = new ObjectId();
+    this.id = "";
+    this.token0 = "";
+    this.token1 = "";
+    this.reserve0 = ZERO_BD;
+    this.reserve1 = ZERO_BD;
+    this.totalSupply = ZERO_BD;
+    this.reserveCANTO = ZERO_BD;
+    this.reserveUSD = ZERO_BD;
+    this.trackedReserveCANTO = ZERO_BD;
+    this.token0Price = ZERO_BD;
+    this.token1Price = ZERO_BD;
+    this.volumeToken0 = ZERO_BD;
+    this.volumeToken1 = ZERO_BD;
+    this.volumeUSD = ZERO_BD;
+    this.untrackedVolumeUSD = ZERO_BD;
+    this.txCount = ZERO_BD;
+    this.createdAtTimestamp = ZERO_BD;
+    this.createdAtBlockNumber = ZERO_BD;
+    this.liquidityProviderCount = ZERO_BD;
+  }
 }
 
 export const PairModel = getModelForClass(Pair);

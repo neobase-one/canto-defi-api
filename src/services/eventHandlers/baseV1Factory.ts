@@ -4,10 +4,17 @@ import { Log } from "web3-core";
 import { Contract, EventData } from "web3-eth-contract";
 import { Config } from "../../config";
 import { Bundle, BundleModel } from "../../models/bundle";
-import { StableswapFactory, StableswapFactoryModel } from "../../models/stableswapFactory";
+import {
+  StableswapFactory,
+  StableswapFactoryModel,
+} from "../../models/stableswapFactory";
 import { PairCreatedEventInput } from "../../types/event/baseV1Factory";
 import { StableswapFactoryService } from "./models/stableswapFactory";
 import { setTimeout } from "timers/promises";
+import { TokenService } from "./models/token";
+import { PairService } from "./models/pair";
+import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, fetchTokenTotalSupply } from "../../utils/token";
+import { ZERO_BD } from "../../utils/constants";
 
 export async function initFactoryCollection() {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
@@ -17,35 +24,58 @@ export async function initFactoryCollection() {
   await new StableswapFactoryModel(factory).save();
 
   // create new bundle
-  let bundle = new Bundle('1');
+  let bundle = new Bundle("1");
   // console.log(bundle);
   await new BundleModel(bundle).save();
 }
 
 export async function pairCreatedEventHandler(
   event: EventData,
-  inputs: PairCreatedEventInput
+  input: PairCreatedEventInput
 ) {
   // console.log("PC", event.blockNumber)
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
 
   // services
   const factoryService = Container.get(StableswapFactoryService);
+  const tokenService = Container.get(TokenService);
+  const pairService = Container.get(PairService);
 
   // update factory
-  // let factory: any = await factoryService.getStablewsapFactory(FACTORY_ADDRESS);
-  let factory: any = await StableswapFactoryModel.findOne({address: FACTORY_ADDRESS}).exec();
+  let factory: any = await factoryService.getStablewsapFactory(FACTORY_ADDRESS);
   factory.pairCount = factory.pairCount + 1;
   factory.block = new Decimal(event.blockNumber);
   // console.log(factory);
   // console.log("PC", factory);
 
   // create tokens
+  let token0: any = await tokenService.getOrCreate(input.token0);
+  token0.symbol = fetchTokenSymbol(input.token0);
+  token0.name = fetchTokenName(input.token0);
+  token0.totalSupply = fetchTokenTotalSupply(input.token0);
+  token0.decimals = fetchTokenDecimals(input.token0);
+
+  let token1: any = await tokenService.getOrCreate(input.token1);
+  token1.symbol = fetchTokenSymbol(input.token1);
+  token1.name = fetchTokenName(input.token1);
+  token1.totalSupply = fetchTokenTotalSupply(input.token1);
+  token1.decimals = fetchTokenDecimals(input.token1);
+
+  // create pair
+  let pair: any = await pairService.getOrCreate(input.pair);
+  // pair.token0 = input.token0;
+  pair.token0 = token0.id;
+  pair.token1 = token1.id;
+  pair.createdAtTimestamp = ZERO_BD; // todo
+  pair.createdAtBlockNumber = new Decimal(event.blockNumber);
+
+  // create tracked contract for pair
+  // todo
 
 
   // save updated objects
-  // todo: not waiting for update
-  // await StableswapFactoryModel.updateOne(factory);
-  const val = await factory.save();
+  await token0.save();
+  await token1.save();
+  await pair.save();
+  await factory.save();
 }
-

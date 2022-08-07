@@ -1,10 +1,14 @@
-
-import { Container, Service } from 'typedi';
-import { Token } from '../../../models/token';
+import { Service } from 'typedi';
+import { Token, TokenModel } from '../../../models/token';
 
 @Service()
 export class TokenService {
-  getOrCreate(address: string): Token {
-    return new Token();
+  async getOrCreate(address: string) {
+    let doc = await TokenModel.findOne({id: address}).exec();
+    if (doc === null) {
+      let token = new Token(address);
+      doc = new TokenModel(token);
+    }
+    return doc;
   }
 }

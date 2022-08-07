@@ -1,10 +1,15 @@
-
-import { Container, Service } from 'typedi';
-import { Pair } from '../../../models/pair';
+import { Service } from 'typedi';
+import { Pair, PairModel } from '../../../models/pair';
 
 @Service()
 export class PairService {
-  getOrCreate(address: string): Pair {
-    return new Pair();
+  async getOrCreate(address: string) {
+    let doc = await PairModel.findOne({id: address}).exec();
+    if (doc === null) {
+      let obj = new Pair(address);
+      console.log(obj);
+      doc = new PairModel(obj);
+    }
+    return doc;
   }
 }

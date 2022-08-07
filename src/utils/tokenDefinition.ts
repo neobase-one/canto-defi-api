@@ -45,10 +45,8 @@ export class TokenDefinition {
     let staticDefinitions = this.getStaticDefinitions();
 
     // Search the definition using the address
-    console.log(staticDefinitions)
     for (let i = 0; i < staticDefinitions.length; i++) {
       let staticDefinition = staticDefinitions[i];
-      console.log(staticDefinition)
       if (staticDefinition.address == tokenAddress) {
         return staticDefinition;
       }
