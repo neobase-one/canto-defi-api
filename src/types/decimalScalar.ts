@@ -6,7 +6,7 @@ export const DecimalScalar = new GraphQLScalarType({
   description: "The `Decimal` scalar type to represent currency values",
 
   serialize(value) {
-    return new Decimal(value);
+    return new Decimal(value.toString());
   },
 
   parseLiteral(ast) {
@@ -15,10 +15,10 @@ export const DecimalScalar = new GraphQLScalarType({
       throw new TypeError(`${String(ast.value)} is not a valid decimal value.`);
     }
 
-    return new Decimal(ast.value);
+    return new Decimal(ast.value.toString());
   },
 
   parseValue(value) {
-    return new Decimal(value);
+    return new Decimal(value.toString());
   },
 });
