@@ -19,6 +19,6 @@ export const TypegooseMiddleware: MiddlewareFn = async (_, next) => {
 function convertDocument(doc: Document) {
   const convertedDocument = doc.toObject();
   const DocumentClass = getClassForDocument(doc)!;
-  Object.setPrototypeOf(convertDocument, DocumentClass.prototype);
-  return convertDocument;
+  Object.setPrototypeOf(convertedDocument, DocumentClass.prototype);
+  return convertedDocument;
 }

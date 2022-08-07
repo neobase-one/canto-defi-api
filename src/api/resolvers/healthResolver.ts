@@ -1,6 +1,6 @@
 import { Query, Resolver } from "type-graphql";
 
-@Resolver((of) => String)
+@Resolver()
 export class HealthResolver {
   @Query((returns) => String, { nullable: false })
   async health(): Promise<String> {

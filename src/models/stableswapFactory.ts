@@ -4,46 +4,47 @@ import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { ZERO_BD } from "../utils/constants";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class StableswapFactory {
-  @Field()
-  @Property({ default: "", required: true })
+  @Field((type) => ObjectIdScalar)
+  @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
-  @Property({ name: "id", default: "", required: true })
+  @Field((type) => ID, {name: "id", nullable: true})
+  @Property({default: "", required: false })
   address: string;
 
-  @Field((type) => Int)
-  @Property({ default: 0, required: true })
+  @Field((type) => Int, {nullable: true})
+  @Property({ default: 0, required: false })
   pairCount: number;
 
-  @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Field((type) => DecimalScalar, {nullable: true})
+  @Property({ default: new Decimal("0"), required: false })
   totalVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Field((type) => DecimalScalar, {nullable: true})
+  @Property({ default: new Decimal("0"), required: false })
   totalVolumeCANTO: Decimal;
 
-  @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Field((type) => DecimalScalar, {nullable: true})
+  @Property({ default: new Decimal("0"), required: false })
   untrackedVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Field((type) => DecimalScalar, {nullable: true})
+  @Property({ default: new Decimal("0"), required: false })
   totalLiquidityUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Field((type) => DecimalScalar, {nullable: true})
+  @Property({ default: new Decimal("0"), required: false })
   totalLiquidityCANTO: Decimal;
 
-  @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Field((type) => DecimalScalar, {nullable: true})
+  @Property({ default: new Decimal("0"), required: false })
   txCount: Decimal;
 
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ default: new Decimal("0"), required: false })
   block: Decimal;
 
 

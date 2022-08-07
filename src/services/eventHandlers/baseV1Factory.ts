@@ -26,7 +26,7 @@ export async function pairCreatedEventHandler(
   event: EventData,
   inputs: PairCreatedEventInput
 ) {
-  console.log("PC", event.blockNumber)
+  // console.log("PC", event.blockNumber)
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
 
   // services
@@ -37,7 +37,7 @@ export async function pairCreatedEventHandler(
   let factory: any = await StableswapFactoryModel.findOne({address: FACTORY_ADDRESS}).exec();
   factory.pairCount = factory.pairCount + 1;
   factory.block = new Decimal(event.blockNumber);
-  console.log(factory);
+  // console.log(factory);
   // console.log("PC", factory);
 
   // create tokens

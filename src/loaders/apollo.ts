@@ -14,7 +14,8 @@ import { resolvers } from "../api/resolvers";
 export default async () => {
   const schema = await buildSchema({
     resolvers: resolvers,
-    emitSchemaFile: path.resolve(__dirname, "generated-schema.gql"),
+    emitSchemaFile: true,
+    // emitSchemaFile: path.resolve(__dirname, "generated-schema.gql"),
     // use document converting middleware
     globalMiddlewares: [TypegooseMiddleware],
     // use ObjectId scalar mapping
@@ -32,10 +33,10 @@ export default async () => {
 
   const server = new ApolloServer({
     typeDefs: typeDefs,
-    // schema,
+    schema,
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
-    mocks: mocks,
-    mockEntireSchema: true,
+    // mocks: mocks,
+    // mockEntireSchema: true,
   });
 
   return server;
