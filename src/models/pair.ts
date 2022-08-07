@@ -41,7 +41,7 @@ export class Pair {
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  reserveCANTO: Decimal;
+  reserveETH: Decimal;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -49,7 +49,7 @@ export class Pair {
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  trackedReserveCANTO: Decimal;
+  trackedReserveETH: Decimal;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -99,9 +99,9 @@ export class Pair {
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;
-    this.reserveCANTO = ZERO_BD;
+    this.reserveETH = ZERO_BD;
     this.reserveUSD = ZERO_BD;
-    this.trackedReserveCANTO = ZERO_BD;
+    this.trackedReserveETH = ZERO_BD;
     this.token0Price = ZERO_BD;
     this.token1Price = ZERO_BD;
     this.volumeToken0 = ZERO_BD;

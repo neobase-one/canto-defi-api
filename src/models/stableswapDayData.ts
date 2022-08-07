@@ -21,7 +21,7 @@ export class StableswapDayData {
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  dailyVolumeCANTO: Decimal;
+  dailyVolumeETH: Decimal;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -33,11 +33,11 @@ export class StableswapDayData {
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  totalVolumeCANTO: Decimal;
+  totalVolumeETH: Decimal;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  totalLiquidityCANTO: Decimal;
+  totalLiquidityETH: Decimal;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })

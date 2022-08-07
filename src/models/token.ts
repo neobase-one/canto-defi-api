@@ -54,7 +54,7 @@ export class Token {
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  derivedCANTO: Decimal;
+  derivedETH: Decimal;
 
   constructor (address: string) {
     this._id = new ObjectId();
@@ -68,7 +68,7 @@ export class Token {
     this.untrackedVolumeUSD = ZERO_BD;
     this.txCount = ZERO_BD;
     this.totalLiquididty = ZERO_BD;
-    this.derivedCANTO = ZERO_BD;
+    this.derivedETH = ZERO_BD;
   }
 }
 
