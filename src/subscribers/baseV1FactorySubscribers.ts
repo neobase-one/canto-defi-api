@@ -1,9 +1,15 @@
 import { Log } from "web3-core";
+import { Contract, EventData } from "web3-eth-contract";
 import { Config } from "../config";
 import { web3 } from "../loaders/web3";
+import { StableswapDayData } from "../models/stableswapDayData";
 import { pairCreatedEventHandler } from "../services/eventHandlers/baseV1Factory";
 import { PairCreatedEventInput } from "../types/event/baseV1Factory";
-import { PairCreatedEventAbiInputs } from "../utils/abiParser/baseV1factory";
+import {
+  BaseV1FactoryABI,
+  PairCreated,
+  PairCreatedEventAbiInputs,
+} from "../utils/abiParser/baseV1factory";
 
 export async function baseV1FactoryIndexHistoricalEvents(
   latestBlockNumber: number
@@ -11,39 +17,43 @@ export async function baseV1FactoryIndexHistoricalEvents(
   console.log("BaseV1Factory");
   const iter = Math.floor(latestBlockNumber / 10_000);
   // console.log(iter);
-  for(var i=0; i<iter; i++) {
+  const t = await web3.eth.getProtocolVersion();
+  console.log(t);
+  const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+  const stableswapFactory = new web3.eth.Contract(
+    BaseV1FactoryABI,
+    FACTORY_ADDRESS
+  );
+  for (var i = 0; i < iter; i++) {
     // PairCreated
-    pairCreatedRangeEventHandler(i);
+    await pairCreatedRangeEventHandler(stableswapFactory, i);
   }
   // web3.eth.clearSubscriptions(); // todo
-};
+}
 
-async function pairCreatedRangeEventHandler(start: number) {
+async function pairCreatedRangeEventHandler(contract: Contract, start: number) {
   const range = Config.canto.rpcBlockRange;
   const options = {
     fromBlock: start * range,
     toBlock: (start + 1) * range,
-    address: Config.contracts.baseV1Factory.addresses,
+    // address: Config.contracts.baseV1Factory.addresses,
     topics: Config.contracts.baseV1Factory.events.options.signatures,
   };
 
-  function processorServiceFunction(error: Error, log: Log) {
-    if (!error) {
-      const eventObj = web3.eth.abi.decodeLog(
+  async function processorServiceFunction(events: EventData[]) {
+    for (let event of events) {
+      const decodedLog = web3.eth.abi.decodeLog(
         PairCreatedEventAbiInputs,
-        log.data,
-        log.topics.slice(1)
+        event.raw.data,
+        event.raw.topics.slice(1)
       );
-      const input = new PairCreatedEventInput(eventObj);
-      // console.log("Class", input)
-      console.log(`New PairCreated!`, log.blockNumber, eventObj);
-      pairCreatedEventHandler(log, input);
-    } else {
-      console.log(error);
+      console.log(`New PairCreated!`, event.blockNumber);
+      const input = new PairCreatedEventInput(event.returnValues);
+      await pairCreatedEventHandler(event, input);
     }
   }
 
-  web3.eth.subscribe("logs", options, (err, res) =>
-    processorServiceFunction(err, res)
-  );
+  contract
+    .getPastEvents(PairCreated, options)
+    .then(async (events) => await processorServiceFunction(events));
 }

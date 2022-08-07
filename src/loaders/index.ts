@@ -6,6 +6,7 @@ import apolloLoader from "./apollo";
 import expressLoader from "./express";
 import mongooseLoader from "./mongoose";
 import { Config } from "../config";
+import { initFactoryCollection } from "../services/eventHandlers/baseV1Factory";
 
 export default async (app: express.Application): Promise<ApolloServer> => {
   // Load everything related to express
@@ -14,6 +15,8 @@ export default async (app: express.Application): Promise<ApolloServer> => {
 
   // Connect to mongoose
   await mongooseLoader();
+  // todo: init objects + collections
+  await initFactoryCollection();
   console.log("CUSTOM: Mongoose connection completed");
 
   // load apollo server config

@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { Field, ObjectType, ID } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
+import { ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class Bundle {
@@ -14,8 +15,14 @@ export class Bundle {
   id: string;
 
   @Field((type) => DecimalScalar)
-  @Property({ default: new Decimal("0"), required: true })
+  @Property({ name: "ethPrice", default: new Decimal("0"), required: true })
   cantoPrice: Decimal;
+
+  constructor (id: string) {
+    this._id = new ObjectId();
+    this.id = id;
+    this.cantoPrice = ZERO_BD;
+  }
 }
 
 export const BundleModel = getModelForClass(Bundle);
