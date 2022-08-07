@@ -1,28 +1,29 @@
 import { Log } from "web3-core";
+import { EventData } from "web3-eth-contract";
 import {
   BurnEventInput,
-  MineEventInput,
+  MintEventInput,
   SwapEventInput,
   SyncEventInput,
   TransferEventInput,
-} from "../../types/event/baseV1Factory";
+} from "../../types/event/baseV1Pair";
 
-async function mintEventHandler(log: Log, inputs: MineEventInput) {
-
-}
-
-async function burnEventHandler(log: Log, inputs: BurnEventInput) {
+export async function mintEventHandler(event: EventData, input: MintEventInput) {
 
 }
 
-async function swapEventHandler(log: Log, inputs: SwapEventInput) {
+export async function burnEventHandler(event: EventData, input: BurnEventInput) {
 
 }
 
-async function transferEventHandler(log: Log, inputs: TransferEventInput) {
+export async function swapEventHandler(event: EventData, input: SwapEventInput) {
 
 }
 
-async function syncEventHandler(log: Log, inputs: SyncEventInput) {
+export async function transferEventHandler(event: EventData, input: TransferEventInput) {
+
+}
+
+export async function syncEventHandler(event: EventData, input: SyncEventInput) {
   
 }
