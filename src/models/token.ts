@@ -50,7 +50,7 @@ export class Token {
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  totalLiquididty: Decimal;
+  totalLiquidity: Decimal;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -67,7 +67,7 @@ export class Token {
     this.tradeVolumeUSD = ZERO_BD;
     this.untrackedVolumeUSD = ZERO_BD;
     this.txCount = ZERO_BD;
-    this.totalLiquididty = ZERO_BD;
+    this.totalLiquidity = ZERO_BD;
     this.derivedETH = ZERO_BD;
   }
 }

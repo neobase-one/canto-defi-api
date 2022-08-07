@@ -4,6 +4,7 @@ import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { ObjectIdScalar } from "../types/objectIdScalar";
+import { ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class StableswapDayData {
@@ -17,7 +18,7 @@ export class StableswapDayData {
 
   @Field()
   @Property({ default: new Date(), required: false })
-  date: Date;
+  date: number;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -50,6 +51,20 @@ export class StableswapDayData {
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   txCount: Decimal;
+
+  constructor (id: string) {
+    this._id = new ObjectId();
+    this.id = id;
+    this.date = 0;
+    this.dailyVolumeETH = ZERO_BD;
+    this.dailyVolumeUSD = ZERO_BD;
+    this.dailyVolumeUntracked = ZERO_BD;
+    this.totalVolumeETH = ZERO_BD;
+    this.totalLiquidityETH = ZERO_BD;
+    this.totalVolumeUSD = ZERO_BD;
+    this.totalLiquidityUSD = ZERO_BD;
+    this.txCount = ZERO_BD;
+  }
 }
 
 export const StableswapDayDataModel = getModelForClass(StableswapDayData);
