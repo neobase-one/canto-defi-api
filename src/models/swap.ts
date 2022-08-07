@@ -5,10 +5,11 @@ import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class Swap {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   @Property({ default: "", required: true })
   readonly _id: ObjectId;
 

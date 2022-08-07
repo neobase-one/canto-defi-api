@@ -6,10 +6,11 @@ import Decimal from "decimal.js";
 import { Mint } from "./mint";
 import { Burn } from "./burn";
 import { Swap } from "./swap";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class Transaction {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   @Property({ default: "", required: true })
   readonly _id: ObjectId;
 

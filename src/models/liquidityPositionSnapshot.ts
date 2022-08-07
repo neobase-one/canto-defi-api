@@ -7,10 +7,11 @@ import { LiquidityPosition } from "./liquidityPosition";
 import { User } from "./user";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class LiquidityPositionSnapshot {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   @Property({ default: "", required: true })
   readonly _id: ObjectId;
 

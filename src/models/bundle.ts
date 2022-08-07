@@ -4,10 +4,11 @@ import { Field, ObjectType, ID } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { ZERO_BD } from "../utils/constants";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class Bundle {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   readonly _id: ObjectId;
 
   @Field((type) => ID)

@@ -5,10 +5,11 @@ import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { Token } from "./token";
 import { Ref } from "../types/ref";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class Pair {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   @Property({ default: "", required: true })
   readonly _id: ObjectId;
 
@@ -18,11 +19,12 @@ export class Pair {
 
   @Field((type) => Token)
   @Property({ ref: Token, required: true })
-  token0: Ref<Token>;
+  // token0: Ref<Token>;
+  token0: string;
 
   @Field((type) => Token)
   @Property({ ref: Token, required: true })
-  token1: Ref<Token>;
+  token1: string;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: true })

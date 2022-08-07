@@ -3,10 +3,11 @@ import { ObjectId } from "mongoose";
 import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class StableswapDayData {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   @Property({ default: "", required: true })
   readonly _id: ObjectId;
 

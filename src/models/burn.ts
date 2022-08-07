@@ -6,9 +6,10 @@ import Decimal from "decimal.js";
 import { Transaction } from "./transaction";
 import {Ref} from '../types/ref';
 import { Pair } from "./pair";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 @ObjectType()
 export class Burn {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   @Property({ default: "", required: true })
   readonly _id: ObjectId;
 

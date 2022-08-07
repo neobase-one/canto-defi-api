@@ -3,10 +3,11 @@ import { ObjectId } from "mongoose";
 import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class Token {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   @Property({ default: "", required: true })
   readonly _id: ObjectId;
 
@@ -22,9 +23,9 @@ export class Token {
   @Property({ default: "", required: true })
   symbol: string;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => Int)
   @Property({ default: new Decimal("0"), required: true })
-  decimals: Decimal;
+  decimals: number;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: true })

@@ -5,10 +5,11 @@ import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { Token } from "./token";
 import { Ref } from "../types/ref";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class PairDayData {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   @Property({ default: "", required: true })
   readonly _id: ObjectId;
 

@@ -5,10 +5,11 @@ import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { LiquidityPosition } from "./liquidityPosition";
 import { Ref } from "../types/ref";
+import { ObjectIdScalar } from "../types/objectIdScalar";
 
 @ObjectType()
 export class User {
-  @Field()
+  @Field((type) => ObjectIdScalar)
   readonly _id: ObjectId;
 
   @Field((type) => ID)
