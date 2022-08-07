@@ -7,6 +7,7 @@ import { Mint } from "./mint";
 import { Burn } from "./burn";
 import { Swap } from "./swap";
 import { ObjectIdScalar } from "../types/objectIdScalar";
+import { ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class Transaction {
@@ -28,15 +29,25 @@ export class Transaction {
 
   @Field((type) => [Mint])
   @Property({ default: [], required: false, type: () => Mint })
-  mints: Mint[];
+  mints: string[]; // todo: how to return Mint object
 
   @Field((type) => [Burn])
   @Property({ default: [], required: false, type: () => Burn })
-  burns: Burn[];
+  burns: string[];
 
   @Field((type) => [Swap])
   @Property({ default: [], required: false, type: () => Swap })
-  swaps: Swap[];
+  swaps: string[];
+
+  constructor (hash: string) {
+    this._id = new ObjectId();
+    this.id = hash;
+    this.timestamp = ZERO_BD;
+    this.blockNumber = ZERO_BD;
+    this.mints = [];
+    this.burns = [];
+    this.swaps = [];
+  }
 }
 
 export const TransactionModel = getModelForClass(Transaction);

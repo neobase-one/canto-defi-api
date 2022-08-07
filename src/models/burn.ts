@@ -7,6 +7,7 @@ import { Transaction } from "./transaction";
 import {Ref} from '../types/ref';
 import { Pair } from "./pair";
 import { ObjectIdScalar } from "../types/objectIdScalar";
+import { ZERO_BD } from "../utils/constants";
 @ObjectType()
 export class Burn {
   @Field((type) => ObjectIdScalar)
@@ -19,7 +20,7 @@ export class Burn {
 
   @Field((type) => Transaction)
   @Property({ref: Transaction, required: false})
-  transaction: Ref<Transaction>;
+  transaction: string; // todo: Ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -27,7 +28,7 @@ export class Burn {
 
   @Field((type) => Pair)
   @Property({ref: Pair, required: false})
-  pair: Ref<Pair>;
+  pair: string; // todo: Ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -58,6 +59,35 @@ export class Burn {
   needsComplete: Boolean;
 
   // todo: to, sender, feeTo - Bytes
+  @Field((type) => String)
+  @Property({ default: "", required: false })
+  to: string;
+
+  @Field((type) => String)
+  @Property({ default: "", required: false })
+  sender: string;
+
+  @Field((type) => String)
+  @Property({ default: "", required: false })
+  feeTo: string;
+
+  constructor (id: string) {
+    this._id = new ObjectId();
+    this.id = id;
+    this.transaction = "";
+    this.timestamp = ZERO_BD;
+    this.pair = "";
+    this.liquidity = ZERO_BD;
+    this.amount0 = ZERO_BD;
+    this.amount1 = ZERO_BD;
+    this.logIndex = ZERO_BD;
+    this.amountUSD = ZERO_BD;
+    this.feeLiquidity = ZERO_BD;
+    this.needsComplete = false; // todo: init value?
+    this.sender = "";
+    this.to = "";
+    this.feeTo = "";
+  }
 }
 
 export const BurnModel = getModelForClass(Burn);

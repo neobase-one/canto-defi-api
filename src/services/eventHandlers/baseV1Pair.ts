@@ -3,12 +3,16 @@ import Container from "typedi";
 import { Log } from "web3-core";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../config";
+import { Burn, BurnModel } from "../../models/burn";
+import { LiquidityPosition } from "../../models/liquidityPosition";
+import { Mint, MintModel } from "../../models/mint";
 import { Pair, PairModel } from "../../models/pair";
 import {
   StableswapFactory,
   StableswapFactoryModel,
 } from "../../models/stableswapFactory";
 import { TokenModel } from "../../models/token";
+import { Transaction } from "../../models/transaction";
 import {
   BurnEventInput,
   MintEventInput,
@@ -16,11 +20,15 @@ import {
   SyncEventInput,
   TransferEventInput,
 } from "../../types/event/baseV1Pair";
-import { ZERO_BD } from "../../utils/constants";
+import { MintEventSignature } from "../../utils/abiParser/baseV1Pair";
+import { ADDRESS_ZERO, BI_18, ZERO_BD } from "../../utils/constants";
 import { BundleService } from "./models/bundle";
+import { BurnService } from "./models/burn";
+import { MintService } from "./models/mint";
 import { PairService } from "./models/pair";
 import { StableswapFactoryService } from "./models/stableswapFactory";
 import { TokenService } from "./models/token";
+import { TransactionService } from "./models/transaction";
 
 export async function mintEventHandler(
   event: EventData,
@@ -40,7 +48,193 @@ export async function swapEventHandler(
 export async function transferEventHandler(
   event: EventData,
   input: TransferEventInput
-) {}
+) {
+  const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+
+  // ignore inital transfers for first adds
+  if (input.to == ADDRESS_ZERO && input.amount.equals(new Decimal(1000))) {
+    return;
+  }
+
+  // service
+  const factoryService = Container.get(StableswapFactoryService);
+  const pairService = Container.get(PairService);
+  const tokenService = Container.get(TokenService);
+  const bundleService = Container.get(BundleService);
+  const transactionService = Container.get(TransactionService);
+  const burnService = Container.get(BurnService);
+  const mintService = Container.get(MintService);
+
+  // load
+  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
+
+  // user stats
+  const from = input.from;
+  const to = input.to;
+  // todo: createUser
+  // createUser(input.from);
+  // createUser(input.to);
+
+  // get pair and load
+  let pair: any = await pairService.getByAddress(event.address);
+  let pairContract = PairContract.bind(event.address); //todo:what does PairContract do
+
+  // liquidity token amount being transferred
+  let value = convertTokenToDecimal(input.amount, BI_18); //todo: convertTokenToDecimal
+
+  // load transaction
+  const txHash = event.transactionHash;
+  let transaction: any = await transactionService.getByHash(txHash);
+  if (transaction === null) {
+    transaction = new Transaction(event.transactionHash);
+    transaction.blockNumber = new Decimal(event.blockNumber);
+    transaction.timestamp = ZERO_BD; // todo: can this be removed?
+  }
+
+  // mints
+  let mints = transaction.mints;
+  if (from == ADDRESS_ZERO) {
+    // update total supply
+    pair.totalSupply = pair.totalSupply.plus(value);
+    await pair.save();
+
+    // create new mint if no mints so far OR if last one completed
+    if (mints.length === 0 || (await isCompleteMint(mints[mints.length - 1]))) {
+      const mintId = txHash
+        .concat("-")
+        .concat(new Decimal(mints.length).toString());
+      let mint = new Mint(mintId);
+      mint.transaction = transaction.id;
+      mint.pair = pair.id;
+      mint.to = to;
+      mint.liquidity = value;
+      mint.timestamp = ZERO_BD; // todo: can this be removed?
+
+      // await mint.save(); // todo: model
+      await new MintModel(mint).save();
+
+
+      // update mints in transaction
+      transaction.mints = mints.concat([mint.id]);
+
+      // save entities
+      await transaction.save();
+      await factory.save();
+    }
+  }
+
+  // case: direct send first on ETH withdrawls
+  if (to == pair.id) {
+    let burns = transaction.burns;
+
+    const burnId = txHash
+      .concat("-")
+      .concat(new Decimal(burns.length).toString());
+    let burn = new Burn(burnId);
+    burn.transaction = transaction.id;
+    burn.pair = pair.id;
+    burn.liquidity = value;
+    burn.timestamp = ZERO_BD; // todo: removed?
+    burn.to = to;
+    burn.sender = from;
+    burn.needsComplete = true;
+
+    // await burn.save(); // todo: model
+    await new BurnModel(burn).save();
+
+    transaction.burns = burns.concat([burn.id]);
+    await transaction.save();
+  }
+
+  // burn
+  if (to == ADDRESS_ZERO && from == pair.id) {
+    // update pair total supply
+    pair.totalSupply = pair.totalSupply.minus(value);
+    await pair.save();
+
+    // new instance of logical burn
+    let burns = transaction.burns;
+    let burn: Burn;
+    if (burns.length > 0) {
+      const currentBurn = await burnService.getById(burns[burns.length - 1]);
+      if (currentBurn?.needsComplete) {
+        burn = currentBurn as Burn;
+      } else {
+        const burnId = txHash
+          .concat("-")
+          .concat(new Decimal(burns.length).toString());
+        burn = new Burn(burnId);
+        burn.transaction = transaction.id;
+        burn.pair = pair.id;
+        burn.liquidity = value;
+        burn.timestamp = ZERO_BD; // todo: remove?
+        burn.needsComplete = false;
+      }
+    } else {
+      const burnId = txHash
+        .concat("-")
+        .concat(new Decimal(burns.length).toString());
+      burn = new Burn(burnId);
+      burn.transaction = transaction.id;
+      burn.pair = pair.id;
+      burn.liquidity = value;
+      burn.timestamp = ZERO_BD; // todo: remove?
+      burn.needsComplete = false;
+    }
+
+    // if this logical burn included a fee mint, account for this
+    if (
+      mints.length !== 0 &&
+      !(await isCompleteMint(mints[mints.length - 1]))
+    ) {
+      let mint: any = await mintService.getById(mints[mints.length - 1]);
+      burn.feeTo = mint.to;
+      burn.feeLiquidity = mint.liquidity;
+
+      // remove logical mint
+      await mintService.deleteById(mints[mints.length - 1]);
+
+      mints.pop();
+      transaction.mints = mints;
+      await transaction.save();
+    }
+    await new BurnModel(burn).save();
+
+    if (burn.needsComplete) {
+      burns[burns.length - 1] = burn.id;
+    } else {
+      // add new one
+      burns.push(burn.id);
+    }
+    transaction.burns = burns;
+    await transaction.save();
+  }
+
+  if (from != ADDRESS_ZERO && from != pair.id) {
+    let fromUserLiquidityPosition = createLiquidutyPosition(
+      event.address,
+      from
+    ); // todo
+    fromUserLiquidityPosition.liquidityTokenBalance = convertTokenToDecimal(
+      pairContract.balanceOf(from),
+      BI_18
+    ); // todo
+    await fromUserLiquidityPosition.save();
+    createLiquiditySnapshot(fromUserLiquidityPosition, event);
+  }
+
+  if (to != ADDRESS_ZERO && to != pair.id) {
+    let toUserLiquidityPosition = createLiquidutyPosition(event.address, to); // todo
+    toUserLiquidityPosition.liquidityTokenBalance = convertTokenToDecimal(
+      pairContract.balanceOf(to),
+      BI_18
+    ); // todo
+    await toUserLiquidityPosition.save();
+    createLiquiditySnapshot(toUserLiquidityPosition, event);
+  }
+
+  await transaction.save();
+}
 
 export async function syncEventHandler(
   event: EventData,
@@ -54,13 +248,15 @@ export async function syncEventHandler(
 
   // service functions
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
-  const factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
-  const pair: any = await pairService.getByAddress(event.address);
-  const token0: any = await tokenService.getByAddress(pair.token0);
-  const token1: any = await tokenService.getByAddress(pair.token1);
+  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
+  let pair: any = await pairService.getByAddress(event.address);
+  let token0: any = await tokenService.getByAddress(pair.token0);
+  let token1: any = await tokenService.getByAddress(pair.token1);
 
   // reset factory liquiuty by subtracting only tracked liquidity
-  factory.totalLiquidityETH = factory.totalLiquidityETH.minus(pair.trackedReserveETH);
+  factory.totalLiquidityETH = factory.totalLiquidityETH.minus(
+    pair.trackedReserveETH
+  );
 
   // reset token total liquidity amount
   token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0);
@@ -84,7 +280,7 @@ export async function syncEventHandler(
   await pair.save();
 
   // update ETH price now that reserves could have changed
-  const bundle: any = await bundleService.get();
+  let bundle: any = await bundleService.get();
   bundle.ethPrice = ZERO_BD; // todo: getEthPriceInUSD
   await bundle.save();
 
@@ -112,7 +308,8 @@ export async function syncEventHandler(
   pair.reserveUSD = pair.reserveETH.times(bundle.ethPrice);
 
   // use tracked amounts globally
-  factory.totalLiquidityETH = factory.totalLiquidityETH.plus(trackedLiquidityETH);
+  factory.totalLiquidityETH =
+    factory.totalLiquidityETH.plus(trackedLiquidityETH);
   factory.totalLiquidityUSD = factory.totalLiquidityETH.times(bundle.ethPrice);
   // todo: since just multiplication can try to not use USD if all calc based on ETH
 
@@ -125,6 +322,11 @@ export async function syncEventHandler(
   await pair.save();
   await factory.save();
   await token0.save();
-  await token1.save()
+  await token1.save();
+}
 
+async function isCompleteMint(mintId: string): Promise<boolean> {
+  let mint: any = await MintModel.findOne({ id: mintId }).exec();
+  return (await mint.sender) != null;
+  // return Mint.load(mintId).sender !== null; // todo
 }
