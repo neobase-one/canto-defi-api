@@ -93,7 +93,7 @@ export class Pair {
 
   constructor(address: string) {
     this._id = new ObjectId();
-    this.id = "";
+    this.id = address;
     this.token0 = "";
     this.token1 = "";
     this.reserve0 = ZERO_BD;

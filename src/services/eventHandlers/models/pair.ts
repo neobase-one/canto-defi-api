@@ -7,7 +7,6 @@ export class PairService {
     let doc = await PairModel.findOne({id: address}).exec();
     if (doc === null) {
       let obj = new Pair(address);
-      console.log(obj);
       doc = new PairModel(obj);
     }
     return doc;
