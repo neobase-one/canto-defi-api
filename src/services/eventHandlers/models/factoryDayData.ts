@@ -7,7 +7,8 @@ export class FactoryDayDataService {
   async getOrCreate(id: string) {
     let doc = await StableswapDayDataModel.findOne({id: id}).exec();
     if (doc === null) {
-      let stableswapDayData = new StableswapDayData(id);
+      let stableswapDayData = new StableswapDayData();
+      stableswapDayData.justId(id);
       doc = new StableswapDayDataModel(stableswapDayData);
     }
     return doc;

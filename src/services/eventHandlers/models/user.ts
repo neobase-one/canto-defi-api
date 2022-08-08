@@ -10,7 +10,8 @@ export class UserService {
   async getOrCreate(id: string) {
     let doc = await UserModel.findOne({id: id}).exec();
     if (doc === null) {
-      let user = new User(id);
+      let user = new User();
+      user.justId(id);
       doc = new UserModel(user);
     }
     return doc;

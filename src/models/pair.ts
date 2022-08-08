@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { Token } from "./token";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_TOKEN, ZERO_BD } from "../utils/constants";
+import { ZERO_BD } from "../utils/constants";
 
 // mongo database object
 export class PairDb {

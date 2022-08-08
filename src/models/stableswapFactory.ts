@@ -52,7 +52,8 @@ export class StableswapFactoryDb {
   }
 
   toGenerated() {
-    return new StableswapFactory(this)
+    var s = new StableswapFactory()
+    return s.fromDb(this);
   }
 }
 
@@ -88,7 +89,19 @@ export class StableswapFactory {
 
   block: Decimal;
 
-  constructor (swap: StableswapFactoryDb) {
+  constructor() {
+    this._id = new ObjectId();
+    this.address = "";
+    this.pairCount = 0;
+    this.totalVolumeUSD = ZERO_BD;
+    this.totalVolumeETH = ZERO_BD;
+    this.untrackedVolumeUSD = ZERO_BD;
+    this.totalLiquidityUSD = ZERO_BD;
+    this.totalLiquidityETH = ZERO_BD;
+    this.txCount = ZERO_BD;
+  }
+
+  fromDb (swap: StableswapFactoryDb) {
     this._id = swap._id;
     this.address = swap.address;
     this.pairCount = swap.pairCount;
@@ -98,6 +111,10 @@ export class StableswapFactory {
     this.totalLiquidityUSD = swap.totalLiquidityUSD;
     this.totalLiquidityETH = swap.totalLiquidityETH;
     this.txCount = swap.txCount;
+  }
+
+  justId(address:string){
+    this.address = address;
   }
 }
 

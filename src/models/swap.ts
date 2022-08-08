@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_PAIR, EMPTY_TRANSACTION, ZERO_BD } from "../utils/constants";
+import { ZERO_BD } from "../utils/constants";
 import { Transaction } from "./transaction";
 
 // mongo database object

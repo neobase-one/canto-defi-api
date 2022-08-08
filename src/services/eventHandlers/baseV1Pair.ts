@@ -302,7 +302,8 @@ export async function swapEventHandler(
   // update transaction
   let transaction: any = await transactionService.getByHash(txHash);
   if (transaction === null) {
-    transaction = new Transaction(txHash);
+    transaction = new Transaction();
+    transaction.justId(txHash);
     transaction.blockNumber = new Decimal(event.blockNumber);
     transaction.timestamp = timestamp;
     transaction.mints = [];
@@ -315,7 +316,8 @@ export async function swapEventHandler(
   const swapId = txHash
     .concat("-")
     .concat(new Decimal(swaps.length).toString());
-  let swap = new Swap(swapId);
+  let swap = new Swap();
+  swap.justId(swapId);
 
   // update swap
   swap.transaction = transaction.id;
@@ -440,7 +442,8 @@ export async function transferEventHandler(
   const txHash = event.transactionHash;
   let transaction: any = await transactionService.getByHash(txHash);
   if (transaction === null) {
-    transaction = new Transaction(event.transactionHash);
+    transaction = new Transaction();
+    transaction.justId(event.transactionHash);
     transaction.blockNumber = new Decimal(event.blockNumber);
     transaction.timestamp = timestamp;
   }
@@ -457,7 +460,8 @@ export async function transferEventHandler(
       const mintId = txHash
         .concat("-")
         .concat(new Decimal(mints.length).toString());
-      let mint = new Mint(mintId);
+      let mint = new Mint();
+      mint.justId(mintId);
       mint.transaction = transaction.id;
       mint.pair = pair.id;
       mint.to = to;
@@ -483,7 +487,8 @@ export async function transferEventHandler(
     const burnId = txHash
       .concat("-")
       .concat(new Decimal(burns.length).toString());
-    let burn = new Burn(burnId);
+    let burn = new Burn();
+    burn.justId(burnId);
     burn.transaction = transaction.id;
     burn.pair = pair.id;
     burn.liquidity = value;
@@ -516,7 +521,8 @@ export async function transferEventHandler(
         const burnId = txHash
           .concat("-")
           .concat(new Decimal(burns.length).toString());
-        burn = new Burn(burnId);
+        burn = new Burn();
+        burn.justId(burnId);
         burn.transaction = transaction.id;
         burn.pair = pair.id;
         burn.liquidity = value;
@@ -527,7 +533,8 @@ export async function transferEventHandler(
       const burnId = txHash
         .concat("-")
         .concat(new Decimal(burns.length).toString());
-      burn = new Burn(burnId);
+      burn = new Burn();
+      burn.justId(burnId);
       burn.transaction = transaction.id;
       burn.pair = pair.id;
       burn.liquidity = value;

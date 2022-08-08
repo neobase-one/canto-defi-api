@@ -9,7 +9,8 @@ export class TokenDayDataService {
   async getOrCreate(id: string) {
     let doc = await TokenDayDataModel.findOne({id: id}).exec();
     if (doc === null) {
-      let tokenDayData = new TokenDayData(id);
+      let tokenDayData = new TokenDayData();
+      tokenDayData.justId(id);
       doc = new TokenDayDataModel(tokenDayData);
     }
     return doc;

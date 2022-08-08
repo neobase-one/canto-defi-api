@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { Token } from "./token";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_TOKEN, ZERO_BD } from "../utils/constants";
+import { ZERO_BD } from "../utils/constants";
 
 // mongo database object
 export class PairDayDataDb {
@@ -66,7 +66,8 @@ export class PairDayDataDb {
   }
 
   toGenerated() {
-    return new PairDayData(this)
+    var pair = new PairDayData()
+    return pair.fromDb(this);
   }
 }
 
@@ -112,7 +113,23 @@ export class PairDayData {
   @Field((type) => DecimalScalar)
   dailyTxns: Decimal;
 
-  constructor (pair: PairDayDataDb) {
+  constructor () {
+    this._id = new ObjectId();
+    this.id = "";
+    this.date = new Date(0);
+    this.token0 = new Token();
+    this.token1 = new Token();
+    this.reserve0 = ZERO_BD;
+    this.reserve1 = ZERO_BD;
+    this.totalSupply = ZERO_BD;
+    this.reserveUSD = ZERO_BD;
+    this.dailyVolumeToken0 = ZERO_BD;
+    this.dailyVolumeToken1 = ZERO_BD;
+    this.dailyVolumeUSD = ZERO_BD;
+    this.dailyTxns = ZERO_BD;
+  }
+
+  fromDb (pair: PairDayDataDb) {
     this._id = pair._id;
     this.id = pair.id;
     this.date = pair.date;
@@ -130,6 +147,10 @@ export class PairDayData {
     this.dailyVolumeToken1 = pair.dailyVolumeToken1;
     this.dailyVolumeUSD = pair.dailyVolumeUSD;
     this.dailyTxns = pair.dailyTxns;
+  }
+
+  justId(id: string) {
+    this.id = id;
   }
 }
 

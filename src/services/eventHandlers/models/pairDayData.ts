@@ -8,7 +8,8 @@ export class PairDayDataService {
   async getOrCreate(id: string) {
     let doc = await PairDayDataModel.findOne({id: id}).exec();
     if (doc === null) {
-      let pairDayData = new PairDayData(id);
+      let pairDayData = new PairDayData();
+      pairDayData.justId(id);
       doc = new PairDayDataModel(pairDayData);
     }
     return doc;

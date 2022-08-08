@@ -7,7 +7,8 @@ export class MintService {
   async getOrCreate(id: string) {
     let doc = await MintModel.findOne({id: id}).exec();
     if (doc === null) {
-      let mint = new Mint(id);
+      let mint = new Mint();
+      mint.justId(id);
       doc = new MintModel(mint);
     }
     return doc;

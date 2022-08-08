@@ -7,7 +7,7 @@ import { Transaction } from "./transaction";
 import { Ref } from "../types/ref";
 import { Pair } from "./pair";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_PAIR, EMPTY_TRANSACTION, ZERO_BD } from "../utils/constants";
+import { ZERO_BD } from "../utils/constants";
 
 // mongo database object
 export class MintDb {

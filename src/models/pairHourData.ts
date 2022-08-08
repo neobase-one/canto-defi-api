@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_PAIR, ZERO_BD } from "../utils/constants";
+import { ZERO_BD } from "../utils/constants";
 
 // mongo database object
 export class PairHourDataDb {
@@ -62,7 +62,8 @@ export class PairHourDataDb {
   }
 
   toGenerated() {
-    return new PairHourData(this)
+    var pair = new PairHourData()
+    return pair.fromDb(this);
   }
 }
 
@@ -105,22 +106,41 @@ export class PairHourData {
   @Field((type) => DecimalScalar)
   hourlyTxns: Decimal;
 
-  constructor (pairDb: PairHourDataDb) {
-      this._id = pairDb._id;
-      this.id = pairDb.id;
-      this.hourStartUnix = pairDb.hourStartUnix;
-      var pair = new Pair();
-      pair.justId(pairDb.pair);
-      this.pair = pair;
-      //this.pair = new Pair();
-      this.reserve0 = pairDb.reserve0;
-      this.reserve1 = pairDb.reserve1;
-      this.totalSupply = pairDb.totalSupply;
-      this.reserveUSD = pairDb.reserveUSD;
-      this.hourlyVolumeToken0 = pairDb.hourlyVolumeToken0;
-      this.hourlyVolumeToken1 = pairDb.hourlyVolumeToken1;
-      this.hourlyVolumeUSD = pairDb.hourlyVolumeUSD;
-      this.hourlyTxns = pairDb.hourlyTxns;
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.hourStartUnix = ZERO_BD;
+    this.pair = new Pair();
+    this.reserve0 = ZERO_BD;
+    this.reserve1 = ZERO_BD;
+    this.totalSupply = ZERO_BD;
+    this.reserveUSD = ZERO_BD;
+    this.hourlyVolumeToken0 = ZERO_BD;
+    this.hourlyVolumeToken1 = ZERO_BD;
+    this.hourlyVolumeUSD = ZERO_BD;
+    this.hourlyTxns = ZERO_BD;
+  }
+
+  fromDb (pairDb: PairHourDataDb) {
+    this._id = pairDb._id;
+    this.id = pairDb.id;
+    this.hourStartUnix = pairDb.hourStartUnix;
+    var pair = new Pair();
+    pair.justId(pairDb.pair);
+    this.pair = pair;
+    //this.pair = new Pair();
+    this.reserve0 = pairDb.reserve0;
+    this.reserve1 = pairDb.reserve1;
+    this.totalSupply = pairDb.totalSupply;
+    this.reserveUSD = pairDb.reserveUSD;
+    this.hourlyVolumeToken0 = pairDb.hourlyVolumeToken0;
+    this.hourlyVolumeToken1 = pairDb.hourlyVolumeToken1;
+    this.hourlyVolumeUSD = pairDb.hourlyVolumeUSD;
+    this.hourlyTxns = pairDb.hourlyTxns;
+  }
+
+  justId(id: string) {
+    this.id = id;
   }
 }
 

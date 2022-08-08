@@ -8,7 +8,7 @@ import { User } from "./user";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_PAIR, EMPTY_POSITION, EMPTY_USER, ZERO_BD } from "../utils/constants";
+import { ZERO_BD } from "../utils/constants";
 
 // mongo database object
 export class LiquidityPositionSnapshotDb {

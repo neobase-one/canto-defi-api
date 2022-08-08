@@ -56,7 +56,8 @@ export class StableswapDayDataDb {
   }
 
   toGenerated() {
-    return new StableswapDayData(this)
+    var s = new StableswapDayData()
+    return s.fromDb(this);
   }
 }
 
@@ -96,7 +97,21 @@ export class StableswapDayData {
   @Field((type) => DecimalScalar)
   txCount: Decimal;
 
-  constructor (swap: StableswapDayDataDb) {
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.date = 0;
+    this.dailyVolumeETH = ZERO_BD;
+    this.dailyVolumeUSD = ZERO_BD;
+    this.dailyVolumeUntracked = ZERO_BD;
+    this.totalVolumeETH = ZERO_BD;
+    this.totalLiquidityETH = ZERO_BD;
+    this.totalVolumeUSD = ZERO_BD;
+    this.totalLiquidityUSD = ZERO_BD;
+    this.txCount = ZERO_BD;
+  }
+
+  fromDb (swap: StableswapDayDataDb) {
     this._id = swap._id;
     this.id = swap.id;
     this.date = swap.date;
@@ -108,6 +123,10 @@ export class StableswapDayData {
     this.totalVolumeUSD = swap.totalVolumeUSD;
     this.totalLiquidityUSD = swap.totalLiquidityUSD;
     this.txCount = swap.txCount;
+  }
+
+  justId(id:string){
+    this.id = id;
   }
 }
 

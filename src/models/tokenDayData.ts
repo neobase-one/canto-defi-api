@@ -5,7 +5,7 @@ import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { Token } from "./token";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_TOKEN, ZERO_BD } from "../utils/constants";
+import { ZERO_BD } from "../utils/constants";
 
 // mongo database object
 export class TokenDayDataDb {
@@ -122,8 +122,8 @@ export class TokenDayData {
     this.priceUSD = tkn.priceUSD;
   }
 
-  justToken(tkn: Token) {
-    this.token = tkn;
+  justId(id: string) {
+    this.id = id;
   }
 
   constructor() {

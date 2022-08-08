@@ -24,7 +24,8 @@ export class BundleDb {
   }
 
   toGenerated() {
-    return new Bundle(this)
+    var b = new Bundle()
+    return b.fromDb(this);
   }
 }
 
@@ -41,10 +42,20 @@ export class Bundle {
   @Field((type) => DecimalScalar)
   ethPrice: Decimal;
 
-  constructor(bundle: BundleDb) {
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.ethPrice = ZERO_BD;
+  }
+
+  fromDb(bundle: BundleDb) {
     this._id = bundle._id;
     this.id = bundle.id;
     this.ethPrice = bundle.ethPrice;
+  }
+
+  justId(id:string) {
+    this.id=id;
   }
 }
 

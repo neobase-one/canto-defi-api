@@ -48,7 +48,7 @@ export class TransactionDb {
   }
 }
 
-export const BlockModel = getModelForClass(TransactionDb);
+export const TransactionModel = getModelForClass(TransactionDb);
 
 // graphql return object (type Block as shown in schema.ts)
 // decorator docs: https://typegraphql.com/docs/types-and-fields.html 

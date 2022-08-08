@@ -7,7 +7,8 @@ export class BurnService {
   async getOrCreate(id: string) {
     let doc = await BurnModel.findOne({id: id}).exec();
     if (doc === null) {
-      let burn = new Burn(id);
+      let burn = new Burn();
+      burn.justId(id);
       doc = new BurnModel(burn);
     }
     return doc;
