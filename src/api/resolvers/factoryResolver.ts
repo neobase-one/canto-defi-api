@@ -8,6 +8,6 @@ export class StableswapFactoryResovler {
   async stableswapFactory(@Arg("input") input: StableswapFactoryInput) {
     const val = await StableswapFactoryModel.find({address: input.id}).exec();
     console.log(val);
-    return val;
+    return val[0];
   }
 }

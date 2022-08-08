@@ -4,7 +4,7 @@ import { Field, ObjectType, ID, Int } from "type-graphql";
 import Decimal from "decimal.js";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 
-// mongo database objectIdScalar
+// mongo database object
 export class Block {
   readonly _id: ObjectId;
 
@@ -27,7 +27,7 @@ export const BlockModel = getModelForClass(Block);
 // graphql return object (type Block as shown in schema.ts)
 // decorator docs: https://typegraphql.com/docs/types-and-fields.html 
 @ObjectType()
-export class Block {
+export class BlockType {
   @Field((type) => ObjectIdScalar)
   _id: ObjectId;
 
