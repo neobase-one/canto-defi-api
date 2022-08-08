@@ -8,66 +8,51 @@ import {Ref} from '../types/ref';
 import { Pair } from "./pair";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { ZERO_BD } from "../utils/constants";
-@ObjectType()
-export class Burn {
-  @Field((type) => ObjectIdScalar)
-  @Property({ default: "", required: false })
+
+// mongo database object
+export class BurnDb {
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  @Field((type) => Transaction)
   @Property({ref: Transaction, required: false})
   transaction: string; // todo: Ref
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
 
-  @Field((type) => Pair)
-  @Property({ref: Pair, required: false})
+  @Property({ default: "", required: false})
   pair: string; // todo: Ref
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   liquidity: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   amount0: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   amount1: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   logIndex: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   amountUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   feeLiquidity: Decimal;
 
-  @Field((type) => Boolean)
   @Property({ default: false, required: false })
   needsComplete: Boolean;
 
   // todo: to, sender, feeTo - Bytes
-  @Field((type) => String)
   @Property({ default: "", required: false })
   to: string;
 
-  @Field((type) => String)
   @Property({ default: "", required: false })
   sender: string;
 
-  @Field((type) => String)
   @Property({ default: "", required: false })
   feeTo: string;
 
@@ -88,6 +73,79 @@ export class Burn {
     this.to = "";
     this.feeTo = "";
   }
+
+  toGenerated() {
+    return new Burn(this)
+  }
 }
 
-export const BurnModel = getModelForClass(Burn);
+// graphql return object (type Block as shown in schema.ts)
+// decorator docs: https://typegraphql.com/docs/types-and-fields.html 
+@ObjectType()
+export class Burn {
+  @Field((type) => ObjectIdScalar)
+  _id: ObjectId;
+
+  @Field((type) => ID)
+  id: string;
+
+  @Field((type) => Transaction)
+  transaction: string; // todo: Ref
+
+  @Field((type) => DecimalScalar)
+  timestamp: Decimal;
+
+  @Field((type) => Pair)
+  pair: Pair; // todo: Ref
+
+  @Field((type) => DecimalScalar)
+  liquidity: Decimal;
+
+  @Field((type) => DecimalScalar)
+  amount0: Decimal;
+
+  @Field((type) => DecimalScalar)
+  amount1: Decimal;
+
+  @Field((type) => DecimalScalar)
+  logIndex: Decimal;
+
+  @Field((type) => DecimalScalar)
+  amountUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  feeLiquidity: Decimal;
+
+  @Field((type) => Boolean)
+  needsComplete: Boolean;
+
+  // todo: to, sender, feeTo - Bytes
+  @Field((type) => String)
+  to: string;
+
+  @Field((type) => String)
+  sender: string;
+
+  @Field((type) => String)
+  feeTo: string;
+
+  constructor(burn: BurnDb) {
+    this._id = burn._id;
+    this.id = burn.id;
+    this.transaction = burn.transaction;
+    this.timestamp = burn.timestamp;
+    this.pair = new Pair(burn.pair);
+    this.liquidity = burn.liquidity;
+    this.amount0 = burn.amount0;
+    this.amount1 = burn.amount1;
+    this.logIndex = burn.logIndex;
+    this.amountUSD = burn.amountUSD;
+    this.feeLiquidity = burn.feeLiquidity;
+    this.needsComplete = burn.needsComplete; // todo: init value?
+    this.sender = burn.sender;
+    this.to = burn.to;
+    this.feeTo = burn.feeTo;
+  }
+}
+
+export const BurnModel = getModelForClass(BurnDb);

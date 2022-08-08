@@ -29,9 +29,13 @@ export class LiquidityPositionDb {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.user = EMPTY_USER;
-    this.pair = EMPTY_PAIR;
+    this.user = "";
+    this.pair = "";
     this.liquidityTokenBalance = ZERO_BD;
+  }
+
+  toGenerated() {
+    return new LiquidityPosition(this)
   }
 }
 
@@ -55,15 +59,11 @@ export class LiquidityPosition {
   @Field((type) => DecimalScalar)
   liquidityTokenBalance: Decimal;
 
-  toGenerated(position: LiquidityPositionDb) {
+  constructor(position: LiquidityPositionDb) {
     this._id = position._id
     this.id = position.id;
     this.user = new User(position.user);
     this.pair = new Position(position.pair); // todo:
     this.liquidityTokenBalance = position.liquidityTokenBalance;
-  }
-
-  constructor (id: string) {
-    this.id = id
   }
 }
