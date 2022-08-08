@@ -94,7 +94,7 @@ export class PairDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new Pair(this)
   }
 }
 

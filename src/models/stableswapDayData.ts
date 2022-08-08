@@ -56,7 +56,7 @@ export class StableswapDayDataDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new StableswapDayData(this)
   }
 }
 

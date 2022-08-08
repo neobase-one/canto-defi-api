@@ -24,7 +24,7 @@ export class BundleDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new Bundle(this)
   }
 }
 

@@ -76,7 +76,7 @@ export class SwapDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new Swap(this)
   }
 }
 

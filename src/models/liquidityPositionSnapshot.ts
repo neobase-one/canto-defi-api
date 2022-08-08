@@ -72,7 +72,7 @@ export class LiquidityPositionSnapshotDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new LiquidityPositionSnapshot(this)
   }
 }
 

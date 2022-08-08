@@ -35,7 +35,7 @@ export class LiquidityPositionDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new LiquidityPosition(this)
   }
 }
 

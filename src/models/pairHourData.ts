@@ -62,7 +62,7 @@ export class PairHourDataDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new PairHourData(this)
   }
 }
 

@@ -75,7 +75,7 @@ export class BurnDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new Burn(this)
   }
 }
 

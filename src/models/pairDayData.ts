@@ -66,7 +66,7 @@ export class PairDayDataDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new PairDayData(this)
   }
 }
 

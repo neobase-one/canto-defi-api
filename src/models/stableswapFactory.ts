@@ -52,7 +52,7 @@ export class StableswapFactoryDb {
   }
 
   toGenerated() {
-    return new Block(this)
+    return new StableswapFactory(this)
   }
 }
 
