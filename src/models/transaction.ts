@@ -50,7 +50,7 @@ export const BlockModel = getModelForClass(TransactionDb);
 @ObjectType()
 export class Transaction {
   @Field((type) => ObjectIdScalar)
-  readonly _id: ObjectId;
+  _id: ObjectId;
 
   @Field((type) => ID)
   id: string;
@@ -62,10 +62,10 @@ export class Transaction {
   blockNumber: Decimal;
 
   @Field((type) => [Mint])
-  mints: string[]; // todo: how to return Mint object
+  mints: Mint[]; // todo: how to return Mint object
 
   @Field((type) => [Burn])
-  burns: string[];
+  burns: Burn[];
 
   @Field((type) => [Swap])
   swaps: string[];
