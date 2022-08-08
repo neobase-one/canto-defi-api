@@ -11,8 +11,11 @@ export class StableswapFactoryInput {
 
 @InputType()
 export class TokenDayDatasInput {
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   tokenAddress: string
+
+  @Field({ nullable: true })
+  skip: number
 
   @Field({ nullable: true })
   orderBy: string
