@@ -1,11 +1,10 @@
 import { Arg, Query, Resolver } from "type-graphql";
-import { TokenDayData } from "../../models/tokenDayData";
-import { TokenDayDatasInput } from "./inputs/queryInputs";
+import { UniswapDayDatasInput } from "./inputs/queryInputs";
 
 @Resolver()
-export class TokenDayDatasResolver {
-  @Query(returns => [TokenDayData])
-  async tokenDayDatas(@Arg("input") input: TokenDayDatasInput) {
+export class UniswapDayDatasResolver {
+  @Query(returns => UniswapDayDatasResponse)
+  async tokenDayDatas(@Arg("input") input: UniswapDayDatasInput) {
     
     // insert service function here
     // return TokenDayDatasResponse
