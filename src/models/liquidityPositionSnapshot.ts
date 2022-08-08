@@ -70,6 +70,7 @@ export class LiquidityPositionSnapshotDb {
     this.liquidityTokenTotalSupply = ZERO_BD;
     this.liquidityTokenBalance = ZERO_BD;
   }
+
 }
 
 // graphql return object (type Block as shown in schema.ts)
@@ -82,7 +83,7 @@ export class LiquidityPositionSnapshot {
   id: string;
 
   @Field((type) => LiquidityPosition)
-  liquidityPosition?: Ref<LiquidityPosition>; // todo ref
+  liquidityPosition: LiquidityPosition; // todo ref
 
   @Field((type) => DecimalScalar)
   timestamp: Decimal;
@@ -91,10 +92,10 @@ export class LiquidityPositionSnapshot {
   blockNumber: Decimal;
 
   @Field((type) => User)
-  user?: Ref<User>; // todo ref
+  user: User; // todo ref
 
   @Field((type) => Pair)
-  pair?: Ref<Pair>; // todo ref
+  pair: Pair; // todo ref
 
   @Field((type) => DecimalScalar)
   token0PriceUSD: Decimal;
@@ -117,7 +118,7 @@ export class LiquidityPositionSnapshot {
   @Field((type) => DecimalScalar)
   liquidityTokenBalance: Decimal;
 
-  toGenerated(position: LiquidityPositionSnapshot) {
+  constructor(position: LiquidityPositionSnapshot) {
     this._id = position._id;
     this.id = position.id;
     this.liquidityPosition = new Position(position.pair);

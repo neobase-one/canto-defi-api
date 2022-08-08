@@ -20,6 +20,10 @@ export class BlockDb {
     this.id = id;
     this.number = 0;
   }
+
+  toGenerated() {
+    return new Block(this)
+  }
 }
 
 export const BlockModel = getModelForClass(BlockDb);
@@ -40,7 +44,7 @@ export class Block {
   // function to convert database object class into the return object
   // as defined in graphql schema
   // create blockType from block
-  toGenerated(block: Block) {
+  constructor(block: BlockDb) {
     this._id = block._id;
     this.id = block.id;
     this.number = block.number;
