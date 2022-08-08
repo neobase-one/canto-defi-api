@@ -1,5 +1,4 @@
 import { Arg, Query, Resolver } from "type-graphql";
-import { TokenDayData, TokenDayDataModel } from "../../models/tokenDayData";
 import { UniswapDayData, UniswapDayDataModel } from "../../models/uniswapDayData";
 import { UniswapDayDatasInput } from "./inputs/queryInputs";
 
