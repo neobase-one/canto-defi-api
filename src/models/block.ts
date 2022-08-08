@@ -5,7 +5,7 @@ import Decimal from "decimal.js";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 
 // mongo database object
-export class Block {
+export class BlockDb {
   readonly _id: ObjectId;
 
   // decorator docs: https://typegoose.github.io/typegoose/docs/api/decorators/prop
@@ -22,12 +22,12 @@ export class Block {
   }
 }
 
-export const BlockModel = getModelForClass(Block);
+export const BlockModel = getModelForClass(BlockDb);
 
 // graphql return object (type Block as shown in schema.ts)
 // decorator docs: https://typegraphql.com/docs/types-and-fields.html 
 @ObjectType()
-export class BlockType {
+export class Block {
   @Field((type) => ObjectIdScalar)
   _id: ObjectId;
 

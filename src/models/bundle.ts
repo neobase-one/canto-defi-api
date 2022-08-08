@@ -7,7 +7,7 @@ import { ZERO_BD } from "../utils/constants";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 
 // mongo database object
-export class Bundle {
+export class BundleDb {
   readonly _id: ObjectId;
 
   // decorator docs: https://typegoose.github.io/typegoose/docs/api/decorators/prop
@@ -37,11 +37,11 @@ export class Bundle {
   @Field((type) => DecimalScalar)
   ethPrice: Decimal;
 
-  constructor (id: string) {
-    this._id = new ObjectId();
-    this.id = id;
-    this.ethPrice = ZERO_BD;
+  toGenerated(bundle: BundleDb) {
+    this._id = bundle._id;
+    this.id = bundle.id;
+    this.ethPrice = bundle.ethPrice;
   }
 }
 
-export const BundleModel = getModelForClass(Bundle);
+export const BundleModel = getModelForClass(BundleDb);
