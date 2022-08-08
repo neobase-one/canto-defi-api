@@ -8,6 +8,7 @@ import { User } from "./user";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
+import { ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class LiquidityPositionSnapshot {
@@ -21,7 +22,7 @@ export class LiquidityPositionSnapshot {
 
   @Field((type) => LiquidityPosition)
   @Property({ ref: LiquidityPosition, required: false })
-  liquidityPosition: Ref<LiquidityPosition>;
+  liquidityPosition: string; // todo ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -33,11 +34,11 @@ export class LiquidityPositionSnapshot {
 
   @Field((type) => User)
   @Property({ ref: User, required: false })
-  user: Ref<User>;
+  user: string; // todo ref
 
   @Field((type) => Pair)
   @Property({ ref: Pair, required: false })
-  pair: Ref<Pair>;
+  pair: string; // todo ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -66,6 +67,23 @@ export class LiquidityPositionSnapshot {
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   liquidityTokenBalance: Decimal;
+
+  constructor(id: string) {
+    this._id = new ObjectId();
+    this.id = id;
+    this.liquidityPosition = "";
+    this.timestamp = ZERO_BD;
+    this.blockNumber = ZERO_BD;
+    this.user = "";
+    this.pair = "";
+    this.token0PriceUSD = ZERO_BD;
+    this.token1PriceUSD = ZERO_BD;
+    this.reserve0 = ZERO_BD;
+    this.reserve1 = ZERO_BD;
+    this.reserveUSD = ZERO_BD;
+    this.liquidityTokenTotalSupply = ZERO_BD;
+    this.liquidityTokenBalance = ZERO_BD;
+  }
 }
 
 export const LiquidityPositionSnapshotModel = getModelForClass(

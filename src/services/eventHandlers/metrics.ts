@@ -21,7 +21,7 @@ import { TokenService } from "./models/token";
 import { TokenDayDataService } from "./models/tokenDayData";
 import { TransactionService } from "./models/transaction";
 
-export async function updateStableswapDayData(event: EventData) {
+export async function updateFactoryDayData(event: EventData) {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
 
   // service

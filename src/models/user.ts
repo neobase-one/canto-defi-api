@@ -18,11 +18,18 @@ export class User {
 
   @Field((type) => LiquidityPosition)
   @Property({ ref: LiquidityPosition, required: false })
-  liquidityPosition: Ref<LiquidityPosition>;
+  liquidityPosition: string; //todo: ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   usdSwapped: Decimal; // todo: change to canto
+
+  constructor (id: string) {
+    this. _id= new ObjectId();
+    this.id = id;
+    this.liquidityPosition = "";
+    this.usdSwapped = new Decimal(0); // todo: change to canto
+  }
 }
 
 export const UserModel = getModelForClass(User);

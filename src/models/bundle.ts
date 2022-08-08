@@ -22,7 +22,7 @@ export class Bundle {
   constructor (id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.cantoPrice = ZERO_BD;
+    this.ethPrice = ZERO_BD;
   }
 }
 
