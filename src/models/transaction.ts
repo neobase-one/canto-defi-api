@@ -23,13 +23,13 @@ export class TransactionDb {
   @Property({ default: new Decimal("0"), required: false })
   blockNumber: Decimal;
 
-  @Property({ default: [], required: false })
-  mints: string[]; // todo: how to return Mint object
+  @Property({ type: String, default: [], required: false })
+  mints: string[];
 
-  @Property({ default: [], required: false })
+  @Property({ type: String, default: [], required: false })
   burns: string[];
 
-  @Property({ default: [], required: false })
+  @Property({ type: String, default: [], required: false })
   swaps: string[];
 
   constructor(id: string) {
