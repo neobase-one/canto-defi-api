@@ -57,7 +57,7 @@ export class TokenInput {
 
 @InputType()
 export class TokensInput {
-  @Field({ nullable: false })
+  @Field(type => [String], { nullable: false })
   id: [string]
 }
 
@@ -73,7 +73,7 @@ enum OrderDirection {
 }
 @InputType()
 export class PairsInput {
-  @Field({ nullable: false })
+  @Field(type => [String], { nullable: false })
   id: [string]
 
   @Field({ nullable: true })
@@ -130,7 +130,7 @@ export class TransactionInput {
 
 @InputType()
 export class TransactionsInput {
-  @Field({ nullable: false })
+  @Field(type => [String], { nullable: false })
   id: [string]
   
   @Field({ nullable: true })
