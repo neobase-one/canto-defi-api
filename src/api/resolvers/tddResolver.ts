@@ -1,18 +1,14 @@
 import { Arg, Query, Resolver } from "type-graphql";
+import { TokenDayData, TokenDayDataModel } from "../../models/tokenDayData";
 import { TokenDayDatasInput } from "./inputs/queryInputs";
 import { TokenDayDatasResponse } from "./responseTypes";
 
 @Resolver()
 export class TokenDayDatasResolver {
-  @Query(returns => TokenDayDatasResponse)
+  @Query(returns => [TokenDayData])
   async tokenDayDatas(@Arg("input") input: TokenDayDatasInput) {
-    
-    // insert service function here
-    // return TokenDayDatasResponse
-    
-    
-    // const val = await TokenDayDataModel.find({address: input.tokenAddr}).exec();
-    // console.log(val);
-    // return val;
+    const val = await TokenDayDataModel.find({id: input.tokenAddress}).exec();
+    console.log(val);
+    return val;
   }
 }

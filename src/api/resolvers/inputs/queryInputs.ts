@@ -35,11 +35,11 @@ export class UniswapDayDatasInput {
 
 @InputType()
 export class BlocksInput {
-  @Field(type => Date, { nullable: false })
-  timestampFrom: Date
+  @Field({ nullable: false })
+  timestampFrom: number
 
-  @Field(type => Date, { nullable: false })
-  timestampTo: Date
+  @Field({ nullable: false })
+  timestampTo: number
 }
 
 @InputType()
