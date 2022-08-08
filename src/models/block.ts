@@ -4,14 +4,17 @@ import { Field, ObjectType, ID, Int } from "type-graphql";
 import Decimal from "decimal.js";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 
+
 // mongo database object
 export class BlockDb {
+
   readonly _id: ObjectId;
 
-  // decorator docs: https://typegoose.github.io/typegoose/docs/api/decorators/prop
+  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
+  @Field((type) => Int)
   @Property({ name: "number", default: 0, required: false })
   number: number;
 
@@ -25,6 +28,7 @@ export class BlockDb {
     return new Block(this)
   }
 }
+
 
 export const BlockModel = getModelForClass(BlockDb);
 

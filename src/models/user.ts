@@ -6,20 +6,20 @@ import Decimal from "decimal.js";
 import { LiquidityPosition } from "./liquidityPosition";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 
-// mongo object
-// NOTE: append "Db" to the db object and leave "User" to graphql object
-// NOTE: the name you give @ObjectType will be name of return object in graphql
 @ObjectType()
-export class UserDb {
+export class User {
+  @Field((type) => ObjectIdScalar)
   readonly _id: ObjectId;
 
+  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  // todo: Ref<T> -> string AND Ref<T>[] -> string[]
-  @Property({ default: "", required: false })
-  liquidityPosition: string; //todo: ref
+  @Field((type) => LiquidityPosition)
+  @Property({ ref: () => LiquidityPosition, required: false })
+  liquidityPosition?: Ref<LiquidityPosition>; //todo: ref
 
+  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   usdSwapped: Decimal; // todo: change to canto
 
@@ -30,6 +30,7 @@ export class UserDb {
     this.usdSwapped = new Decimal(0); // todo: change to canto
   }
 }
+
 
 export const UserModel = getModelForClass(UserDb);
 
