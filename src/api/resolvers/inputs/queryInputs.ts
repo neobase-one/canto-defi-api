@@ -151,7 +151,7 @@ export class BundleInput {
 
 @InputType()
 export class BundlesInput {
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   id: string
 
   @Field({ nullable: true })

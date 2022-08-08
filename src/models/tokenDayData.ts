@@ -18,8 +18,8 @@ export class TokenDayData {
   id: string;
 
   @Field()
-  @Property({ default: new Date(), required: false })
-  date: Date;
+  @Property({ default: 0, required: false })
+  date: Decimal;
 
   @Field((type) => Token)
   @Property({ ref: Token, required: false })

@@ -1,4 +1,5 @@
 import { BlocksResolver } from "./blockResolver";
+import { BundlesResolver } from "./bundleResolver";
 import { StableswapFactoryResovler } from "./factoryResolver";
 import { HealthResolver } from "./healthResolver";
 import { TokenDayDatasResolver } from "./tddResolver";
@@ -9,5 +10,6 @@ export const resolvers: [Function, ...Function[]] = [
   StableswapFactoryResovler,
   TokenDayDatasResolver,
   BlocksResolver,
-  UniswapDayDatasResolver
+  UniswapDayDatasResolver,
+  BundlesResolver
 ];
