@@ -4,7 +4,6 @@ import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { Token } from "./token";
-import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { EMPTY_TOKEN, ZERO_BD } from "../utils/constants";
 
@@ -18,8 +17,8 @@ export class TokenDayDataDb {
   @Property({ default: new Date(), required: false })
   date: Date;
 
-  @Property({ ref: () => Token, required: false })
-  token?: Ref<Token>; // todo: Ref
+  @Property({ default: new Token(), required: false })
+  token: Token;
 
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeToken: Decimal;
@@ -72,12 +71,12 @@ export const TokenDayDataModel = getModelForClass(TokenDayDataDb);
 @ObjectType()
 export class TokenDayData {
   @Field((type) => ObjectIdScalar)
-  readonly _id: ObjectId;
+  _id: ObjectId;
 
   @Field((type) => ID)
   id: string;
 
-  @Field()
+  @Field((type) => Date)
   date: Date;
 
   @Field((type) => Token)
