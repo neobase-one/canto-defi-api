@@ -2,9 +2,11 @@
 
 import Decimal from "decimal.js";
 import Container from "typedi";
+import { web3 } from "../../loaders/web3";
 import { Pair } from "../../models/pair";
 import { StableswapFactory } from "../../models/stableswapFactory";
 import { Token } from "../../models/token";
+import { BaseV1FactoryABI } from "../../utils/abiParser/baseV1factory";
 import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from "../../utils/constants";
 import { BundleService } from "./models/bundle";
 import { PairService } from "./models/pair";
@@ -59,6 +61,8 @@ let MINIMUM_LIQUIDITY_THRESHOLD_ETH = new Decimal("2");
  * Search through graph to find derived Eth per token.
  **/
 export async function findEthPerToken(token: Token) {
+  const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+
   // services
   const pairService = Container.get(PairService);
   const tokenService = Container.get(TokenService);
@@ -68,12 +72,8 @@ export async function findEthPerToken(token: Token) {
   }
   // loop through whitelist and check if paired with any
   for (let i = 0; i < WHITELIST.length; ++i) {
-    // todo: declare factoryContract, getPair
-    
-    let factoryContract: StableswapFactory;
-    // let pairAddress = factoryContract.getPair(token.id, WHITELIST[i]);
-    let pair: any = await pairService.getPair(token.id, WHITELIST[i]);
-    let pairAddress = pair.id;
+    let factoryContract: any = new web3.eth.Contract(BaseV1FactoryABI, FACTORY_ADDRESS);
+    let pairAddress = factoryContract.getPair(token.id, WHITELIST[i]);
     if (pairAddress.toHexString() != ADDRESS_ZERO) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (

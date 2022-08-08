@@ -67,7 +67,8 @@ export async function createLiquiditySnapshot(
   const liquidityPositionService = Container.get(LiquidityPositionService);
 
   let bundle: any = await bundleService.get();
-  let pair: any = await pairService.getByAddress(position.pair);
+  // let pair: any = await pairService.getByAddress(position.pair);
+  let pair: any = await pairService.getByAddress("");
   let token0: any = await tokenService.getByAddress(pair.token0);
   let token1: any = await tokenService.getByAddress(pair.token0);
 
@@ -75,7 +76,7 @@ export async function createLiquiditySnapshot(
   let snapshot = new LiquidityPositionSnapshot(
     position.id.concat(timestamp.toString())
   );
-  snapshot.liquidityPosition = position.id;
+  // snapshot.liquidityPosition = position.id;
   snapshot.timestamp = timestamp;
   snapshot.blockNumber = new Decimal(event.blockNumber);
   snapshot.user = position.user;
@@ -87,7 +88,7 @@ export async function createLiquiditySnapshot(
   snapshot.reserveUSD = pair.reserveUSD;
   snapshot.liquidityTokenTotalSupply = pair.totalSupply;
   snapshot.liquidityTokenBalance = position.liquidityTokenBalance;
-  snapshot.liquidityPosition = position.id;
+  // snapshot.liquidityPosition = position.id;
 
   await new LiquidityPositionSnapshotModel(snapshot).save();
   await new LiquidityPositionModel(position).save();

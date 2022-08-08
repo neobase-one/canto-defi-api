@@ -15,6 +15,7 @@ import { TokenService } from "./models/token";
 import { PairService } from "./models/pair";
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, fetchTokenTotalSupply } from "../../utils/token";
 import { ZERO_BD } from "../../utils/constants";
+import { getTimestamp } from "../../utils/helper";
 
 export async function initFactoryCollection() {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
@@ -35,6 +36,8 @@ export async function pairCreatedEventHandler(
 ) {
   // console.log("PC", event.blockNumber)
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+  const timestamp: any = await getTimestamp(event.blockNumber);
+  console.log(timestamp)
 
   // services
   const factoryService = Container.get(StableswapFactoryService);
@@ -66,12 +69,8 @@ export async function pairCreatedEventHandler(
   // pair.token0 = input.token0;
   pair.token0 = token0.id;
   pair.token1 = token1.id;
-  pair.createdAtTimestamp = ZERO_BD; // todo
+  pair.createdAtTimestamp = timestamp;
   pair.createdAtBlockNumber = new Decimal(event.blockNumber);
-
-  // create tracked contract for pair
-  // todo
-
 
   // save updated objects
   await token0.save();

@@ -27,7 +27,7 @@ import {
   SyncEventInput,
   TransferEventInput,
 } from "../../types/event/baseV1Pair";
-import { MintEventSignature } from "../../utils/abiParser/baseV1Pair";
+import { BaseV1PairABI, MintEventSignature } from "../../utils/abiParser/baseV1Pair";
 import { ADDRESS_ZERO, BI_18, ONE_BD, ZERO_BD } from "../../utils/constants";
 import { convertTokenToDecimal, getTimestamp } from "../../utils/helper";
 import {
@@ -50,6 +50,7 @@ import { TokenService } from "./models/token";
 import { TransactionService } from "./models/transaction";
 import {
   findEthPerToken,
+  getEthPriceInUSD,
   getTrackedLiquidityUSD,
   getTrackedVolumeUSD,
 } from "./pricing";
@@ -430,7 +431,7 @@ export async function transferEventHandler(
 
   // get pair and load
   let pair: any = await pairService.getByAddress(event.address);
-  let pairContract = new Pair(event.address);
+  let pairContract: any = new web3.eth.Contract(BaseV1PairABI, event.address);
 
   // liquidity token amount being transferred
   let value = convertTokenToDecimal(input.amount, BI_18);
@@ -566,12 +567,11 @@ export async function transferEventHandler(
     let fromUserLiquidityPosition = await createLiquidityPosition(
       event.address,
       from
-    ); // todo
+    );
     fromUserLiquidityPosition.liquidityTokenBalance = convertTokenToDecimal(
-      // pairContract.balanceOf(from), // todo: create balanceOfFunction
-      ONE_BD, // todo: create balanceOfFunction
+      pairContract.balanceOf(from),
       BI_18
-    ); // todo
+    );
     await new LiquidityPositionModel(fromUserLiquidityPosition).save();
     createLiquiditySnapshot(fromUserLiquidityPosition, event);
   }
@@ -580,12 +580,11 @@ export async function transferEventHandler(
     let toUserLiquidityPosition = await createLiquidityPosition(
       event.address,
       to
-    ); // todo
+    );
     toUserLiquidityPosition.liquidityTokenBalance = convertTokenToDecimal(
-      // pairContract.balanceOf(to), // todo: create balanceOfFunction
-      ONE_BD, // todo: create balanceOfFunction
+      pairContract.balanceOf(to),
       BI_18
-    ); // todo
+    );
     await new LiquidityPositionModel(toUserLiquidityPosition).save();
     createLiquiditySnapshot(toUserLiquidityPosition, event);
   }
@@ -637,7 +636,7 @@ export async function syncEventHandler(
 
   // update ETH price now that reserves could have changed
   let bundle: any = await bundleService.get();
-  bundle.ethPrice = ZERO_BD; // todo: getEthPriceInUSD
+  bundle.ethPrice = getEthPriceInUSD();
   await bundle.save();
 
   // update derived ETH values
