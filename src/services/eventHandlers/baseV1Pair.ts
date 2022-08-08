@@ -5,21 +5,21 @@ import { Log } from "web3-core";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../config";
 import { web3 } from "../../loaders/web3";
-import { Burn, BurnModel } from "../../models/burn";
+import { Burn, BurnDb, BurnModel } from "../../models/burn";
 import {
   LiquidityPosition,
   LiquidityPositionModel,
 } from "../../models/liquidityPosition";
-import { Mint, MintModel } from "../../models/mint";
+import { Mint, MintDb, MintModel } from "../../models/mint";
 import { Pair, PairModel } from "../../models/pair";
 import { PairDayData } from "../../models/pairDayData";
 import {
   StableswapFactory,
   StableswapFactoryModel,
 } from "../../models/stableswapFactory";
-import { Swap, SwapModel } from "../../models/swap";
+import { Swap, SwapDb, SwapModel } from "../../models/swap";
 import { Token, TokenModel } from "../../models/token";
-import { Transaction } from "../../models/transaction";
+import { Transaction, TransactionDb } from "../../models/transaction";
 import {
   BurnEventInput,
   MintEventInput,
@@ -302,8 +302,7 @@ export async function swapEventHandler(
   // update transaction
   let transaction: any = await transactionService.getByHash(txHash);
   if (transaction === null) {
-    transaction = new Transaction();
-    transaction.justId(txHash);
+    transaction = new TransactionDb(txHash);
     transaction.blockNumber = new Decimal(event.blockNumber);
     transaction.timestamp = timestamp;
     transaction.mints = [];
@@ -316,8 +315,7 @@ export async function swapEventHandler(
   const swapId = txHash
     .concat("-")
     .concat(new Decimal(swaps.length).toString());
-  let swap = new Swap();
-  swap.justId(swapId);
+  let swap = new SwapDb(swapId);
 
   // update swap
   swap.transaction = transaction.id;
@@ -460,8 +458,7 @@ export async function transferEventHandler(
       const mintId = txHash
         .concat("-")
         .concat(new Decimal(mints.length).toString());
-      let mint = new Mint();
-      mint.justId(mintId);
+      let mint = new MintDb(mintId);
       mint.transaction = transaction.id;
       mint.pair = pair.id;
       mint.to = to;
@@ -512,17 +509,19 @@ export async function transferEventHandler(
 
     // new instance of logical burn
     let burns = transaction.burns;
-    let burn = new Burn();
+    let burn = new BurnDb("");
     if (burns.length > 0) {
       const currentBurn = await burnService.getById(burns[burns.length - 1]);
-      if (currentBurn?.needsComplete) {
-        burn = currentBurn as Burn;
+      if (currentBurn === null) {
+        return;
+      }
+      if (currentBurn.needsComplete) {
+        burn = currentBurn as BurnDb;
       } else {
         const burnId = txHash
           .concat("-")
           .concat(new Decimal(burns.length).toString());
-        burn = new Burn();
-        burn.justId(burnId);
+        burn = new BurnDb(burnId);
         burn.transaction = transaction.id;
         burn.pair = pair.id;
         burn.liquidity = value;
@@ -533,8 +532,7 @@ export async function transferEventHandler(
       const burnId = txHash
         .concat("-")
         .concat(new Decimal(burns.length).toString());
-      burn = new Burn();
-      burn.justId(burnId);
+      burn = new BurnDb(burnId);
       burn.transaction = transaction.id;
       burn.pair = pair.id;
       burn.liquidity = value;

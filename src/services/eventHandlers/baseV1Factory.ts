@@ -6,6 +6,7 @@ import { Config } from "../../config";
 import { Bundle, BundleModel } from "../../models/bundle";
 import {
   StableswapFactory,
+  StableswapFactoryDb,
   StableswapFactoryModel,
 } from "../../models/stableswapFactory";
 import { PairCreatedEventInput } from "../../types/event/baseV1Factory";
@@ -20,8 +21,7 @@ import { getTimestamp } from "../../utils/helper";
 export async function initFactoryCollection() {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
   // create new factory w address
-  let factory = new StableswapFactory();
-  factory.justId(FACTORY_ADDRESS);
+  let factory = new StableswapFactoryDb(FACTORY_ADDRESS);
   // console.log("INIT", factory);
   await new StableswapFactoryModel(factory).save();
 

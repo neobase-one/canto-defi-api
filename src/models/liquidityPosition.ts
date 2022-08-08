@@ -21,12 +21,12 @@ export class LiquidityPositionDb {
   id: string;
 
   @Field((type) => User)
-  @Property({ ref: () => User, required: false })
-  user?: Ref<User>; // todo ref
+  @Property({ default: "", required: false })
+  user: string;
 
   @Field((type) => Pair)
-  @Property({ ref: () => Pair, required: false })
-  pair?: Ref<Pair>; // todo ref
+  @Property({ default: "", required: false })
+  pair: string;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })

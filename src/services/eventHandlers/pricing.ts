@@ -2,7 +2,6 @@
 
 import Decimal from "decimal.js";
 import Container from "typedi";
-import { Config } from "../../config";
 import { web3 } from "../../loaders/web3";
 import { Pair } from "../../models/pair";
 import { StableswapFactory } from "../../models/stableswapFactory";

@@ -6,18 +6,15 @@ import Decimal from "decimal.js";
 import { LiquidityPosition } from "./liquidityPosition";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 
-@ObjectType()
-export class User {
-  @Field((type) => ObjectIdScalar)
+
+export class UserDb {
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  @Field((type) => LiquidityPosition)
-  @Property({ ref: () => LiquidityPosition, required: false })
-  liquidityPosition?: Ref<LiquidityPosition>; //todo: ref
+  @Property({ default: "", required: false })
+  liquidityPosition: string;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
