@@ -23,13 +23,13 @@ export class TransactionDb {
   @Property({ default: new Decimal("0"), required: false })
   blockNumber: Decimal;
 
-  @Property({ default: [], required: false})
+  @Property({ default: [], required: false })
   mints: string[]; // todo: how to return Mint object
 
-  @Property({ default: [], required: false})
+  @Property({ default: [], required: false })
   burns: string[];
 
-  @Property({ default: [], required: false})
+  @Property({ default: [], required: false })
   swaps: string[];
 
   constructor(id: string) {
@@ -74,28 +74,28 @@ export class Transaction {
   @Field((type) => [Swap])
   swaps: string[];
 
-
-
   constructor(txn: TransactionDb) {
     this._id = txn._id;
-    // todo: fill rest
+    this.id = txn.id;
+    this.timestamp = txn.timestamp;
+    this.blockNumber = txn.blockNumber;
+
     let mintTypes = [];
-    for(let mintId of txn.mints) {
+    for (let mintId of txn.mints) {
       mintTypes.push(new Mint(mintId));
     }
-    this.mints = mintTypes; // todo: same for swaps, burn
-  }
+    this.mints = mintTypes;
 
-  // function to convert database object class into the return object
-  // as defined in graphql schema
-  // create blockType from block
-  // toGenerated(transactiondb: TransactionDb) {
-  //   this._id = transactiondb._id;
-  //   this.id = transactiondb.id;
-  //   this.timestamp = transactiondb.timestamp;
-  //   this.blockNumber = transactiondb.blockNumber;
-  //   this.mints = transactiondb.mints;
-  //   this.burns = transactiondb.burns;
-  //   this.swaps = transactiondb.swaps;
-  // }
+    let burnTypes = [];
+    for (let burnId of txn.burns) {
+      burnTypes.push(new Burn(burnId));
+    }
+    this.burns = burnTypes;
+
+    let swapTypes = [];
+    for (let swapId of txn.swaps) {
+      swapTypes.push(new Swap(swapId));
+    }
+    this.burns = burnTypes;
+  }
 }
