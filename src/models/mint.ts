@@ -70,7 +70,8 @@ export class MintDb {
   }
 
   toGenerated() {
-    return new Mint(this);
+    var m = new Mint()
+    return m.fromDb(this);
   }
 }
 
@@ -123,12 +124,12 @@ export class Mint {
   @Field((type) => String)
   feeTo: string;
 
-  constructor(mdb: MintDb) {
-    this._id = mdb._id;
-    this.id = mdb.id;
-    this.transaction = mdb.transaction;
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.transaction = new Transaction();
     this.timestamp = ZERO_BD;
-    this.pair = "";
+    this.pair = new Pair();
     this.liquidity = ZERO_BD;
     this.amount0 = ZERO_BD;
     this.amount1 = ZERO_BD;
@@ -138,5 +139,30 @@ export class Mint {
     this.sender = "";
     this.to = "";
     this.feeTo = "";
+  }
+
+  fromDb(mdb: MintDb) {
+    this._id = mdb._id;
+    this.id = mdb.id;
+    var t = new Transaction();
+    t.justId(mdb.transaction);
+    this.transaction = t;
+    this.timestamp = ZERO_BD;
+    var p = new Pair()
+    p.justId(mdb.pair);
+    this.pair = p;
+    this.liquidity = ZERO_BD;
+    this.amount0 = ZERO_BD;
+    this.amount1 = ZERO_BD;
+    this.logIndex = ZERO_BD;
+    this.amountUSD = ZERO_BD;
+    this.feeLiquidity = ZERO_BD;
+    this.sender = "";
+    this.to = "";
+    this.feeTo = "";
+  }
+
+  justId(id: string) {
+    this.id = id;
   }
 }

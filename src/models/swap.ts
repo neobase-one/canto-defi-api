@@ -151,7 +151,9 @@ export class Swap {
   fromDb(swap: SwapDb) {
     this._id = swap._id;
     this.id = swap.id;
-    this.transaction = new Transaction(this);
+    var t = new Transaction();
+    t.justId(swap.transaction);
+    this.transaction = t;
     this.timestamp = swap.timestamp;
     var p = new Pair();
     p.justId(swap.pair);

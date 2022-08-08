@@ -43,7 +43,8 @@ export class TransactionDb {
   }
 
   toGenerated() {
-    return new Transaction(this);
+    var t = new Transaction()
+    return t.fromDb(this);
   }
 }
 
@@ -74,7 +75,17 @@ export class Transaction {
   @Field((type) => [Swap])
   swaps: string[];
 
-  constructor(txn: TransactionDb) {
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.timestamp = ZERO_BD;
+    this.blockNumber = ZERO_BD;
+    this.mints = [];
+    this.burns = [];
+    this.swaps = [];
+  }
+
+  fromDb(txn: TransactionDb) {
     this._id = txn._id;
     this.id = txn.id;
     this.timestamp = txn.timestamp;
@@ -82,7 +93,9 @@ export class Transaction {
 
     let mintTypes = [];
     for (let mintId of txn.mints) {
-      mintTypes.push(new Mint(mintId));
+      var m = new Mint();
+      m.justId(mintId);
+      mintTypes.push(m);
     }
     this.mints = mintTypes;
 
@@ -101,5 +114,9 @@ export class Transaction {
       swapTypes.push(s);
     }
     this.burns = burnTypes;
+  }
+
+  justId(id: string) {
+    this.id = id;
   }
 }
