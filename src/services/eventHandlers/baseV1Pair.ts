@@ -512,7 +512,7 @@ export async function transferEventHandler(
 
     // new instance of logical burn
     let burns = transaction.burns;
-    let burn: Burn;
+    let burn = new Burn();
     if (burns.length > 0) {
       const currentBurn = await burnService.getById(burns[burns.length - 1]);
       if (currentBurn?.needsComplete) {

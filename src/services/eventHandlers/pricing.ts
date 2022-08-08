@@ -11,6 +11,7 @@ import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from "../../utils/constants";
 import { BundleService } from "./models/bundle";
 import { PairService } from "./models/pair";
 import { TokenService } from "./models/token";
+import { Config } from "../../config/index.js";
 
 // todo: fix types + imports
 
