@@ -5,6 +5,7 @@ import { HealthResolver } from "./healthResolver";
 import { PairsResolver } from "./pairsResolver";
 import { TokenDayDatasResolver } from "./tddResolver";
 import { UniswapDayDatasResolver } from "./uddResolver";
+import { UniswapFactoriesResolver } from "./uniswapFactoriesResolver";
 
 export const resolvers: [Function, ...Function[]] = [
   HealthResolver,
@@ -13,5 +14,6 @@ export const resolvers: [Function, ...Function[]] = [
   BlocksResolver,
   UniswapDayDatasResolver,
   BundlesResolver,
-  PairsResolver
+  PairsResolver,
+  UniswapFactoriesResolver
 ];

@@ -25,6 +25,14 @@ export class TokenDayDatasInput {
 }
 
 @InputType()
+export class UniswapFactoriesInput {
+  @Field({nullable: false})
+  id: string
+
+  @Field({nullable:true})
+  block: number
+}
+@InputType()
 export class UniswapDayDatasInput {
   @Field({ nullable: false })
   startTime: number
