@@ -1,14 +1,13 @@
 import { Service } from 'typedi';
 import { EventData } from 'web3-eth-contract';
-import { Burn, BurnModel } from '../../../models/burn';
+import { BurnDb, BurnModel } from '../../../models/burn';
 
 @Service()
 export class BurnService {
   async getOrCreate(id: string) {
     let doc = await BurnModel.findOne({id: id}).exec();
     if (doc === null) {
-      let burn = new Burn();
-      burn.justId(id);
+      let burn = new BurnDb(id);
       doc = new BurnModel(burn);
     }
     return doc;

@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { EventData } from 'web3-eth-contract';
-import { LiquidityPosition, LiquidityPositionModel } from '../../../models/liquidityPosition';
+import { LiquidityPositionDb, LiquidityPositionModel } from '../../../models/liquidityPosition';
 import { LiquidityPositionSnapshot, LiquidityPositionSnapshotModel } from '../../../models/liquidityPositionSnapshot';
 import { StableswapDayData, StableswapDayDataModel } from '../../../models/stableswapDayData';
 
@@ -9,8 +9,7 @@ export class LiquidityPositionService {
   async getOrCreate(id: string) {
     let doc = await LiquidityPositionModel.findOne({id: id}).exec();
     if (doc === null) {
-      let liquidityPosition = new LiquidityPosition();
-      liquidityPosition.justId(id);
+      let liquidityPosition = new LiquidityPositionDb(id);
       doc = new LiquidityPositionModel(liquidityPosition);
     }
     return doc;

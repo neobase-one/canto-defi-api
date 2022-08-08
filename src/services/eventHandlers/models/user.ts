@@ -3,15 +3,14 @@ import { EventData } from 'web3-eth-contract';
 import { LiquidityPosition, LiquidityPositionModel } from '../../../models/liquidityPosition';
 import { LiquidityPositionSnapshot, LiquidityPositionSnapshotModel } from '../../../models/liquidityPositionSnapshot';
 import { StableswapDayData, StableswapDayDataModel } from '../../../models/stableswapDayData';
-import { User, UserModel } from '../../../models/user';
+import { UserDb, UserModel } from '../../../models/user';
 
 @Service()
 export class UserService {
   async getOrCreate(id: string) {
     let doc = await UserModel.findOne({id: id}).exec();
     if (doc === null) {
-      let user = new User();
-      user.justId(id);
+      let user = new UserDb(id);
       doc = new UserModel(user);
     }
     return doc;
