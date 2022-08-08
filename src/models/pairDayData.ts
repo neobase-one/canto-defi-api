@@ -19,11 +19,11 @@ export class PairDayDataDb {
   @Property({ default: new Date(), required: false })
   date: Date;
 
-  @Property({ ref: ()=>Token, required: false })
-  token0?: Ref<Token>; // todo: ref
+  @Property({ default: "", required: false })
+  token0: string; // todo: ref
 
-  @Property({ ref: ()=>Token, required: false })
-  token1?: Ref<Token>; // todo: ref
+  @Property({ default: "", required: false })
+  token1: string; // todo: ref
 
   @Property({ default: new Decimal("0"), required: false })
   reserve0: Decimal;
@@ -86,7 +86,7 @@ export class PairDayData {
   token0: Token; // todo: ref
 
   @Field((type) => Token)
-  token1?: Token; // todo: ref
+  token1: Token; // todo: ref
 
   @Field((type) => DecimalScalar)
   reserve0: Decimal;

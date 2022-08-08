@@ -19,7 +19,7 @@ export class LiquidityPositionSnapshotDb {
   id: string;
 
   @Property({ ref: () => LiquidityPosition, required: false })
-  liquidityPosition?: Ref<LiquidityPosition>; // todo ref
+  liquidityPosition: string; // todo ref
 
   @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
@@ -28,10 +28,10 @@ export class LiquidityPositionSnapshotDb {
   blockNumber: Decimal;
 
   @Property({ ref: () => User, required: false })
-  user?: Ref<User>; // todo ref
+  user: string; // todo ref
 
   @Property({ ref:()=> Pair, required: false })
-  pair?: Ref<Pair>; // todo ref
+  pair: string; // todo ref
 
   @Property({ default: new Decimal("0"), required: false })
   token0PriceUSD: Decimal;
@@ -124,11 +124,11 @@ export class LiquidityPositionSnapshot {
   constructor(position: LiquidityPositionSnapshot) {
     this._id = position._id;
     this.id = position.id;
-    this.liquidityPosition = new Position(position.pair);
+    this.liquidityPosition = new Position(position.liquidityPosition);
     this.timestamp = position.timestamp;
     this.blockNumber = position.blockNumber;
-    this.user = position.user;
-    this.pair = position.pair;
+    this.user = new User(position.user);
+    this.pair = new Pair(position.pair);
     this.token0PriceUSD = position.token0PriceUSD;
     this.token1PriceUSD = position.token1PriceUSD;
     this.reserve0 = position.reserve0;

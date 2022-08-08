@@ -17,14 +17,14 @@ export class SwapDb {
   @Property({ default: "", required: false })
   id: string;
 
-  @Property({ ref: () => Transaction, required: false })
-  transaction?: Ref<Transaction>; // todo: Ref
+  @Property({ default: "", required: false })
+  transaction: string; // todo: Ref
 
   @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
 
-  @Property({ ref: () => Pair, required: false })
-  pair?: Ref<Pair>; // todo: Ref
+  @Property({ default: "", required: false })
+  pair: string; // todo: Ref
 
   @Property({ default: new Decimal("0"), required: false })
   liquidity: Decimal;

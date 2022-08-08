@@ -96,7 +96,7 @@ export class Burn {
   timestamp: Decimal;
 
   @Field((type) => Pair)
-  pair: string; // todo: Ref
+  pair: Pair; // todo: Ref
 
   @Field((type) => DecimalScalar)
   liquidity: Decimal;
@@ -134,7 +134,7 @@ export class Burn {
     this.id = burn.id;
     this.transaction = burn.transaction;
     this.timestamp = burn.timestamp;
-    this.pair = burn.pair;
+    this.pair = new Pair(burn.pair);
     this.liquidity = burn.liquidity;
     this.amount0 = burn.amount0;
     this.amount1 = burn.amount1;

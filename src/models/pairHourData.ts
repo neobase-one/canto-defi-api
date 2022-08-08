@@ -19,8 +19,8 @@ export class PairHourDataDb {
   @Property({ default: new Decimal("0"), required: false })
   hourStartUnix: Decimal;
 
-  @Property({ ref: ()=>Pair, required: false })
-  pair?: Ref<Pair>; // todo
+  @Property({ default: "", required: false })
+  pair: string; // todo
 
   @Property({ default: new Decimal("0"), required: false })
   reserve0: Decimal;
@@ -109,7 +109,7 @@ export class PairHourData {
       this._id = pair._id;
       this.id = pair.id;
       this.hourStartUnix = pair.hourStartUnix;
-      this.pair = pair.pair;
+      this.pair = new Pair(pair.pair);
       this.reserve0 = pair.reserve0;
       this.reserve1 = pair.reserve1;
       this.totalSupply = pair.totalSupply;

@@ -16,11 +16,11 @@ export class PairDb {
   @Property({ default: "", required: false })
   id: string;
 
-  @Property({ ref: () => Token, required: false })
-  token0?: Ref<Token>;
+  @Property({ default: "", required: false })
+  token0: string;
 
-  @Property({ ref:()=> Token, required: false })
-  token1?: Ref<Token>;
+  @Property({ default: "", required: false })
+  token1: string;
 
   @Property({ default: new Decimal("0"), required: false })
   reserve0: Decimal;

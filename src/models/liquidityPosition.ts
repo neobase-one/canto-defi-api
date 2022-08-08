@@ -66,8 +66,4 @@ export class LiquidityPosition {
     this.pair = new Position(position.pair); // todo:
     this.liquidityTokenBalance = position.liquidityTokenBalance;
   }
-
-  constructor (id: string) {
-    this.id = id
-  }
 }
