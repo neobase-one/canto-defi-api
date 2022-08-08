@@ -27,7 +27,7 @@ export class TokenDayDatasInput {
 @InputType()
 export class UniswapDayDatasInput {
   @Field({ nullable: false })
-  tokenAddr: string
+  startTime: number
 
   @Field({ nullable: false })
   skip: number

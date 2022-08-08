@@ -1,7 +1,6 @@
 import { Arg, Query, Resolver } from "type-graphql";
 import { TokenDayData, TokenDayDataModel } from "../../models/tokenDayData";
 import { TokenDayDatasInput } from "./inputs/queryInputs";
-import { TokenDayDatasResponse } from "./responseTypes";
 
 @Resolver()
 export class TokenDayDatasResolver {
