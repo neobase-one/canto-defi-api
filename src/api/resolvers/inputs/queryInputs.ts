@@ -55,12 +55,6 @@ export class TokenInput {
 }
 
 @InputType()
-export class TokensInput {
-  @Field({ nullable: false })
-  id: [string]
-}
-
-@InputType()
 export class PairInput {
   @Field({ nullable: false })
   id: string
@@ -69,20 +63,6 @@ export class PairInput {
 enum OrderDirection {
   ASC = "ASC",
   DES = "DES"
-}
-@InputType()
-export class PairsInput {
-  @Field({ nullable: false })
-  id: [string]
-
-  @Field({ nullable: true })
-  blockNumber: number
-
-  @Field({ nullable: true })
-  orderBy: string
-
-  @Field(type => OrderDirection, { nullable: false })
-  orderDirection: OrderDirection
 }
 
 @InputType()
@@ -125,18 +105,6 @@ export class LiquidityPositionSnapshotsInput {
 export class TransactionInput {
   @Field({ nullable: false })
   id: string
-}
-
-@InputType()
-export class TransactionsInput {
-  @Field({ nullable: false })
-  id: [string]
-  
-  @Field({ nullable: true })
-  orderBy: string
-  
-  @Field({ nullable: true })
-  orderDirection: OrderDirection
 }
 
 @InputType()

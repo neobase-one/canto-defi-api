@@ -16,8 +16,8 @@ export class Bundle {
   id: string;
 
   @Field((type) => DecimalScalar)
-  @Property({ name: "ethPrice", default: new Decimal("0"), required: false })
-  ethPrice: Decimal;
+  @Property({ name: "cantoPrice", default: new Decimal("0"), required: false })
+  cantoPrice: Decimal;
 
   constructor (id: string) {
     this._id = new ObjectId();
