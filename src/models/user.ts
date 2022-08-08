@@ -49,10 +49,23 @@ export class User {
   @Field((type) => DecimalScalar)
   usdSwapped: Decimal;
 
-  constructor(user: UserDb) {
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.liquidityPosition = new LiquidityPosition();
+    this.usdSwapped = new Decimal(0);
+  }
+
+  fromDb(user: UserDb) {
     this._id = user._id;
     this.id = user.id;
-    this.liquidityPosition = new LiquidityPosition(user.liquidityPosition)
+    var l = new LiquidityPosition();
+    l.justId(user.liquidityPosition);
+    this.liquidityPosition = l;
     this.usdSwapped = user.usdSwapped;
+  }
+
+  justId(id: string) {
+    this.id = id;
   }
 }

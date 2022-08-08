@@ -125,7 +125,7 @@ export class LiquidityPositionSnapshot {
   constructor() {
     this._id = new ObjectId();
     this.id = "";
-    this.liquidityPosition = "";
+    this.liquidityPosition = new LiquidityPosition();
     this.timestamp = ZERO_BD;
     this.blockNumber = ZERO_BD;
     this.user = new User();
@@ -142,10 +142,14 @@ export class LiquidityPositionSnapshot {
   fromDb(position: LiquidityPositionSnapshotDb) {
     this._id = position._id;
     this.id = position.id;
-    this.liquidityPosition = new Position(position.liquidityPosition);
+    var l = new LiquidityPosition();
+    l.justId(position.liquidityPosition);
+    this.liquidityPosition = l;
     this.timestamp = position.timestamp;
     this.blockNumber = position.blockNumber;
-    this.user = new User(position.user);
+    var u = new User();
+    u.justId(position.user);
+    this.user = u;
     var p = new Pair();
     p.justId(position.pair);
     this.pair = p;
