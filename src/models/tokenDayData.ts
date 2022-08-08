@@ -8,53 +8,40 @@ import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { EMPTY_TOKEN, ZERO_BD } from "../utils/constants";
 
-@ObjectType()
-export class TokenDayData {
-  @Field((type) => ObjectIdScalar)
-  @Property({ default: "", required: false })
+// mongo database object
+export class TokenDayDataDb {
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  @Field()
   @Property({ default: new Date(), required: false })
   date: Date;
 
-  @Field((type) => Token)
   @Property({ ref: () => Token, required: false })
   token?: Ref<Token>; // todo: Ref
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeToken: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeETH: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   dailyTxns: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   totalLiquidityToken: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   totalLiquidityETH: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   totalLiquidityUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   priceUSD: Decimal;
 
@@ -72,6 +59,66 @@ export class TokenDayData {
     this.totalLiquidityUSD = ZERO_BD;
     this.priceUSD = ZERO_BD;
   }
+
+  toGenerated() {
+    return new TokenDayData(this);
+  }
 }
 
-export const TokenDayDataModel = getModelForClass(TokenDayData);
+export const TokenDayDataModel = getModelForClass(TokenDayDataDb);
+
+// graphql return object (type Block as shown in schema.ts)
+// decorator docs: https://typegraphql.com/docs/types-and-fields.html 
+@ObjectType()
+export class TokenDayData {
+  @Field((type) => ObjectIdScalar)
+  readonly _id: ObjectId;
+
+  @Field((type) => ID)
+  id: string;
+
+  @Field()
+  date: Date;
+
+  @Field((type) => Token)
+  token: Token; // todo: Ref
+
+  @Field((type) => DecimalScalar)
+  dailyVolumeToken: Decimal;
+
+  @Field((type) => DecimalScalar)
+  dailyVolumeETH: Decimal;
+
+  @Field((type) => DecimalScalar)
+  dailyVolumeUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  dailyTxns: Decimal;
+
+  @Field((type) => DecimalScalar)
+  totalLiquidityToken: Decimal;
+
+  @Field((type) => DecimalScalar)
+  totalLiquidityETH: Decimal;
+
+  @Field((type) => DecimalScalar)
+  totalLiquidityUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  priceUSD: Decimal;
+
+  constructor(tkn: TokenDayData) {
+    this._id = tkn._id;
+    this.id = tkn.id;
+    this.date = tkn.date;
+    this.token = new Token(tkn.token);
+    this.dailyVolumeToken = tkn.dailyVolumeToken;
+    this.dailyVolumeETH = tkn.dailyVolumeETH;
+    this.dailyVolumeUSD = tkn.dailyVolumeUSD;
+    this.dailyTxns = tkn.dailyTxns;
+    this.totalLiquidityToken = tkn.totalLiquidityToken;
+    this.totalLiquidityETH = tkn.totalLiquidityETH;
+    this.totalLiquidityUSD = tkn.totalLiquidityUSD;
+    this.priceUSD = tkn.priceUSD;
+  }
+}
