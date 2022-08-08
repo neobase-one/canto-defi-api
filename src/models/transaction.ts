@@ -23,13 +23,13 @@ export class TransactionDb {
   @Property({ default: new Decimal("0"), required: false })
   blockNumber: Decimal;
 
-  @Property({ default: [], required: false, type: () => Mint })
+  @Property({ default: [], required: false})
   mints: string[]; // todo: how to return Mint object
 
-  @Property({ default: [], required: false, type: () => Burn })
+  @Property({ default: [], required: false})
   burns: string[];
 
-  @Property({ default: [], required: false, type: () => Swap })
+  @Property({ default: [], required: false})
   swaps: string[];
 
   constructor(id: string) {
@@ -40,6 +40,10 @@ export class TransactionDb {
     this.mints = [];
     this.burns = [];
     this.swaps = [];
+  }
+
+  toGenerated() {
+    return new Transaction(this);
   }
 }
 
@@ -70,26 +74,28 @@ export class Transaction {
   @Field((type) => [Swap])
   swaps: string[];
 
-  constructor(hash: string) {
-    this._id = new ObjectId();
-    this.id = hash;
-    this.timestamp = ZERO_BD;
-    this.blockNumber = ZERO_BD;
-    this.mints = [];
-    this.burns = [];
-    this.swaps = [];
+
+
+  constructor(txn: TransactionDb) {
+    this._id = txn._id;
+    // todo: fill rest
+    let mintTypes = [];
+    for(let mintId of txn.mints) {
+      mintTypes.push(new Mint(mintId));
+    }
+    this.mints = mintTypes; // todo: same for swaps, burn
   }
 
   // function to convert database object class into the return object
   // as defined in graphql schema
   // create blockType from block
-  toGenerated(transactiondb: TransactionDb) {
-    this._id = transactiondb._id;
-    this.id = transactiondb.id;
-    this.timestamp = transactiondb.timestamp;
-    this.blockNumber = transactiondb.blockNumber;
-    this.mints = transactiondb.mints;
-    this.burns = transactiondb.burns;
-    this.swaps = transactiondb.swaps;
-  }
+  // toGenerated(transactiondb: TransactionDb) {
+  //   this._id = transactiondb._id;
+  //   this.id = transactiondb.id;
+  //   this.timestamp = transactiondb.timestamp;
+  //   this.blockNumber = transactiondb.blockNumber;
+  //   this.mints = transactiondb.mints;
+  //   this.burns = transactiondb.burns;
+  //   this.swaps = transactiondb.swaps;
+  // }
 }
