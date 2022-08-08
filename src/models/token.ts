@@ -58,7 +58,8 @@ export class TokenDb {
   }
 
   toGenerated() {
-    return new Token(this);
+    var tkn = new Token();
+    return tkn.fromDb(this);
   }
 }
 
@@ -104,7 +105,7 @@ export class Token {
   @Field((type) => DecimalScalar)
   derivedETH: Decimal;
 
-  constructor(token: TokenDb) {
+  fromDb(token: TokenDb) {
     this._id = token._id;
     this.id = token.id;
     this.name = token.name;
@@ -117,5 +118,24 @@ export class Token {
     this.txCount = token.txCount;
     this.totalLiquidity = token.totalLiquidity;
     this.derivedETH = token.derivedETH;
+  }
+
+  justId(id: string) {
+    this.id = id;
+  }
+
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.name = "";
+    this.symbol = "";
+    this.decimals = 0;
+    this.totalSupply = ZERO_BD;
+    this.tradeVolume = ZERO_BD;
+    this.tradeVolumeUSD = ZERO_BD;
+    this.untrackedVolumeUSD = ZERO_BD;
+    this.txCount = ZERO_BD;
+    this.totalLiquidity = ZERO_BD;
+    this.derivedETH = ZERO_BD;
   }
 }
