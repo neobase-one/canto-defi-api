@@ -7,7 +7,7 @@ import { Transaction } from "./transaction";
 import { Ref } from "../types/ref";
 import { Pair } from "./pair";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { ZERO_BD } from "../utils/constants";
+import { EMPTY_PAIR, EMPTY_TRANSACTION, ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class Mint {
@@ -20,16 +20,16 @@ export class Mint {
   id: string;
 
   @Field((type) => Transaction)
-  @Property({ ref: Transaction, required: false })
-  transaction: string; // todo: Ref conversion
+  @Property({ ref: () => Transaction, required: false})
+  transaction?: Ref<Transaction>; // todo: Ref conversion
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
 
   @Field((type) => Pair)
-  @Property({ ref: Pair, required: false })
-  pair: string; // todo: Ref conversion
+  @Property({ ref: () => Pair, required: false})
+  pair?: Ref<Pair>; // todo: Ref conversion
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -68,12 +68,12 @@ export class Mint {
   @Property({ default: "", required: false })
   feeTo: string;
 
-  constructor (id: string) {
+  constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.transaction = "";
+    this.transaction = EMPTY_TRANSACTION;
     this.timestamp = ZERO_BD;
-    this.pair = "";
+    this.pair = EMPTY_PAIR;
     this.liquidity = ZERO_BD;
     this.amount0 = ZERO_BD;
     this.amount1 = ZERO_BD;
