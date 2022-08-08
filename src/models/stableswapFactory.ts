@@ -88,7 +88,7 @@ export class StableswapFactory {
 
   block: Decimal;
 
-  constructor (swap: StableswapDayDataDb) {
+  constructor (swap: StableswapFactoryDb) {
     this._id = swap._id;
     this.address = swap.address;
     this.pairCount = swap.pairCount;

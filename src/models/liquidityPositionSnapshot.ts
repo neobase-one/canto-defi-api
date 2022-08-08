@@ -18,7 +18,7 @@ export class LiquidityPositionSnapshotDb {
   @Property({ default: "", required: false })
   id: string;
 
-  @Property({ ref: () => LiquidityPosition, required: false })
+  @Property({ default: "", required: false })
   liquidityPosition: string; // todo ref
 
   @Property({ default: new Decimal("0"), required: false })
@@ -27,10 +27,10 @@ export class LiquidityPositionSnapshotDb {
   @Property({ default: new Decimal("0"), required: false })
   blockNumber: Decimal;
 
-  @Property({ ref: () => User, required: false })
+  @Property({ default: "", required: false })
   user: string; // todo ref
 
-  @Property({ ref:()=> Pair, required: false })
+  @Property({ default: "", required: false })
   pair: string; // todo ref
 
   @Property({ default: new Decimal("0"), required: false })
@@ -72,7 +72,8 @@ export class LiquidityPositionSnapshotDb {
   }
 
   toGenerated() {
-    return new LiquidityPositionSnapshot(this)
+    var l = new LiquidityPositionSnapshot()
+    return l.fromDb(this);
   }
 }
 
@@ -121,14 +122,33 @@ export class LiquidityPositionSnapshot {
   @Field((type) => DecimalScalar)
   liquidityTokenBalance: Decimal;
 
-  constructor(position: LiquidityPositionSnapshot) {
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.liquidityPosition = "";
+    this.timestamp = ZERO_BD;
+    this.blockNumber = ZERO_BD;
+    this.user = new User();
+    this.pair = new Pair();
+    this.token0PriceUSD = ZERO_BD;
+    this.token1PriceUSD = ZERO_BD;
+    this.reserve0 = ZERO_BD;
+    this.reserve1 = ZERO_BD;
+    this.reserveUSD = ZERO_BD;
+    this.liquidityTokenTotalSupply = ZERO_BD;
+    this.liquidityTokenBalance = ZERO_BD;
+  }
+
+  fromDb(position: LiquidityPositionSnapshotDb) {
     this._id = position._id;
     this.id = position.id;
     this.liquidityPosition = new Position(position.liquidityPosition);
     this.timestamp = position.timestamp;
     this.blockNumber = position.blockNumber;
     this.user = new User(position.user);
-    this.pair = new Pair(position.pair);
+    var p = new Pair();
+    p.justId(position.pair);
+    this.pair = p;
     this.token0PriceUSD = position.token0PriceUSD;
     this.token1PriceUSD = position.token1PriceUSD;
     this.reserve0 = position.reserve0;
@@ -136,6 +156,10 @@ export class LiquidityPositionSnapshot {
     this.reserveUSD = position.reserveUSD;
     this.liquidityTokenTotalSupply = position.liquidityTokenTotalSupply;
     this.liquidityTokenBalance = position.liquidityTokenBalance;
+  }
+
+  justId(id: string){
+    this.id = id;
   }
 }
 

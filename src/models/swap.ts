@@ -132,9 +132,11 @@ export class Swap {
   constructor(swap: SwapDb) {
     this._id = swap._id;
     this.id = swap.id;
-    this.transaction = new Transaction(swap.transaction);
+    this.transaction = new Transaction(this);
     this.timestamp = swap.timestamp;
-    this.pair = new Pair(swap.pair);
+    var p = new Pair();
+    p.justId(swap.pair);
+    this.pair = p;
     this.liquidity = swap.liquidity;
     this.amount0In = swap.amount0In;
     this.amount1In = swap.amount1In;

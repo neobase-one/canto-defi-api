@@ -116,8 +116,12 @@ export class PairDayData {
     this._id = pair._id;
     this.id = pair.id;
     this.date = pair.date;
-    this.token0 = new Token(pair.token0);
-    this.token1 = new Token(pair.token1);
+    var tk1 = new Token();
+    var tk2 = new Token();
+    tk1.justId(pair.token0);
+    tk2.justId(pair.token1);
+    this.token0 = tk1;
+    this.token1 = tk2;
     this.reserve0 = pair.reserve0;
     this.reserve1 = pair.reserve1;
     this.totalSupply = pair.totalSupply;

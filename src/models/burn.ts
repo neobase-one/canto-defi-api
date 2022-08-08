@@ -134,7 +134,9 @@ export class Burn {
     this.id = burn.id;
     this.transaction = burn.transaction;
     this.timestamp = burn.timestamp;
-    this.pair = new Pair(burn.pair);
+    var p = new Pair();
+    p.justId(burn.pair);
+    this.pair = p;
     this.liquidity = burn.liquidity;
     this.amount0 = burn.amount0;
     this.amount1 = burn.amount1;

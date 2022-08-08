@@ -63,7 +63,9 @@ export class LiquidityPosition {
     this._id = position._id
     this.id = position.id;
     this.user = new User(position.user);
-    this.pair = new Position(position.pair); // todo:
+    var p = new Pair();
+    p.justId(position.pair);
+    this.pair = p; // todo:
     this.liquidityTokenBalance = position.liquidityTokenBalance;
   }
 }
