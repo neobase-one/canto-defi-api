@@ -9,6 +9,7 @@ import { StableswapFactory } from "../../models/stableswapFactory";
 import { Token } from "../../models/token";
 import { TokenDayData } from "../../models/tokenDayData";
 import { ONE_BD, ZERO_BD } from "../../utils/constants";
+import { getTimestamp } from "../../utils/helper";
 import { BundleService } from "./models/bundle";
 import { BurnService } from "./models/burn";
 import { FactoryDayDataService } from "./models/factoryDayData";
@@ -29,7 +30,7 @@ export async function updateFactoryDayData(event: EventData) {
   const factoryDayDataService = Container.get(FactoryDayDataService);
 
   //
-  let timestamp = 0; // todo: get timestamp
+  const timestamp: any = await getTimestamp(event.blockNumber) as number;
   let dayId = timestamp / 86400;
   let dayStartTimestamp = dayId * 86400;
 
@@ -60,7 +61,7 @@ export async function updatePairDayData(event: EventData) {
   const pairDayDataService = Container.get(PairDayDataService);
 
   //
-  let timestamp = 0; // todo: get timestamp
+  const timestamp: any = await getTimestamp(event.blockNumber) as number;
   let dayId = timestamp / 86400;
   let dayStartTimestamp = dayId * 86400;
   let dayPairId = event.address
@@ -94,7 +95,7 @@ export async function updatePairHourData(event: EventData) {
   const pairHourDataService = Container.get(PairHourDataService);
 
   //
-  let timestamp = 0; // todo: get timestamp
+  const timestamp: any = await getTimestamp(event.blockNumber) as number;
   let hourIndex = timestamp / 3600;
   let hourStartUnix = hourIndex * 3600;
   let hourPairId = event.address
@@ -126,7 +127,7 @@ export async function updateTokenDayData(token: Token, event: EventData) {
   const tokenDayDataService = Container.get(TokenDayDataService);
 
   let bundle: any = await bundleService.get();
-  let timestamp = 0; // todo
+  const timestamp: any = await getTimestamp(event.blockNumber) as number;
   let dayId = timestamp / 86400;
   let dayStartTimestamp = dayId * 86400;
   let tokenDayId = token.id.concat("-").concat(new Decimal(dayId).toString());

@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import { web3 } from "../loaders/web3";
 import { ZERO_BD } from "./constants";
 
 export function exponentToBigDecimal(decimals: number): Decimal {
@@ -40,4 +41,9 @@ export function isNullEthValue(value: string): boolean {
     value ==
     "0x0000000000000000000000000000000000000000000000000000000000000001"
   );
+}
+
+export async function getTimestamp(blockNumber: number) {
+  let block: any = await web3.eth.getBlock(blockNumber);
+  return block.timestamp;
 }

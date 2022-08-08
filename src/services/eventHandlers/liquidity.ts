@@ -11,6 +11,7 @@ import {
 } from "../../models/liquidityPositionSnapshot";
 import { User } from "../../models/user";
 import { ONE_BD, ZERO_BD } from "../../utils/constants";
+import { getTimestamp } from "../../utils/helper";
 import { BundleService } from "./models/bundle";
 import { LiquidityPositionService } from "./models/liquidity";
 import { PairService } from "./models/pair";
@@ -57,13 +58,14 @@ export async function createLiquiditySnapshot(
   position: LiquidityPosition,
   event: EventData
 ) {
+  const timestamp: any = await getTimestamp(event.blockNumber);
+
   // services
   const bundleService = Container.get(BundleService);
   const pairService = Container.get(PairService);
   const tokenService = Container.get(TokenService);
   const liquidityPositionService = Container.get(LiquidityPositionService);
 
-  let timestamp = ZERO_BD; // todo
   let bundle: any = await bundleService.get();
   let pair: any = await pairService.getByAddress(position.pair);
   let token0: any = await tokenService.getByAddress(pair.token0);

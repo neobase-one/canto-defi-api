@@ -1,8 +1,10 @@
+import { time } from "console";
 import Decimal from "decimal.js";
 import Container from "typedi";
 import { Log } from "web3-core";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../config";
+import { web3 } from "../../loaders/web3";
 import { Burn, BurnModel } from "../../models/burn";
 import {
   LiquidityPosition,
@@ -27,7 +29,7 @@ import {
 } from "../../types/event/baseV1Pair";
 import { MintEventSignature } from "../../utils/abiParser/baseV1Pair";
 import { ADDRESS_ZERO, BI_18, ONE_BD, ZERO_BD } from "../../utils/constants";
-import { convertTokenToDecimal } from "../../utils/helper";
+import { convertTokenToDecimal, getTimestamp } from "../../utils/helper";
 import {
   createLiquidityPosition,
   createLiquiditySnapshot,
@@ -208,6 +210,7 @@ export async function swapEventHandler(
 ) {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
   const txHash = event.transactionHash;
+  const timestamp = await getTimestamp(event.blockNumber);
 
   // service
   const factoryService = Container.get(StableswapFactoryService);
@@ -300,7 +303,7 @@ export async function swapEventHandler(
   if (transaction === null) {
     transaction = new Transaction(txHash);
     transaction.blockNumber = new Decimal(event.blockNumber);
-    transaction.timestamp = ZERO_BD; // todo: remove?
+    transaction.timestamp = timestamp;
     transaction.mints = [];
     transaction.swaps = [];
     transaction.burns = [];
@@ -400,6 +403,7 @@ export async function transferEventHandler(
   input: TransferEventInput
 ) {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+  const timestamp: any = await getTimestamp(event.blockNumber);
 
   // ignore inital transfers for first adds
   if (input.to == ADDRESS_ZERO && input.amount.equals(new Decimal(1000))) {
@@ -437,7 +441,7 @@ export async function transferEventHandler(
   if (transaction === null) {
     transaction = new Transaction(event.transactionHash);
     transaction.blockNumber = new Decimal(event.blockNumber);
-    transaction.timestamp = ZERO_BD; // todo: can this be removed?
+    transaction.timestamp = timestamp;
   }
 
   // mints
@@ -457,7 +461,7 @@ export async function transferEventHandler(
       mint.pair = pair.id;
       mint.to = to;
       mint.liquidity = value;
-      mint.timestamp = ZERO_BD; // todo: can this be removed?
+      mint.timestamp = transaction.timestamp;
 
       // await mint.save();
       await new MintModel(mint).save();
@@ -482,7 +486,7 @@ export async function transferEventHandler(
     burn.transaction = transaction.id;
     burn.pair = pair.id;
     burn.liquidity = value;
-    burn.timestamp = ZERO_BD; // todo: removed?
+    burn.timestamp = transaction.timestamp;
     burn.to = to;
     burn.sender = from;
     burn.needsComplete = true;
@@ -515,7 +519,7 @@ export async function transferEventHandler(
         burn.transaction = transaction.id;
         burn.pair = pair.id;
         burn.liquidity = value;
-        burn.timestamp = ZERO_BD; // todo: remove?
+        burn.timestamp = transaction.timestamp;
         burn.needsComplete = false;
       }
     } else {
@@ -526,7 +530,7 @@ export async function transferEventHandler(
       burn.transaction = transaction.id;
       burn.pair = pair.id;
       burn.liquidity = value;
-      burn.timestamp = ZERO_BD; // todo: remove?
+      burn.timestamp = transaction.timestamp;
       burn.needsComplete = false;
     }
 
