@@ -16,7 +16,6 @@ export class UserDb {
   @Property({ default: "", required: false })
   liquidityPosition: string;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   usdSwapped: Decimal; // todo: change to canto
 

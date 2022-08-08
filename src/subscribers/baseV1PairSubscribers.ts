@@ -21,20 +21,21 @@ export async function baseV1PairIndexHistoricalEvents(
   for(var i=0; i<iter; i++) {
     for (let address of addresses) {
       const contract = new web3.eth.Contract(BaseV1PairABI, address);
-      // Mint
-      await mintRangeEventHandler(contract, i);
-
-      // Burn
-      await burnRangeEventHandler(contract, i);
-
-      // Swap
-      await swapRangeEventHandler(contract, i);
 
       // Transfer
       await transferRangeEventHandler(contract, i);
 
-      // Sync
-      await syncRangeEventHandler(contract, i);
+      // Mint
+      // await mintRangeEventHandler(contract, i);
+
+      // // Burn
+      // await burnRangeEventHandler(contract, i);
+
+      // // Swap
+      // await swapRangeEventHandler(contract, i);
+
+      // // Sync
+      // await syncRangeEventHandler(contract, i);
     }
   }
   // web3.eth.clearSubscriptions(); // todo

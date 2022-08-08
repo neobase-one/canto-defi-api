@@ -16,19 +16,15 @@ export class LiquidityPositionDb {
   @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  @Field((type) => User)
   @Property({ default: "", required: false })
   user: string;
 
-  @Field((type) => Pair)
   @Property({ default: "", required: false })
   pair: string;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   liquidityTokenBalance: Decimal;
 

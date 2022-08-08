@@ -19,7 +19,7 @@ import {
 } from "../../models/stableswapFactory";
 import { Swap, SwapDb, SwapModel } from "../../models/swap";
 import { Token, TokenModel } from "../../models/token";
-import { Transaction, TransactionDb } from "../../models/transaction";
+import { Transaction, TransactionDb, TransactionModel } from "../../models/transaction";
 import {
   BurnEventInput,
   MintEventInput,
@@ -405,6 +405,7 @@ export async function transferEventHandler(
 ) {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
   const timestamp: any = await getTimestamp(event.blockNumber);
+  const txHash: string = event.transactionHash;
 
   // ignore inital transfers for first adds
   if (input.to == ADDRESS_ZERO && input.amount.equals(new Decimal(1000))) {
@@ -426,31 +427,31 @@ export async function transferEventHandler(
   // user stats
   const from = input.from;
   const to = input.to;
-  createUser(input.from);
-  createUser(input.to);
+  await createUser(input.from);
+  await createUser(input.to);
 
   // get pair and load
   let pair: any = await pairService.getByAddress(event.address);
   let pairContract: any = new web3.eth.Contract(BaseV1PairABI, event.address);
 
   // liquidity token amount being transferred
-  let value = convertTokenToDecimal(input.amount, BI_18);
+  let value: Decimal = convertTokenToDecimal(input.amount, BI_18);
 
   // load transaction
-  const txHash = event.transactionHash;
   let transaction: any = await transactionService.getByHash(txHash);
   if (transaction === null) {
-    transaction = new Transaction();
-    transaction.justId(event.transactionHash);
+    transaction = new TransactionDb(txHash);
     transaction.blockNumber = new Decimal(event.blockNumber);
     transaction.timestamp = timestamp;
+    transaction = new TransactionModel(transaction);
+    transaction.save();
   }
 
   // mints
   let mints = transaction.mints;
   if (from == ADDRESS_ZERO) {
     // update total supply
-    pair.totalSupply = pair.totalSupply.plus(value);
+    pair.totalSupply = value.plus(new Decimal(pair.totalSupply.toString()));
     await pair.save();
 
     // create new mint if no mints so far OR if last one completed
@@ -484,8 +485,7 @@ export async function transferEventHandler(
     const burnId = txHash
       .concat("-")
       .concat(new Decimal(burns.length).toString());
-    let burn = new Burn();
-    burn.justId(burnId);
+    let burn = new BurnDb(burnId);
     burn.transaction = transaction.id;
     burn.pair = pair.id;
     burn.liquidity = value;
@@ -504,7 +504,7 @@ export async function transferEventHandler(
   // burn
   if (to == ADDRESS_ZERO && from == pair.id) {
     // update pair total supply
-    pair.totalSupply = pair.totalSupply.minus(value);
+    pair.totalSupply = new Decimal(pair.totalSupply.toString()).minus(value);
     await pair.save();
 
     // new instance of logical burn
@@ -574,7 +574,7 @@ export async function transferEventHandler(
       from
     );
     fromUserLiquidityPosition.liquidityTokenBalance = convertTokenToDecimal(
-      pairContract.balanceOf(from),
+      await pairContract.methods.balanceOf(from).call(),
       BI_18
     );
     await new LiquidityPositionModel(fromUserLiquidityPosition).save();
@@ -587,7 +587,7 @@ export async function transferEventHandler(
       to
     );
     toUserLiquidityPosition.liquidityTokenBalance = convertTokenToDecimal(
-      pairContract.balanceOf(to),
+      await pairContract.methods.balanceOf(to).call(),
       BI_18
     );
     await new LiquidityPositionModel(toUserLiquidityPosition).save();

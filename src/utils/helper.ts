@@ -4,7 +4,7 @@ import { ZERO_BD } from "./constants";
 
 export function exponentToBigDecimal(decimals: number): Decimal {
   let bd = new Decimal("1");
-  for (let i = 0; i < decimals; i = i++) {
+  for (let i = 0; i < decimals; i++) {
     bd = bd.times(new Decimal("10"));
   }
   return bd;
@@ -25,7 +25,7 @@ export function convertTokenToDecimal(
   if (exchangeDecimals == 0) {
     return tokenAmount;
   }
-  return tokenAmount.div(exponentToBigDecimal(exchangeDecimals));
+  return new Decimal(tokenAmount.toString()).div(exponentToBigDecimal(exchangeDecimals));
 }
 
 export function equalToZero(value: Decimal): boolean {
