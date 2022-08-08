@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { Token } from "./token";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { ZERO_BD } from "../utils/constants";
+import { EMPTY_TOKEN, ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class Pair {
@@ -19,13 +19,12 @@ export class Pair {
   id: string;
 
   @Field((type) => Token)
-  @Property({ ref: Token, required: false })
-  // token0: Ref<Token>;
-  token0: string;
+  @Property({ ref: () => Token, required: false })
+  token0?: Ref<Token>;
 
   @Field((type) => Token)
-  @Property({ ref: Token, required: false })
-  token1: string;
+  @Property({ ref:()=> Token, required: false })
+  token1?: Ref<Token>;
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -94,8 +93,8 @@ export class Pair {
   constructor(address: string) {
     this._id = new ObjectId();
     this.id = address;
-    this.token0 = "";
-    this.token1 = "";
+    this.token0 = EMPTY_TOKEN;
+    this.token1 = EMPTY_TOKEN;
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;

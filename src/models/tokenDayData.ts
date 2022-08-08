@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { Token } from "./token";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { ZERO_BD } from "../utils/constants";
+import { EMPTY_TOKEN, ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class TokenDayData {
@@ -23,8 +23,8 @@ export class TokenDayData {
   date: Date;
 
   @Field((type) => Token)
-  @Property({ ref: Token, required: false })
-  token: string; // todo: Ref
+  @Property({ ref: () => Token, required: false })
+  token?: Ref<Token>; // todo: Ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -58,11 +58,11 @@ export class TokenDayData {
   @Property({ default: new Decimal("0"), required: false })
   priceUSD: Decimal;
 
-  constructor (id: string) {
+  constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
     this.date = new Date(0);
-    this.token = "";
+    this.token = EMPTY_TOKEN;
     this.dailyVolumeToken = ZERO_BD;
     this.dailyVolumeETH = ZERO_BD;
     this.dailyVolumeUSD = ZERO_BD;

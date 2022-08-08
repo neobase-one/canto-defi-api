@@ -6,6 +6,7 @@ import Decimal from "decimal.js";
 import { LiquidityPosition } from "./liquidityPosition";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
+import { EMPTY_POSITION } from "../utils/constants";
 
 @ObjectType()
 export class User {
@@ -17,17 +18,17 @@ export class User {
   id: string;
 
   @Field((type) => LiquidityPosition)
-  @Property({ ref: LiquidityPosition, required: false })
-  liquidityPosition: string; //todo: ref
+  @Property({ ref: () => LiquidityPosition, required: false })
+  liquidityPosition?: Ref<LiquidityPosition>; //todo: ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   usdSwapped: Decimal; // todo: change to canto
 
-  constructor (id: string) {
-    this. _id= new ObjectId();
+  constructor(id: string) {
+    this._id = new ObjectId();
     this.id = id;
-    this.liquidityPosition = "";
+    this.liquidityPosition = EMPTY_POSITION;
     this.usdSwapped = new Decimal(0); // todo: change to canto
   }
 }

@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { ZERO_BD } from "../utils/constants";
+import { EMPTY_PAIR, ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class PairHourData {
@@ -23,8 +23,8 @@ export class PairHourData {
   hourStartUnix: Decimal;
 
   @Field((type) => Pair)
-  @Property({ ref: Pair, required: false })
-  pair: string; // todo
+  @Property({ ref: ()=>Pair, required: false })
+  pair?: Ref<Pair>; // todo
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -62,7 +62,7 @@ export class PairHourData {
       this._id = new ObjectId();
       this.id = id;
       this.hourStartUnix = ZERO_BD;
-      this.pair = "";
+      this.pair = EMPTY_PAIR;
       this.reserve0 = ZERO_BD;
       this.reserve1 = ZERO_BD;
       this.totalSupply = ZERO_BD;

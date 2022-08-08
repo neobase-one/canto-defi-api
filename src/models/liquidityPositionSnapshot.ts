@@ -8,7 +8,7 @@ import { User } from "./user";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { ZERO_BD } from "../utils/constants";
+import { EMPTY_PAIR, EMPTY_POSITION, EMPTY_USER, ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class LiquidityPositionSnapshot {
@@ -21,8 +21,8 @@ export class LiquidityPositionSnapshot {
   id: string;
 
   @Field((type) => LiquidityPosition)
-  @Property({ ref: LiquidityPosition, required: false })
-  liquidityPosition: string; // todo ref
+  @Property({ ref: () => LiquidityPosition, required: false })
+  liquidityPosition?: Ref<LiquidityPosition>; // todo ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -33,12 +33,12 @@ export class LiquidityPositionSnapshot {
   blockNumber: Decimal;
 
   @Field((type) => User)
-  @Property({ ref: User, required: false })
-  user: string; // todo ref
+  @Property({ ref: () => User, required: false })
+  user?: Ref<User>; // todo ref
 
   @Field((type) => Pair)
-  @Property({ ref: Pair, required: false })
-  pair: string; // todo ref
+  @Property({ ref:()=> Pair, required: false })
+  pair?: Ref<Pair>; // todo ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -71,11 +71,11 @@ export class LiquidityPositionSnapshot {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.liquidityPosition = "";
+    this.liquidityPosition = EMPTY_POSITION;
     this.timestamp = ZERO_BD;
     this.blockNumber = ZERO_BD;
-    this.user = "";
-    this.pair = "";
+    this.user = EMPTY_USER;
+    this.pair = EMPTY_PAIR;
     this.token0PriceUSD = ZERO_BD;
     this.token1PriceUSD = ZERO_BD;
     this.reserve0 = ZERO_BD;

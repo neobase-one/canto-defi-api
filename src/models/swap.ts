@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { Pair } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { ZERO_BD } from "../utils/constants";
+import { EMPTY_PAIR, EMPTY_TRANSACTION, ZERO_BD } from "../utils/constants";
 import { Transaction } from "./transaction";
 
 @ObjectType()
@@ -20,16 +20,16 @@ export class Swap {
   id: string;
 
   @Field((type) => Transaction)
-  @Property({ ref: Transaction, required: false })
-  transaction: string; // todo: Ref
+  @Property({ ref: () => Transaction, required: false })
+  transaction?: Ref<Transaction>; // todo: Ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
 
   @Field((type) => Pair)
-  @Property({ ref: Pair, required: false })
-  pair: string; // todo: Ref
+  @Property({ ref: () => Pair, required: false })
+  pair?: Ref<Pair>; // todo: Ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -72,12 +72,12 @@ export class Swap {
   @Property({ default: "", required: false })
   from: string;
 
-  constructor (id: string) {
+  constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.transaction = "";
+    this.transaction = EMPTY_TRANSACTION;
     this.timestamp = ZERO_BD;
-    this.pair = "";
+    this.pair = EMPTY_PAIR;
     this.liquidity = ZERO_BD;
     this.amount0In = ZERO_BD;
     this.amount1In = ZERO_BD;

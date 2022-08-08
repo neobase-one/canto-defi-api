@@ -7,7 +7,7 @@ import { User } from "./user";
 import { Ref } from "../types/ref";
 import { Pair } from "./pair";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { ZERO_BD } from "../utils/constants";
+import { EMPTY_PAIR, EMPTY_USER, ZERO_BD } from "../utils/constants";
 @ObjectType()
 export class LiquidityPosition {
   @Field((type) => ObjectIdScalar)
@@ -19,12 +19,12 @@ export class LiquidityPosition {
   id: string;
 
   @Field((type) => User)
-  @Property({ ref: User, required: false })
-  user: string; // todo ref
+  @Property({ ref: () => User, required: false })
+  user?: Ref<User>; // todo ref
 
   @Field((type) => Pair)
-  @Property({ ref: Pair, required: false })
-  pair: string; // todo ref
+  @Property({ ref: () => Pair, required: false })
+  pair?: Ref<Pair>; // todo ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -33,8 +33,8 @@ export class LiquidityPosition {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.user = "";
-    this.pair = "";
+    this.user = EMPTY_USER;
+    this.pair = EMPTY_PAIR;
     this.liquidityTokenBalance = ZERO_BD;
   }
 }

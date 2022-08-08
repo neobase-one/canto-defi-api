@@ -6,7 +6,7 @@ import Decimal from "decimal.js";
 import { Token } from "./token";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { ZERO_BD } from "../utils/constants";
+import { EMPTY_TOKEN, ZERO_BD } from "../utils/constants";
 
 @ObjectType()
 export class PairDayData {
@@ -23,12 +23,12 @@ export class PairDayData {
   date: Date;
 
   @Field((type) => Token)
-  @Property({ ref: Token, required: false })
-  token0: string; // todo: ref
+  @Property({ ref: ()=>Token, required: false })
+  token0?: Ref<Token>; // todo: ref
 
   @Field((type) => Token)
-  @Property({ ref: Token, required: false })
-  token1: string; // todo: ref
+  @Property({ ref: ()=>Token, required: false })
+  token1?: Ref<Token>; // todo: ref
 
   @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
@@ -66,8 +66,8 @@ export class PairDayData {
     this._id = new ObjectId();
     this.id = id;
     this.date = new Date(0);
-    this.token0 = "";
-    this.token1 = "";
+    this.token0 = EMPTY_TOKEN;
+    this.token1 = EMPTY_TOKEN;
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;
