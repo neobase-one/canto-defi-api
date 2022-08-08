@@ -4,9 +4,7 @@ import { Field, ObjectType, ID } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { LiquidityPosition } from "./liquidityPosition";
-import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_POSITION } from "../utils/constants";
 
 // mongo object
 // NOTE: append "Db" to the db object and leave "User" to graphql object
@@ -28,7 +26,7 @@ export class UserDb {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.liquidityPosition = EMPTY_POSITION;
+    this.liquidityPosition = "";
     this.usdSwapped = new Decimal(0); // todo: change to canto
   }
 }

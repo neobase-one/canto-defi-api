@@ -60,7 +60,8 @@ export class TokenDayDataDb {
   }
 
   toGenerated() {
-    return new TokenDayData(this);
+    var tkn = new TokenDayData();
+    return tkn.fromDb(this);
   }
 }
 
@@ -106,11 +107,11 @@ export class TokenDayData {
   @Field((type) => DecimalScalar)
   priceUSD: Decimal;
 
-  constructor(tkn: TokenDayData) {
+  fromDb(tkn: TokenDayDataDb) {
     this._id = tkn._id;
     this.id = tkn.id;
     this.date = tkn.date;
-    this.token = new Token(tkn.token);
+    this.token = new Token();
     this.dailyVolumeToken = tkn.dailyVolumeToken;
     this.dailyVolumeETH = tkn.dailyVolumeETH;
     this.dailyVolumeUSD = tkn.dailyVolumeUSD;
@@ -119,5 +120,24 @@ export class TokenDayData {
     this.totalLiquidityETH = tkn.totalLiquidityETH;
     this.totalLiquidityUSD = tkn.totalLiquidityUSD;
     this.priceUSD = tkn.priceUSD;
+  }
+
+  justToken(tkn: Token) {
+    this.token = tkn;
+  }
+
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.date = new Date(0);
+    this.token = new Token();
+    this.dailyVolumeToken = ZERO_BD;
+    this.dailyVolumeETH = ZERO_BD;
+    this.dailyVolumeUSD = ZERO_BD;
+    this.dailyTxns = ZERO_BD;
+    this.totalLiquidityToken = ZERO_BD;
+    this.totalLiquidityETH = ZERO_BD;
+    this.totalLiquidityUSD = ZERO_BD;
+    this.priceUSD = ZERO_BD;
   }
 }
