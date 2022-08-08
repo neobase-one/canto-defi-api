@@ -75,7 +75,8 @@ export class BurnDb {
   }
 
   toGenerated() {
-    return new Burn(this)
+    var b = new Burn()
+    return b.fromDb(this);
   }
 }
 
@@ -129,7 +130,25 @@ export class Burn {
   @Field((type) => String)
   feeTo: string;
 
-  constructor(burn: BurnDb) {
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.transaction = "";
+    this.timestamp = ZERO_BD;
+    this.pair = new Pair();
+    this.liquidity = ZERO_BD;
+    this.amount0 = ZERO_BD;
+    this.amount1 = ZERO_BD;
+    this.logIndex = ZERO_BD;
+    this.amountUSD = ZERO_BD;
+    this.feeLiquidity = ZERO_BD;
+    this.needsComplete = false; // todo: init value?
+    this.sender = "";
+    this.to = "";
+    this.feeTo = "";
+  }
+  
+  fromDb(burn: BurnDb) {
     this._id = burn._id;
     this.id = burn.id;
     this.transaction = burn.transaction;
@@ -147,6 +166,10 @@ export class Burn {
     this.sender = burn.sender;
     this.to = burn.to;
     this.feeTo = burn.feeTo;
+  }
+
+  justId(id: string) {
+    this.id = id;
   }
 }
 

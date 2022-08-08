@@ -88,13 +88,17 @@ export class Transaction {
 
     let burnTypes = [];
     for (let burnId of txn.burns) {
-      burnTypes.push(new Burn(burnId));
+      var b = new Burn();
+      b.justId(burnId)
+      burnTypes.push(b);
     }
     this.burns = burnTypes;
 
     let swapTypes = [];
     for (let swapId of txn.swaps) {
-      swapTypes.push(new Swap(swapId));
+      var s = new Swap();
+      s.justId(swapId);
+      swapTypes.push(s);
     }
     this.burns = burnTypes;
   }

@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
-import { User, UserType } from "./user";
+import { User } from "./user";
 import { Ref } from "../types/ref";
 import { Pair } from "./pair";
 import { ObjectIdScalar } from "../types/objectIdScalar";

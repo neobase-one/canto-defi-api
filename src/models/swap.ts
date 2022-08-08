@@ -76,7 +76,8 @@ export class SwapDb {
   }
 
   toGenerated() {
-    return new Swap(this)
+    var s = new Swap()
+    return s.fromDb(this);
   }
 }
 
@@ -129,7 +130,25 @@ export class Swap {
   @Field((type) => String)
   from: string;
 
-  constructor(swap: SwapDb) {
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.transaction = new Transaction();
+    this.timestamp = ZERO_BD;
+    this.pair = new Pair();
+    this.liquidity = ZERO_BD;
+    this.amount0In = ZERO_BD;
+    this.amount1In = ZERO_BD;
+    this.amount0Out = ZERO_BD;
+    this.amount1Out = ZERO_BD;
+    this.logIndex = ZERO_BD;
+    this.amountUSD = ZERO_BD;
+    this.to = "";
+    this.sender = "";
+    this.from = "";
+  }
+
+  fromDb(swap: SwapDb) {
     this._id = swap._id;
     this.id = swap.id;
     this.transaction = new Transaction(this);
@@ -147,6 +166,10 @@ export class Swap {
     this.to = swap.to;
     this.sender = swap.sender;
     this.from = swap.from;
+  }
+
+  justId(id: string) {
+    this.id = id;
   }
 }
 
