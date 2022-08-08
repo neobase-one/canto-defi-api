@@ -105,19 +105,22 @@ export class PairHourData {
   @Field((type) => DecimalScalar)
   hourlyTxns: Decimal;
 
-  constructor (pair: PairHourDataDb) {
-      this._id = pair._id;
-      this.id = pair.id;
-      this.hourStartUnix = pair.hourStartUnix;
-      this.pair = new Pair(pair.pair);
-      this.reserve0 = pair.reserve0;
-      this.reserve1 = pair.reserve1;
-      this.totalSupply = pair.totalSupply;
-      this.reserveUSD = pair.reserveUSD;
-      this.hourlyVolumeToken0 = pair.hourlyVolumeToken0;
-      this.hourlyVolumeToken1 = pair.hourlyVolumeToken1;
-      this.hourlyVolumeUSD = pair.hourlyVolumeUSD;
-      this.hourlyTxns = pair.hourlyTxns;
+  constructor (pairDb: PairHourDataDb) {
+      this._id = pairDb._id;
+      this.id = pairDb.id;
+      this.hourStartUnix = pairDb.hourStartUnix;
+      var pair = new Pair();
+      pair.justId(pairDb.pair);
+      this.pair = pair;
+      //this.pair = new Pair();
+      this.reserve0 = pairDb.reserve0;
+      this.reserve1 = pairDb.reserve1;
+      this.totalSupply = pairDb.totalSupply;
+      this.reserveUSD = pairDb.reserveUSD;
+      this.hourlyVolumeToken0 = pairDb.hourlyVolumeToken0;
+      this.hourlyVolumeToken1 = pairDb.hourlyVolumeToken1;
+      this.hourlyVolumeUSD = pairDb.hourlyVolumeUSD;
+      this.hourlyTxns = pairDb.hourlyTxns;
   }
 }
 

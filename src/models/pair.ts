@@ -165,8 +165,8 @@ export class Pair {
   constructor() {
     this._id = new ObjectId();
     this.id = "";
-    this.token0 = "";
-    this.token1 = "";
+    this.token0 = new Token();
+    this.token1 = new Token();
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;
