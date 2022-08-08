@@ -564,7 +564,8 @@ export async function transferEventHandler(
       from
     ); // todo
     fromUserLiquidityPosition.liquidityTokenBalance = convertTokenToDecimal(
-      pairContract.balanceOf(from), // todo: create balanceOfFunction
+      // pairContract.balanceOf(from), // todo: create balanceOfFunction
+      ONE_BD, // todo: create balanceOfFunction
       BI_18
     ); // todo
     await new LiquidityPositionModel(fromUserLiquidityPosition).save();
@@ -577,7 +578,8 @@ export async function transferEventHandler(
       to
     ); // todo
     toUserLiquidityPosition.liquidityTokenBalance = convertTokenToDecimal(
-      pairContract.balanceOf(to), // todo: create balanceOfFunction
+      // pairContract.balanceOf(to), // todo: create balanceOfFunction
+      ONE_BD, // todo: create balanceOfFunction
       BI_18
     ); // todo
     await new LiquidityPositionModel(toUserLiquidityPosition).save();

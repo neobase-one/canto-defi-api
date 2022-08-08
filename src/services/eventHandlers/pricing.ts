@@ -69,8 +69,11 @@ export async function findEthPerToken(token: Token) {
   // loop through whitelist and check if paired with any
   for (let i = 0; i < WHITELIST.length; ++i) {
     // todo: declare factoryContract, getPair
+    
     let factoryContract: StableswapFactory;
-    let pairAddress = factoryContract.getPair(token.id, WHITELIST[i]);
+    // let pairAddress = factoryContract.getPair(token.id, WHITELIST[i]);
+    let pair: any = await pairService.getPair(token.id, WHITELIST[i]);
+    let pairAddress = pair.id;
     if (pairAddress.toHexString() != ADDRESS_ZERO) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (
