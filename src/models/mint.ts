@@ -7,73 +7,57 @@ import { Transaction } from "./transaction";
 import { Ref } from "../types/ref";
 import { Pair } from "./pair";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_PAIR, EMPTY_TRANSACTION, ZERO_BD } from "../utils/constants";
+import { ZERO_BD } from "../utils/constants";
 
-@ObjectType()
-export class Mint {
-  @Field((type) => ObjectIdScalar)
-  @Property({ default: "", required: false })
+// mongo database object
+export class MintDb {
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  @Field((type) => Transaction)
-  @Property({ ref: () => Transaction, required: false})
-  transaction?: Ref<Transaction>; // todo: Ref conversion
+  @Property({ default: "", required: false })
+  transaction: string;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
 
-  @Field((type) => Pair)
-  @Property({ ref: () => Pair, required: false})
-  pair?: Ref<Pair>; // todo: Ref conversion
+  @Property({ default: "", required: false })
+  pair: string;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   liquidity: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   amount0: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   amount1: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   logIndex: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   amountUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   feeLiquidity: Decimal;
 
-  // todo: to, sender, feeTo - Bytes
-  @Field((type) => String)
   @Property({ default: "", required: false })
   to: string;
 
-  @Field((type) => String)
   @Property({ default: "", required: false })
   sender: string;
 
-  @Field((type) => String)
   @Property({ default: "", required: false })
   feeTo: string;
 
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.transaction = EMPTY_TRANSACTION;
+    this.transaction = "";
     this.timestamp = ZERO_BD;
-    this.pair = EMPTY_PAIR;
+    this.pair = "";
     this.liquidity = ZERO_BD;
     this.amount0 = ZERO_BD;
     this.amount1 = ZERO_BD;
@@ -84,6 +68,101 @@ export class Mint {
     this.to = "";
     this.feeTo = "";
   }
+
+  toGenerated() {
+    var m = new Mint()
+    return m.fromDb(this);
+  }
 }
 
-export const MintModel = getModelForClass(Mint);
+export const MintModel = getModelForClass(MintDb);
+
+// graphql return object (type Block as shown in schema.ts)
+// decorator docs: https://typegraphql.com/docs/types-and-fields.html 
+@ObjectType()
+export class Mint {
+  @Field((type) => ObjectIdScalar)
+  _id: ObjectId;
+
+  @Field((type) => ID)
+  id: string;
+
+  @Field((type) => Transaction)
+  transaction: Transaction; // todo: Ref conversion
+
+  @Field((type) => DecimalScalar)
+  timestamp: Decimal;
+
+  @Field((type) => Pair)
+  pair: Pair; // todo: Ref conversion
+
+  @Field((type) => DecimalScalar)
+  liquidity: Decimal;
+
+  @Field((type) => DecimalScalar)
+  amount0: Decimal;
+
+  @Field((type) => DecimalScalar)
+  amount1: Decimal;
+
+  @Field((type) => DecimalScalar)
+  logIndex: Decimal;
+
+  @Field((type) => DecimalScalar)
+  amountUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  feeLiquidity: Decimal;
+
+  // todo: to, sender, feeTo - Bytes
+  @Field((type) => String)
+  to: string;
+
+  @Field((type) => String)
+  sender: string;
+
+  @Field((type) => String)
+  feeTo: string;
+
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.transaction = new Transaction();
+    this.timestamp = ZERO_BD;
+    this.pair = new Pair();
+    this.liquidity = ZERO_BD;
+    this.amount0 = ZERO_BD;
+    this.amount1 = ZERO_BD;
+    this.logIndex = ZERO_BD;
+    this.amountUSD = ZERO_BD;
+    this.feeLiquidity = ZERO_BD;
+    this.sender = "";
+    this.to = "";
+    this.feeTo = "";
+  }
+
+  fromDb(mdb: MintDb) {
+    this._id = mdb._id;
+    this.id = mdb.id;
+    var t = new Transaction();
+    t.justId(mdb.transaction);
+    this.transaction = t;
+    this.timestamp = ZERO_BD;
+    var p = new Pair()
+    p.justId(mdb.pair);
+    this.pair = p;
+    this.liquidity = ZERO_BD;
+    this.amount0 = ZERO_BD;
+    this.amount1 = ZERO_BD;
+    this.logIndex = ZERO_BD;
+    this.amountUSD = ZERO_BD;
+    this.feeLiquidity = ZERO_BD;
+    this.sender = "";
+    this.to = "";
+    this.feeTo = "";
+  }
+
+  justId(id: string) {
+    this.id = id;
+  }
+}

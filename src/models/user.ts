@@ -4,9 +4,7 @@ import { Field, ObjectType, ID } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { LiquidityPosition } from "./liquidityPosition";
-import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { EMPTY_POSITION } from "../utils/constants";
 
 @ObjectType()
 export class User {
@@ -28,9 +26,47 @@ export class User {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.liquidityPosition = EMPTY_POSITION;
+    this.liquidityPosition = "";
     this.usdSwapped = new Decimal(0); // todo: change to canto
   }
 }
 
-export const UserModel = getModelForClass(User);
+
+export const UserModel = getModelForClass(UserDb);
+
+// graphql object
+// NOTE: the name you give @ObjectType will be name of return object in graphql
+@ObjectType()
+export class User {
+  @Field((type) => ObjectIdScalar)
+  _id: ObjectId;
+
+  @Field((type) => ID)
+  id: string;
+
+  @Field((type) => LiquidityPosition)
+  liquidityPosition: LiquidityPosition;
+
+  @Field((type) => DecimalScalar)
+  usdSwapped: Decimal;
+
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.liquidityPosition = new LiquidityPosition();
+    this.usdSwapped = new Decimal(0);
+  }
+
+  fromDb(user: UserDb) {
+    this._id = user._id;
+    this.id = user.id;
+    var l = new LiquidityPosition();
+    l.justId(user.liquidityPosition);
+    this.liquidityPosition = l;
+    this.usdSwapped = user.usdSwapped;
+  }
+
+  justId(id: string) {
+    this.id = id;
+  }
+}

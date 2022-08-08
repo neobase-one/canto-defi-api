@@ -9,7 +9,8 @@ export class PairHourDataService {
   async getOrCreate(id: string) {
     let doc = await PairHourDataModel.findOne({id: id}).exec();
     if (doc === null) {
-      let pairHourData = new PairHourData(id);
+      let pairHourData = new PairHourData();
+      pairHourData.justId(id);
       doc = new PairHourDataModel(pairHourData);
     }
     return doc;

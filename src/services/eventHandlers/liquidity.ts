@@ -30,7 +30,8 @@ export async function createLiquidityPosition(exchange: string, user: string) {
     // let pair = Pair.load(exchange.toHexString())
     let pair: any = await pairService.getByAddress(exchange);
     pair.liquidityProviderCount = pair.liquidityProviderCount.plus(ONE_BD);
-    liquidityTokenBalance = new LiquidityPosition(id);
+    liquidityTokenBalance = new LiquidityPosition();
+    liquidityTokenBalance.justId(id);
     liquidityTokenBalance.liquidityTokenBalance = ZERO_BD;
     liquidityTokenBalance.pair = exchange;
     liquidityTokenBalance.user = user;
@@ -48,7 +49,8 @@ export async function createUser(address: string) {
 
   let user: any = await userService.getById(address);
   if (user === null) {
-    user = new User(address);
+    user = new User();
+    user.justId(address);
     user.usdSwapped = ZERO_BD;
     user.save();
   }
@@ -73,9 +75,8 @@ export async function createLiquiditySnapshot(
   let token1: any = await tokenService.getByAddress(pair.token0);
 
   // create new snapshot
-  let snapshot = new LiquidityPositionSnapshot(
-    position.id.concat(timestamp.toString())
-  );
+  let snapshot = new LiquidityPositionSnapshot();
+  snapshot.justId(position.id.concat(timestamp.toString()));
   // snapshot.liquidityPosition = position.id;
   snapshot.timestamp = timestamp;
   snapshot.blockNumber = new Decimal(event.blockNumber);

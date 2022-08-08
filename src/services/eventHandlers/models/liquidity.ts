@@ -9,7 +9,8 @@ export class LiquidityPositionService {
   async getOrCreate(id: string) {
     let doc = await LiquidityPositionModel.findOne({id: id}).exec();
     if (doc === null) {
-      let liquidityPosition = new LiquidityPosition(id);
+      let liquidityPosition = new LiquidityPosition();
+      liquidityPosition.justId(id);
       doc = new LiquidityPositionModel(liquidityPosition);
     }
     return doc;
@@ -26,7 +27,8 @@ export class LiquidityPositionSnapshotService {
   async getOrCreate(id: string) {
     let doc = await LiquidityPositionSnapshotModel.findOne({id: id}).exec();
     if (doc === null) {
-      let liquidityPositionSnapshot = new LiquidityPositionSnapshot(id);
+      let liquidityPositionSnapshot = new LiquidityPositionSnapshot();
+      liquidityPositionSnapshot.justId(id);
       doc = new LiquidityPositionSnapshotModel(liquidityPositionSnapshot);
     }
     return doc;

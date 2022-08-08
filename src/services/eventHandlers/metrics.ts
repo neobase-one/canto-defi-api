@@ -41,7 +41,8 @@ export async function updateFactoryDayData(event: EventData) {
     dayId.toString()
   );
   if (factoryDayData === null) {
-    factoryDayData = new StableswapDayData(dayId.toString());
+    factoryDayData = new StableswapDayData();
+    factoryDayData.justId(dayId.toString());
     factoryDayData.date = dayStartTimestamp;
   }
 
@@ -106,7 +107,8 @@ export async function updatePairHourData(event: EventData) {
   let pair: any = await pairService.getByAddress(event.address);
   let pairHourData: any = await pairHourDataService.getById(hourPairId);
   if (pairHourData === null) {
-    pairHourData = new PairHourData(hourPairId);
+    pairHourData = new PairHourData();
+    pairHourData.justId(hourPairId);
     pairHourData.hourStartUnix = new Decimal(hourStartUnix);
     pairHourData.pair = event.address;
   }
@@ -134,7 +136,8 @@ export async function updateTokenDayData(token: Token, event: EventData) {
 
   let tokenDayData: any = await tokenDayDataService.getById(tokenDayId);
   if (tokenDayData === null) {
-    tokenDayData = new TokenDayData(tokenDayId);
+    tokenDayData = new TokenDayData();
+    tokenDayData.justId(tokenDayId);
     tokenDayData.date = dayStartTimestamp;
     tokenDayData.token = token.id;
     tokenDayData.priceUSD = token.derivedETH.times(bundle.ethPrice);

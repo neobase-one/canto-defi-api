@@ -20,12 +20,14 @@ import { getTimestamp } from "../../utils/helper";
 export async function initFactoryCollection() {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
   // create new factory w address
-  let factory = new StableswapFactory(FACTORY_ADDRESS);
+  let factory = new StableswapFactory();
+  factory.justId(FACTORY_ADDRESS);
   // console.log("INIT", factory);
   await new StableswapFactoryModel(factory).save();
 
   // create new bundle
-  let bundle = new Bundle("1");
+  let bundle = new Bundle();
+  bundle.justId("1");
   // console.log(bundle);
   await new BundleModel(bundle).save();
 }
