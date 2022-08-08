@@ -17,8 +17,8 @@ export class TokenDayDataDb {
   @Property({ default: new Date(), required: false })
   date: Date;
 
-  @Property({ default: new Token(), required: false })
-  token: Token;
+  @Property({ default: "", required: false })
+  token: string;
 
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeToken: Decimal;
@@ -48,7 +48,7 @@ export class TokenDayDataDb {
     this._id = new ObjectId();
     this.id = id;
     this.date = new Date(0);
-    this.token = EMPTY_TOKEN;
+    this.token = "";
     this.dailyVolumeToken = ZERO_BD;
     this.dailyVolumeETH = ZERO_BD;
     this.dailyVolumeUSD = ZERO_BD;
