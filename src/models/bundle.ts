@@ -22,6 +22,10 @@ export class BundleDb {
     this.id = id;
     this.ethPrice = ZERO_BD;
   }
+
+  toGenerated() {
+    return new Block(this)
+  }
 }
 
 // graphql return object (type Block as shown in schema.ts)
@@ -37,7 +41,7 @@ export class Bundle {
   @Field((type) => DecimalScalar)
   ethPrice: Decimal;
 
-  toGenerated(bundle: BundleDb) {
+  constructor(bundle: BundleDb) {
     this._id = bundle._id;
     this.id = bundle.id;
     this.ethPrice = bundle.ethPrice;

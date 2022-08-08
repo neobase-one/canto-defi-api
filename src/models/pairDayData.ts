@@ -8,57 +8,44 @@ import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { EMPTY_TOKEN, ZERO_BD } from "../utils/constants";
 
-@ObjectType()
-export class PairDayData {
-  @Field((type) => ObjectIdScalar)
+// mongo database object
+export class PairDayDataDb {
   @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  @Field()
   @Property({ default: new Date(), required: false })
   date: Date;
 
-  @Field((type) => Token)
   @Property({ ref: ()=>Token, required: false })
   token0?: Ref<Token>; // todo: ref
 
-  @Field((type) => Token)
   @Property({ ref: ()=>Token, required: false })
   token1?: Ref<Token>; // todo: ref
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   reserve0: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   reserve1: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   totalSupply: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   reserveUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeToken0: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeToken1: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   dailyTxns: Decimal;
 
@@ -77,6 +64,69 @@ export class PairDayData {
     this.dailyVolumeUSD = ZERO_BD;
     this.dailyTxns = ZERO_BD;
   }
+
+  toGenerated() {
+    return new Block(this)
+  }
 }
 
-export const PairDayDataModel = getModelForClass(PairDayData);
+// graphql return object
+@ObjectType()
+export class PairDayData {
+  @Field((type) => ObjectIdScalar)
+  _id: ObjectId;
+
+  @Field((type) => ID)
+  id: string;
+
+  @Field()
+  date: Date;
+
+  @Field((type) => Token)
+  token0: Token; // todo: ref
+
+  @Field((type) => Token)
+  token1?: Token; // todo: ref
+
+  @Field((type) => DecimalScalar)
+  reserve0: Decimal;
+
+  @Field((type) => DecimalScalar)
+  reserve1: Decimal;
+
+  @Field((type) => DecimalScalar)
+  totalSupply: Decimal;
+
+  @Field((type) => DecimalScalar)
+  reserveUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  dailyVolumeToken0: Decimal;
+
+  @Field((type) => DecimalScalar)
+  dailyVolumeToken1: Decimal;
+
+  @Field((type) => DecimalScalar)
+  dailyVolumeUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  dailyTxns: Decimal;
+
+  constructor (pair: PairDayDataDb) {
+    this._id = pair._id;
+    this.id = pair.id;
+    this.date = pair.date;
+    this.token0 = new Token(pair.token0);
+    this.token1 = new Token(pair.token1);
+    this.reserve0 = pair.reserve0;
+    this.reserve1 = pair.reserve1;
+    this.totalSupply = pair.totalSupply;
+    this.reserveUSD = pair.reserveUSD;
+    this.dailyVolumeToken0 = pair.dailyVolumeToken0;
+    this.dailyVolumeToken1 = pair.dailyVolumeToken1;
+    this.dailyVolumeUSD = pair.dailyVolumeUSD;
+    this.dailyTxns = pair.dailyTxns;
+  }
+}
+
+export const PairDayDataModel = getModelForClass(PairDayDataDb);

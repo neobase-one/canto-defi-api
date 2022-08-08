@@ -33,6 +33,10 @@ export class LiquidityPositionDb {
     this.pair = EMPTY_PAIR;
     this.liquidityTokenBalance = ZERO_BD;
   }
+
+  toGenerated() {
+    return new Block(this)
+  }
 }
 
 export const LiquidityPositionModel = getModelForClass(LiquidityPositionDb);
@@ -55,7 +59,7 @@ export class LiquidityPosition {
   @Field((type) => DecimalScalar)
   liquidityTokenBalance: Decimal;
 
-  toGenerated(position: LiquidityPositionDb) {
+  constructor(position: LiquidityPositionDb) {
     this._id = position._id
     this.id = position.id;
     this.user = new User(position.user);

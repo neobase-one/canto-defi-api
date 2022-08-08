@@ -73,6 +73,10 @@ export class BurnDb {
     this.to = "";
     this.feeTo = "";
   }
+
+  toGenerated() {
+    return new Block(this)
+  }
 }
 
 // graphql return object (type Block as shown in schema.ts)
@@ -125,7 +129,7 @@ export class Burn {
   @Field((type) => String)
   feeTo: string;
 
-  toGenerated(burn: BurnDb) {
+  constructor(burn: BurnDb) {
     this._id = burn._id;
     this.id = burn.id;
     this.transaction = burn.transaction;

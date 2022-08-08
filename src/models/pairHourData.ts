@@ -8,53 +8,41 @@ import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { EMPTY_PAIR, ZERO_BD } from "../utils/constants";
 
-@ObjectType()
-export class PairHourData {
-  @Field((type) => ObjectIdScalar)
+// mongo database object
+export class PairHourDataDb {
   @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   hourStartUnix: Decimal;
 
-  @Field((type) => Pair)
   @Property({ ref: ()=>Pair, required: false })
   pair?: Ref<Pair>; // todo
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   reserve0: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   reserve1: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   totalSupply: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   reserveUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   hourlyVolumeToken0: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   hourlyVolumeToken1: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   hourlyVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   hourlyTxns: Decimal;
 
@@ -74,4 +62,59 @@ export class PairHourData {
   }
 }
 
-export const PairHourDataModel = getModelForClass(PairHourData);
+// graphql return object
+@ObjectType()
+export class PairHourData {
+  @Field((type) => ObjectIdScalar)
+  readonly _id: ObjectId;
+
+  @Field((type) => ID)
+  id: string;
+
+  @Field((type) => DecimalScalar)
+  hourStartUnix: Decimal;
+
+  @Field((type) => Pair)
+  pair: Pair; // todo
+
+  @Field((type) => DecimalScalar)
+  reserve0: Decimal;
+
+  @Field((type) => DecimalScalar)
+  reserve1: Decimal;
+
+  @Field((type) => DecimalScalar)
+  totalSupply: Decimal;
+
+  @Field((type) => DecimalScalar)
+  reserveUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  hourlyVolumeToken0: Decimal;
+
+  @Field((type) => DecimalScalar)
+  hourlyVolumeToken1: Decimal;
+
+  @Field((type) => DecimalScalar)
+  hourlyVolumeUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  hourlyTxns: Decimal;
+
+  constructor (pair: PairDayDataDb) {
+      this._id = pair._id;
+      this.id = pair.id;
+      this.hourStartUnix = pair.hourStartUnix;
+      this.pair = pair.pair;
+      this.reserve0 = pair.reserve0;
+      this.reserve1 = pair.reserve1;
+      this.totalSupply = pair.totalSupply;
+      this.reserveUSD = pair.reserveUSD;
+      this.hourlyVolumeToken0 = pair.hourlyVolumeToken0;
+      this.hourlyVolumeToken1 = pair.hourlyVolumeToken1;
+      this.hourlyVolumeUSD = pair.hourlyVolumeUSD;
+      this.hourlyTxns = pair.hourlyTxns;
+  }
+}
+
+export const PairHourDataModel = getModelForClass(PairHourDataDb);

@@ -71,6 +71,9 @@ export class LiquidityPositionSnapshotDb {
     this.liquidityTokenBalance = ZERO_BD;
   }
 
+  toGenerated() {
+    return new Block(this)
+  }
 }
 
 // graphql return object (type Block as shown in schema.ts)
