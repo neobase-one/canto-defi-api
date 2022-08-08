@@ -39,12 +39,3 @@ export class HealthInput {
   @Field({nullable: false})
   subgraphName: string
 }
-
-@InputType()
-export class BlocksInput {
-  @Field({nullable: false})
-  timestampFrom: Date
- 
-  @Field({nullable:false})
-  timestampTo: Date
-}
