@@ -60,13 +60,17 @@ export class PairHourDataDb {
       this.hourlyVolumeUSD = ZERO_BD;
       this.hourlyTxns = ZERO_BD;
   }
+
+  toGenerated() {
+    return new Block(this)
+  }
 }
 
 // graphql return object
 @ObjectType()
 export class PairHourData {
   @Field((type) => ObjectIdScalar)
-  readonly _id: ObjectId;
+  _id: ObjectId;
 
   @Field((type) => ID)
   id: string;

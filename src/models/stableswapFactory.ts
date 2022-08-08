@@ -6,41 +6,32 @@ import Decimal from "decimal.js";
 import { ZERO_BD } from "../utils/constants";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 
-@ObjectType()
-export class StableswapFactory {
-  @Field((type) => ObjectIdScalar)
+// mongo database object
+export class StableswapFactoryDb {
   @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
-  @Field((type) => ID, {name: "id", nullable: true})
   @Property({default: "", required: false })
   address: string;
 
-  @Field((type) => Int, {nullable: true})
   @Property({ default: 0, required: false })
   pairCount: number;
 
-  @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
   totalVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
   totalVolumeETH: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
   untrackedVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
   totalLiquidityUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
   totalLiquidityETH: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
   @Property({ default: new Decimal("0"), required: false })
   txCount: Decimal;
 
@@ -59,6 +50,55 @@ export class StableswapFactory {
     this.totalLiquidityETH = ZERO_BD;
     this.txCount = ZERO_BD;
   }
+
+  toGenerated() {
+    return new Block(this)
+  }
 }
 
-export const StableswapFactoryModel = getModelForClass(StableswapFactory);
+// graphql return object
+@ObjectType()
+export class StableswapFactory {
+  @Field((type) => ObjectIdScalar)
+  _id: ObjectId;
+
+  @Field((type) => ID, {name: "id", nullable: true})
+  address: string;
+
+  @Field((type) => Int, {nullable: true})
+  pairCount: number;
+
+  @Field((type) => DecimalScalar, {nullable: true})
+  totalVolumeUSD: Decimal;
+
+  @Field((type) => DecimalScalar, {nullable: true})
+  totalVolumeETH: Decimal;
+
+  @Field((type) => DecimalScalar, {nullable: true})
+  untrackedVolumeUSD: Decimal;
+
+  @Field((type) => DecimalScalar, {nullable: true})
+  totalLiquidityUSD: Decimal;
+
+  @Field((type) => DecimalScalar, {nullable: true})
+  totalLiquidityETH: Decimal;
+
+  @Field((type) => DecimalScalar, {nullable: true})
+  txCount: Decimal;
+
+  block: Decimal;
+
+  constructor (swap: StableswapDayDataDb) {
+    this._id = swap._id;
+    this.address = swap.address;
+    this.pairCount = swap.pairCount;
+    this.totalVolumeUSD = swap.totalVolumeUSD;
+    this.totalVolumeETH = swap.totalVolumeETH;
+    this.untrackedVolumeUSD = swap.untrackedVolumeUSD;
+    this.totalLiquidityUSD = swap.totalLiquidityUSD;
+    this.totalLiquidityETH = swap.totalLiquidityETH;
+    this.txCount = swap.txCount;
+  }
+}
+
+export const StableswapFactoryModel = getModelForClass(StableswapFactoryDb);
