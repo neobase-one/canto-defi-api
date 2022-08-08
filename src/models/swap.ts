@@ -60,9 +60,9 @@ export class SwapDb {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.transaction = EMPTY_TRANSACTION;
+    this.transaction = "";
     this.timestamp = ZERO_BD;
-    this.pair = EMPTY_PAIR;
+    this.pair = "";
     this.liquidity = ZERO_BD;
     this.amount0In = ZERO_BD;
     this.amount1In = ZERO_BD;
@@ -79,7 +79,6 @@ export class SwapDb {
     return new Swap(this)
   }
 }
-
 
 // graphql return object
 @ObjectType()

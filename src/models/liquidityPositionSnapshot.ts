@@ -57,11 +57,11 @@ export class LiquidityPositionSnapshotDb {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.liquidityPosition = EMPTY_POSITION;
+    this.liquidityPosition = "";
     this.timestamp = ZERO_BD;
     this.blockNumber = ZERO_BD;
-    this.user = EMPTY_USER;
-    this.pair = EMPTY_PAIR;
+    this.user = "";
+    this.pair = "";
     this.token0PriceUSD = ZERO_BD;
     this.token1PriceUSD = ZERO_BD;
     this.reserve0 = ZERO_BD;

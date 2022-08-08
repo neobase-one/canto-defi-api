@@ -53,8 +53,8 @@ export class PairDayDataDb {
     this._id = new ObjectId();
     this.id = id;
     this.date = new Date(0);
-    this.token0 = EMPTY_TOKEN;
-    this.token1 = EMPTY_TOKEN;
+    this.token0 = "";
+    this.token1 = "";
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;

@@ -50,7 +50,7 @@ export class PairHourDataDb {
       this._id = new ObjectId();
       this.id = id;
       this.hourStartUnix = ZERO_BD;
-      this.pair = EMPTY_PAIR;
+      this.pair = "";
       this.reserve0 = ZERO_BD;
       this.reserve1 = ZERO_BD;
       this.totalSupply = ZERO_BD;

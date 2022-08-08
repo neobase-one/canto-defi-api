@@ -22,7 +22,7 @@ export class BurnDb {
   @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
 
-  @Property({ref: Pair, required: false})
+  @Property({ default: "", required: false})
   pair: string; // todo: Ref
 
   @Property({ default: new Decimal("0"), required: false })

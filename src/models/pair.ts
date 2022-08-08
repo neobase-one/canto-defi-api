@@ -73,8 +73,8 @@ export class PairDb {
   constructor(address: string) {
     this._id = new ObjectId();
     this.id = address;
-    this.token0 = EMPTY_TOKEN;
-    this.token1 = EMPTY_TOKEN;
+    this.token0 = "";
+    this.token1 = "";
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;
@@ -167,7 +167,7 @@ export class Pair {
     this.token0 = new Token(pair.token0);
     this.token1 = new Token(pair.token1);
     this.reserve0 = pair.reserve0;
-    this.reserve1 = pari.reserve1;
+    this.reserve1 = pair.reserve1;
     this.totalSupply = pair.totalSupply;
     this.reserveETH = pair.reserveETH;
     this.reserveUSD = pair.reserveUSD;
@@ -175,7 +175,7 @@ export class Pair {
     this.token0Price = pair.token0Price;
     this.token1Price = pair.token1Price;
     this.volumeToken0 = pair.volumeToken0;
-    this.volumeToken1 = pair.volueToken1;
+    this.volumeToken1 = pair.volumeToken1;
     this.volumeUSD = pair.volumeUSD;
     this.untrackedVolumeUSD = pair.untrackedVolumeUSD;
     this.txCount = pair.txCount;

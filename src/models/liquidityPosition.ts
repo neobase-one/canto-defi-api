@@ -29,8 +29,8 @@ export class LiquidityPositionDb {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.user = EMPTY_USER;
-    this.pair = EMPTY_PAIR;
+    this.user = "";
+    this.pair = "";
     this.liquidityTokenBalance = ZERO_BD;
   }
 
