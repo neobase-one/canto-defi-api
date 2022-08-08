@@ -105,7 +105,7 @@ export class PairHourData {
   @Field((type) => DecimalScalar)
   hourlyTxns: Decimal;
 
-  constructor (pair: PairDayDataDb) {
+  constructor (pair: PairHourDataDb) {
       this._id = pair._id;
       this.id = pair.id;
       this.hourStartUnix = pair.hourStartUnix;

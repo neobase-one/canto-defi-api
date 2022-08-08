@@ -94,7 +94,8 @@ export class PairDb {
   }
 
   toGenerated() {
-    return new Pair(this)
+    var pair = new Pair()
+    return pair.fromDb(this);
   }
 }
 
@@ -161,7 +162,30 @@ export class Pair {
   @Field((type) => DecimalScalar)
   liquidityProviderCount: Decimal;
 
-  constructor(pair: PairDb) {
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.token0 = "";
+    this.token1 = "";
+    this.reserve0 = ZERO_BD;
+    this.reserve1 = ZERO_BD;
+    this.totalSupply = ZERO_BD;
+    this.reserveETH = ZERO_BD;
+    this.reserveUSD = ZERO_BD;
+    this.trackedReserveETH = ZERO_BD;
+    this.token0Price = ZERO_BD;
+    this.token1Price = ZERO_BD;
+    this.volumeToken0 = ZERO_BD;
+    this.volumeToken1 = ZERO_BD;
+    this.volumeUSD = ZERO_BD;
+    this.untrackedVolumeUSD = ZERO_BD;
+    this.txCount = ZERO_BD;
+    this.createdAtTimestamp = ZERO_BD;
+    this.createdAtBlockNumber = ZERO_BD;
+    this.liquidityProviderCount = ZERO_BD;
+  }
+
+  fromDb(pair: PairDb) {
     this._id = pair._id;
     this.id = pair.id;
     this.token0 = new Token(pair.token0);
@@ -182,6 +206,10 @@ export class Pair {
     this.createdAtTimestamp = pair.createdAtTimestamp;
     this.createdAtBlockNumber = pair.createdAtBlockNumber;
     this.liquidityProviderCount = pair.liquidityProviderCount;
+  }
+
+  justId(id: String) {
+    this.id = id;
   }
 }
 
