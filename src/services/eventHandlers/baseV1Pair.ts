@@ -435,7 +435,7 @@ export async function transferEventHandler(
 
   // get pair and load
   let pair: any = await pairService.getByAddress(event.address);
-  let pairContract: any = new web3.eth.Contract(BaseV1PairABI, event.address);
+  let pairContract: any = await new web3.eth.Contract(BaseV1PairABI, event.address);
 
   // liquidity token amount being transferred
   let value: Decimal = convertTokenToDecimal(input.amount, BI_18);

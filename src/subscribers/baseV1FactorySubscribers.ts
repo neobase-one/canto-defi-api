@@ -20,7 +20,7 @@ export async function baseV1FactoryIndexHistoricalEvents(
   const t = await web3.eth.getProtocolVersion();
   console.log(t);
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
-  const stableswapFactory = new web3.eth.Contract(
+  const stableswapFactory = await new web3.eth.Contract(
     BaseV1FactoryABI,
     FACTORY_ADDRESS
   );

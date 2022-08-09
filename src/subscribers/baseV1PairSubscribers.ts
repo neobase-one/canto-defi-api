@@ -20,7 +20,7 @@ export async function baseV1PairIndexHistoricalEvents(
   // console.log(contract);
   for (var i = 0; i < iter; i++) {
     for (let address of addresses) {
-      const contract = new web3.eth.Contract(BaseV1PairABI, address);
+      const contract = await new web3.eth.Contract(BaseV1PairABI, address);
 
       // Transfer
       await transferRangeEventHandler(contract, i);
