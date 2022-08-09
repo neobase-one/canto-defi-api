@@ -60,3 +60,4 @@ export class Block {
     this.timestamp = block.timestamp;
   }
 }
+

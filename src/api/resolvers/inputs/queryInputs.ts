@@ -120,24 +120,121 @@ export class LiquidityPositionSnapshotInput {
 export class LiquidityPositionSnapshotsInput {
   @Field({ nullable: false })
   id: string
+
+  @Field({ nullable: true })
+  blockNumber: number
+}
+
+@InputType()
+export class TokenDayDatasInput {
+  @Field({ nullable: true })
+  tokenAddress: string
+
+  @Field({ nullable: true })
+  skip: number
+
+  @Field({ nullable: true })
+  orderBy: string
+
+  @Field({ nullable: true })
+  orderDirection: OrderDirection
+  
+  @Field({ nullable: true })
+  date_gt: number
+}
+
+@InputType()
+export class UniswapFactoriesInput {
+  @Field({nullable: false})
+  id: string
+
+  @Field({nullable:true})
+  block: number
+}
+@InputType()
+export class UniswapDayDatasInput {
+  @Field({ nullable: false })
+  startTime: number
+
+  @Field({ nullable: false })
+  skip: number
+}
+
+@InputType()
+export class BlocksInput {
+  @Field({ nullable: false })
+  timestampFrom: number
+
+  @Field({ nullable: false })
+  timestampTo: number
+}
+
+@InputType()
+export class HealthInput {
+  @Field({ nullable: false })
+  subgraphName: string
+}
+
+@InputType()
+export class TokenInput {
+  @Field({ nullable: true })
+  id: string
+
+  @Field({ nullable: true })
+  skip: number  
+}
+
+@InputType()
+export class PairInput {
+  @Field({ nullable: false })
+  id: string
+}
+
+enum OrderDirection {
+  ASC = "ASC",
+  DES = "DES"
+}
+
+@InputType()
+export class UserInput {
+  @Field({ nullable: false })
+  id: string
+}
+
+@InputType()
+export class UsersInput {
+  @Field({ nullable: false })
+  id: string
+}
+
+@InputType()
+export class LiquidityPositionInput {
+  @Field({ nullable: false })
+  id: string
+}
+
+@InputType()
+export class LiquidityPositionsInput {
+  @Field({ nullable: false })
+  id: string
+}
+
+@InputType()
+export class LiquidityPositionSnapshotInput {
+  @Field({ nullable: false })
+  id: string
+}
+
+@InputType()
+export class LiquidityPositionSnapshotsInput {
+  @Field({ nullable: false })
+  id: string
 }
 
 @InputType()
 export class TransactionInput {
   @Field({ nullable: false })
   id: string
-}
-
-@InputType()
-export class TransactionsInput {
-  @Field(type => [String], { nullable: false })
-  id: [string]
-  
-  @Field({ nullable: true })
-  orderBy: string
-  
-  @Field({ nullable: true })
-  orderDirection: OrderDirection
 }
 
 @InputType()
@@ -184,7 +281,7 @@ export class BundleInput {
 
 @InputType()
 export class BundlesInput {
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   id: string
 
   @Field({ nullable: true })

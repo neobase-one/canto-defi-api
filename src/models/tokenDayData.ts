@@ -77,8 +77,9 @@ export class TokenDayData {
   @Field((type) => ID)
   id: string;
 
-  @Field((type) => Date)
-  date: Date;
+  @Field()
+  @Property({ default: 0, required: false })
+  date: Decimal;
 
   @Field((type) => Token)
   token: Token; // todo: Ref
