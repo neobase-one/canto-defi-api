@@ -1,12 +1,16 @@
 import { baseV1FactoryIndexHistoricalEvents } from "./baseV1FactorySubscribers";
 import { baseV1PairIndexHistoricalEvents } from "./baseV1PairSubscribers";
+import { blockIndexHistorical } from "./blockSubscribers";
 
 export async function indexHistoricalEvents(latestBlockNumber: number) {
+  // Block
+  blockIndexHistorical(latestBlockNumber);
+  
   // BaseV1Factory
-  baseV1FactoryIndexHistoricalEvents(latestBlockNumber);
+  await baseV1FactoryIndexHistoricalEvents(latestBlockNumber);
 
   // BaseV1Pair
-  baseV1PairIndexHistoricalEvents(latestBlockNumber);
+  await baseV1PairIndexHistoricalEvents(latestBlockNumber);
 }
 
-export async function initSubscribers() {};
+export async function initSubscribers() { };

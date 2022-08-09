@@ -6,59 +6,45 @@ import Decimal from "decimal.js";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { ZERO_BD } from "../utils/constants";
 
-@ObjectType()
-export class Token {
-  @Field((type) => ObjectIdScalar)
-  @Property({ default: "", required: false })
+export class TokenDb {
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  @Field((type) => String)
   @Property({ default: "", required: false })
   name: string;
-  
-  @Field((type) => String)
+
   @Property({ default: "", required: false })
   symbol: string;
 
-  @Field((type) => Int)
   @Property({ default: new Decimal("0"), required: false })
   decimals: number;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   totalSupply: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   tradeVolume: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   tradeVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   untrackedVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   txCount: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
-  totalLiquididty: Decimal;
+  totalLiquidity: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   derivedETH: Decimal;
 
-  constructor (address: string) {
+  constructor(id: string) {
     this._id = new ObjectId();
-    this.id = address;
+    this.id = id;
     this.name = "";
     this.symbol = "";
     this.decimals = 0;
@@ -67,9 +53,89 @@ export class Token {
     this.tradeVolumeUSD = ZERO_BD;
     this.untrackedVolumeUSD = ZERO_BD;
     this.txCount = ZERO_BD;
-    this.totalLiquididty = ZERO_BD;
+    this.totalLiquidity = ZERO_BD;
     this.derivedETH = ZERO_BD;
+  }
+
+  toGenerated() {
+    var tkn = new Token();
+    return tkn.fromDb(this);
   }
 }
 
-export const TokenModel = getModelForClass(Token);
+export const TokenModel = getModelForClass(TokenDb);
+
+// graphql return object (type Block as shown in schema.ts)
+// decorator docs: https://typegraphql.com/docs/types-and-fields.html 
+@ObjectType()
+export class Token {
+  @Field((type) => ObjectIdScalar)
+  _id: ObjectId;
+
+  @Field((type) => ID)
+  id: string;
+
+  @Field((type) => String)
+  name: string;
+
+  @Field((type) => String)
+  symbol: string;
+
+  @Field((type) => Int)
+  decimals: number;
+
+  @Field((type) => DecimalScalar)
+  totalSupply: Decimal;
+
+  @Field((type) => DecimalScalar)
+  tradeVolume: Decimal;
+
+  @Field((type) => DecimalScalar)
+  tradeVolumeUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  untrackedVolumeUSD: Decimal;
+
+  @Field((type) => DecimalScalar)
+  txCount: Decimal;
+
+  @Field((type) => DecimalScalar)
+  totalLiquidity: Decimal;
+
+  @Field((type) => DecimalScalar)
+  derivedETH: Decimal;
+
+  fromDb(token: TokenDb) {
+    this._id = token._id;
+    this.id = token.id;
+    this.name = token.name;
+    this.symbol = token.symbol;
+    this.decimals = token.decimals;
+    this.totalSupply = token.totalSupply;
+    this.tradeVolume = token.tradeVolume;
+    this.tradeVolumeUSD = token.tradeVolumeUSD;
+    this.untrackedVolumeUSD = token.untrackedVolumeUSD;
+    this.txCount = token.txCount;
+    this.totalLiquidity = token.totalLiquidity;
+    this.derivedETH = token.derivedETH;
+  }
+
+  justId(id: string) {
+    this.id = id;
+  }
+
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.name = "";
+    this.symbol = "";
+    this.decimals = 0;
+    this.totalSupply = ZERO_BD;
+    this.tradeVolume = ZERO_BD;
+    this.tradeVolumeUSD = ZERO_BD;
+    this.untrackedVolumeUSD = ZERO_BD;
+    this.txCount = ZERO_BD;
+    this.totalLiquidity = ZERO_BD;
+    this.derivedETH = ZERO_BD;
+  }
+}

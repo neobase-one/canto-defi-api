@@ -4,7 +4,7 @@ import { StableswapFactory, StableswapFactoryModel } from "../../../models/stabl
 
 @Service()
 export class StableswapFactoryService {
-  async getStablewsapFactory(address: string) {
+  async getByAddress(address: string) {
     return await StableswapFactoryModel.findOne({address: address}).exec();
   }
 }

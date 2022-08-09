@@ -7,36 +7,116 @@ import { Mint } from "./mint";
 import { Burn } from "./burn";
 import { Swap } from "./swap";
 import { ObjectIdScalar } from "../types/objectIdScalar";
+import { ZERO_BD } from "../utils/constants";
 
-@ObjectType()
-export class Transaction {
-  @Field((type) => ObjectIdScalar)
-  @Property({ default: "", required: false })
+// mongo database object
+export class TransactionDb {
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
+  // decorator docs: https://typegoose.github.io/typegoose/docs/api/decorators/prop
   @Property({ default: "", required: false })
   id: string;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
 
-  @Field((type) => DecimalScalar)
   @Property({ default: new Decimal("0"), required: false })
   blockNumber: Decimal;
 
+  @Property({ type: String, default: [], required: false })
+  mints: string[];
+
+  @Property({ type: String, default: [], required: false })
+  burns: string[];
+
+  @Property({ type: String, default: [], required: false })
+  swaps: string[];
+
+  constructor(id: string) {
+    this._id = new ObjectId();
+    this.id = id;
+    this.timestamp = ZERO_BD;
+    this.blockNumber = ZERO_BD;
+    this.mints = [];
+    this.burns = [];
+    this.swaps = [];
+  }
+
+  toGenerated() {
+    var t = new Transaction()
+    return t.fromDb(this);
+  }
+}
+
+export const TransactionModel = getModelForClass(TransactionDb);
+
+// graphql return object (type Block as shown in schema.ts)
+// decorator docs: https://typegraphql.com/docs/types-and-fields.html 
+@ObjectType()
+export class Transaction {
+  @Field((type) => ObjectIdScalar)
+  _id: ObjectId;
+
+  @Field((type) => ID)
+  id: string;
+
+  @Field((type) => DecimalScalar)
+  timestamp: Decimal;
+
+  @Field((type) => DecimalScalar)
+  blockNumber: Decimal;
+
   @Field((type) => [Mint])
-  @Property({ default: [], required: false, type: () => Mint })
-  mints: Mint[];
+  mints: Mint[]; // todo: how to return Mint object
 
   @Field((type) => [Burn])
-  @Property({ default: [], required: false, type: () => Burn })
   burns: Burn[];
 
   @Field((type) => [Swap])
-  @Property({ default: [], required: false, type: () => Swap })
-  swaps: Swap[];
-}
+  swaps: string[];
 
-export const TransactionModel = getModelForClass(Transaction);
+  constructor() {
+    this._id = new ObjectId();
+    this.id = "";
+    this.timestamp = ZERO_BD;
+    this.blockNumber = ZERO_BD;
+    this.mints = [];
+    this.burns = [];
+    this.swaps = [];
+  }
+
+  fromDb(txn: TransactionDb) {
+    this._id = txn._id;
+    this.id = txn.id;
+    this.timestamp = txn.timestamp;
+    this.blockNumber = txn.blockNumber;
+
+    let mintTypes = [];
+    for (let mintId of txn.mints) {
+      var m = new Mint();
+      m.justId(mintId);
+      mintTypes.push(m);
+    }
+    this.mints = mintTypes;
+
+    let burnTypes = [];
+    for (let burnId of txn.burns) {
+      var b = new Burn();
+      b.justId(burnId)
+      burnTypes.push(b);
+    }
+    this.burns = burnTypes;
+
+    let swapTypes = [];
+    for (let swapId of txn.swaps) {
+      var s = new Swap();
+      s.justId(swapId);
+      swapTypes.push(s);
+    }
+    this.burns = burnTypes;
+  }
+
+  justId(id: string) {
+    this.id = id;
+  }
+}
