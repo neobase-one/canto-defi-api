@@ -12,6 +12,7 @@ import { BundleService } from "./models/bundle";
 import { PairService } from "./models/pair";
 import { TokenService } from "./models/token";
 import { Config } from "../../config/index.js";
+import { convertToDecimal } from "../../utils/helper";
 
 // todo: fix types + imports
 
@@ -70,7 +71,7 @@ export async function findEthPerToken(token: TokenDb) {
         pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
       ) {
         let token1: any = await tokenService.getByAddress(pair.token1);
-        return pair.token1Price.times(token1.derivedETH); // return token1 per our token * Eth per token 1
+        return convertToDecimal(pair.token1Price).times(convertToDecimal(token1.derivedETH)); // return token1 per our token * Eth per token 1
       }
       if (
         pair.token1 == token.id &&
@@ -101,8 +102,8 @@ export async function getTrackedVolumeUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: any = await bundleService.get();
-  let price0 = token0.derivedETH.times(bundle.ethPrice);
-  let price1 = token1.derivedETH.times(bundle.ethPrice);
+  let price0 = convertToDecimal(token0.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  let price1 = convertToDecimal(token1.derivedETH).times(convertToDecimal(bundle.ethPrice));
 
   // dont count tracked volume on these pairs - usually rebass tokens
   if (UNTRACKED_PAIRS.includes(pair.id)) {
@@ -111,8 +112,8 @@ export async function getTrackedVolumeUSD(
 
   // if less than 5 LPs, require high minimum reserve amount amount or return 0
   if (pair.liquidityProviderCount.lt(new Decimal(5))) {
-    let reserve0USD = pair.reserve0.times(price0);
-    let reserve1USD = pair.reserve1.times(price1);
+    let reserve0USD = convertToDecimal(pair.reserve0).times(price0);
+    let reserve1USD = convertToDecimal(pair.reserve1).times(price1);
     if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
       if (reserve0USD.plus(reserve1USD).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
         return ZERO_BD;
@@ -172,8 +173,8 @@ export async function getTrackedLiquidityUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: any = await bundleService.get();
-  let price0 = token0.derivedETH.times(bundle.ethPrice);
-  let price1 = token1.derivedETH.times(bundle.ethPrice);
+  let price0 = convertToDecimal(token0.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  let price1 = convertToDecimal(token1.derivedETH).times(convertToDecimal(bundle.ethPrice));
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
