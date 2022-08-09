@@ -64,7 +64,7 @@ export async function findEthPerToken(token: TokenDb) {
     let pairAddress = await factoryContract.methods.getPair(token.id, WHITELIST[i], true).call();
     let pairAddress2 = await factoryContract.methods.getPair(token.id, WHITELIST[i], false).call();
     console.log(pairAddress, pairAddress2)
-    if (pairAddress.toHexString() != ADDRESS_ZERO) {
+    if (pairAddress != ADDRESS_ZERO) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (
         pair.token0 == token.id &&
@@ -98,6 +98,8 @@ export async function getTrackedVolumeUSD(
   token1: TokenDb,
   pair: PairDb
 ) {
+  tokenAmount0 = new Decimal(tokenAmount0.toString())
+  tokenAmount1 = new Decimal(tokenAmount0.toString())
   // services
   const bundleService = Container.get(BundleService);
 
@@ -169,6 +171,9 @@ export async function getTrackedLiquidityUSD(
   tokenAmount1: Decimal,
   token1: TokenDb
 ) {
+  tokenAmount0 = new Decimal(tokenAmount0.toString())
+  tokenAmount1 = new Decimal(tokenAmount0.toString())
+  
   // services
   const bundleService = Container.get(BundleService);
 

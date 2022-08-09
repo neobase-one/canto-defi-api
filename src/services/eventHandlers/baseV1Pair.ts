@@ -119,14 +119,14 @@ export async function mintEventHandler(
 
   // update LP position
   let liquidityPosition = await createLiquidityPosition(event.address, mint.to);
-  createLiquiditySnapshot(liquidityPosition, event);
+  await createLiquiditySnapshot(liquidityPosition, event);
 
   // update day metric objects
-  updatePairDayData(event);
-  updatePairHourData(event);
-  updateFactoryDayData(event);
-  updateTokenDayData(token0, event);
-  updateTokenDayData(token1, event);
+  await updatePairDayData(event);
+  await updatePairHourData(event);
+  await updateFactoryDayData(event);
+  await updateTokenDayData(token0, event);
+  await updateTokenDayData(token1, event);
 }
 
 export async function burnEventHandler(
@@ -196,14 +196,14 @@ export async function burnEventHandler(
     event.address,
     burn.sender
   );
-  createLiquiditySnapshot(liquidityPosition, event);
+  await createLiquiditySnapshot(liquidityPosition, event);
 
   // update day metric objects
-  updatePairDayData(event);
-  updatePairHourData(event);
-  updateFactoryDayData(event);
-  updateTokenDayData(token0, event);
-  updateTokenDayData(token1, event);
+  await updatePairDayData(event);
+  await updatePairHourData(event);
+  await updateFactoryDayData(event);
+  await updateTokenDayData(token0, event);
+  await updateTokenDayData(token1, event);
 }
 
 export async function swapEventHandler(
@@ -345,11 +345,11 @@ export async function swapEventHandler(
   transaction.save();
 
   // update day entities
-  let pairDayData: any = updatePairDayData(event);
-  let pairHourData: any = updatePairHourData(event);
-  let stableswapDayData: any = updateFactoryDayData(event);
-  let token0DayData: any = updateTokenDayData(token0 as TokenDb, event);
-  let token1DayData: any = updateTokenDayData(token1 as TokenDb, event);
+  let pairDayData: any = await updatePairDayData(event);
+  let pairHourData: any = await updatePairHourData(event);
+  let stableswapDayData: any = await updateFactoryDayData(event);
+  let token0DayData: any = await updateTokenDayData(token0 as TokenDb, event);
+  let token1DayData: any = await updateTokenDayData(token1 as TokenDb, event);
 
   // swap specific updating
   console.log(stableswapDayData)
@@ -581,7 +581,7 @@ export async function transferEventHandler(
       BI_18
     );
     await new LiquidityPositionModel(fromUserLiquidityPosition).save();
-    createLiquiditySnapshot(fromUserLiquidityPosition, event);
+    await createLiquiditySnapshot(fromUserLiquidityPosition, event);
   }
 
   if (to != ADDRESS_ZERO && to != pair.id) {
@@ -594,7 +594,7 @@ export async function transferEventHandler(
       BI_18
     );
     await new LiquidityPositionModel(toUserLiquidityPosition).save();
-    createLiquiditySnapshot(toUserLiquidityPosition, event);
+    await createLiquiditySnapshot(toUserLiquidityPosition, event);
   }
 
   await transaction.save();
