@@ -1,5 +1,9 @@
-import { Date } from "mongoose";
-import { Field, InputType } from "type-graphql";
+import { Field, InputType, Int } from "type-graphql";
+
+enum OrderDirection {
+  ASC = "ASC",
+  DES = "DES"
+}
 
 @InputType()
 export class StableswapFactoryInput {
@@ -38,11 +42,20 @@ export class UniswapFactoriesInput {
 }
 @InputType()
 export class UniswapDayDatasInput {
-  @Field({ nullable: false })
+  @Field((type) => Int,{ nullable: false })
   startTime: number
 
-  @Field({ nullable: false })
+  @Field({ defaultValue:0, nullable: true })
   skip: number
+
+  @Field({ defaultValue:1000, nullable: true })
+  first: number
+  
+  @Field({ defaultValue:"date",nullable: true })
+  orderBy: string
+  
+  @Field({ defaultValue:OrderDirection.ASC,nullable: true })
+  orderDirection: OrderDirection
 }
 
 @InputType()
@@ -73,11 +86,6 @@ export class TokenInput {
 export class PairInput {
   @Field({ nullable: false })
   id: string
-}
-
-enum OrderDirection {
-  ASC = "ASC",
-  DES = "DES"
 }
 
 @InputType()
@@ -167,7 +175,7 @@ export class BundleInput {
 @InputType()
 export class BundlesInput {
   @Field({ nullable: false })
-  id: string
+  id: number
 
   @Field({ nullable: true })
   blockNumber: number
