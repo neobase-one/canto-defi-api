@@ -9,15 +9,15 @@ export async function blockIndexHistorical(latestBlockNumber: number) {
   const t = await web3.eth.getProtocolVersion();
   console.log(t);
 
-  for (var i = 0; i < iter; i++) {
-    await blockEventHandler(i);
+  for (var i = iter; i >= 0; i--) {
+    blockEventHandler(i);
   }
 }
 
 async function blockEventHandler(iter: number) {
   const range = Config.canto.rpcBlockRange;
-  const start = iter * range;
-  const end = (iter + 1) * range;
+  const end = iter * range;
+  const start = (iter - 1) * range;
 
   // sync
   // for (var i = start; i < end; i++) {
@@ -41,6 +41,6 @@ async function blockEventHandler(iter: number) {
     blockDb.number = block.number;
     blockDb.timestamp = block.timestamp as number;
 
-    await new BlockModel(blockDb).save();
+    new BlockModel(blockDb).save();
   }
 }

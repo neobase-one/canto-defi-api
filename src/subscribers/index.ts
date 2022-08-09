@@ -4,7 +4,7 @@ import { blockIndexHistorical } from "./blockSubscribers";
 
 export async function indexHistoricalEvents(latestBlockNumber: number) {
   // Block
-  await blockIndexHistorical(latestBlockNumber);
+  blockIndexHistorical(latestBlockNumber);
   
   // BaseV1Factory
   await baseV1FactoryIndexHistoricalEvents(latestBlockNumber);
