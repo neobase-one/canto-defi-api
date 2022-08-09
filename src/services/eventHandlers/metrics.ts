@@ -9,7 +9,7 @@ import { StableswapFactory } from "../../models/stableswapFactory";
 import { Token } from "../../models/token";
 import { TokenDayData } from "../../models/tokenDayData";
 import { ONE_BD, ZERO_BD } from "../../utils/constants";
-import { getTimestamp } from "../../utils/helper";
+import { convertToDecimal, getTimestamp } from "../../utils/helper";
 import { BundleService } from "./models/bundle";
 import { BurnService } from "./models/burn";
 import { FactoryDayDataService } from "./models/factoryDayData";
@@ -84,7 +84,7 @@ export async function updatePairDayData(event: EventData) {
   pairDayData.reserve0 = pair.reserve0;
   pairDayData.reserve1 = pair.reserve1;
   pairDayData.reserveUSD = pair.reserveUSD;
-  pairDayData.dailyTxns = pairDayData.dailyTxns.plus(ONE_BD);
+  pairDayData.dailyTxns = convertToDecimal(pairDayData.dailyTxns).plus(ONE_BD);
   await pairDayData.save();
 
   return pairDayData as PairDayData;
@@ -117,7 +117,7 @@ export async function updatePairHourData(event: EventData) {
   pairHourData.reserve0 = pair.reserve0;
   pairHourData.reserve1 = pair.reserve1;
   pairHourData.reserveUSD = pair.reserveUSD;
-  pairHourData.hourlyTxns = pairHourData.hourlyTxns.plus(ONE_BD);
+  pairHourData.hourlyTxns = convertToDecimal(pairHourData.hourlyTxns).plus(ONE_BD);
   await pairHourData.save();
 
   return pairHourData as PairHourData;
@@ -148,7 +148,7 @@ export async function updateTokenDayData(token: Token, event: EventData) {
   tokenDayData.totalLiquidityUSD = tokenDayData.totalLiquidityETH.times(
     bundle.ethPrice
   );
-  tokenDayData.dailyTxns = tokenDayData.dailyTxns.plus(ONE_BD);
+  tokenDayData.dailyTxns = convertToDecimal(tokenDayData.dailyTxns).plus(ONE_BD);
   tokenDayData.save();
 
   return tokenDayData as TokenDayData;
