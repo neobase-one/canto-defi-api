@@ -60,7 +60,7 @@ export async function findEthPerToken(token: TokenDb) {
   }
   // loop through whitelist and check if paired with any
   for (let i = 0; i < WHITELIST.length; ++i) {
-    let factoryContract: any = new web3.eth.Contract(BaseV1FactoryABI, FACTORY_ADDRESS);
+    let factoryContract: any = await new web3.eth.Contract(BaseV1FactoryABI, FACTORY_ADDRESS);
     let pairAddress = await factoryContract.methods.getPair(token.id, WHITELIST[i], true).call();
     let pairAddress2 = await factoryContract.methods.getPair(token.id, WHITELIST[i], false).call();
     console.log(pairAddress, pairAddress2)

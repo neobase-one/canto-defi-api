@@ -276,7 +276,7 @@ export async function swapEventHandler(
   token1.untrackedVolumeUSD = convertToDecimal(token1.untrackedVolumeUSD).plus(derivedAmountUSD);
 
   // update txn counts
-  token0.txCount = convertToDecimal(token0.txCoun).plus(ONE_BD);
+  token0.txCount = convertToDecimal(token0.txCount).plus(ONE_BD);
   token1.txCount = convertToDecimal(token1.txCount).plus(ONE_BD);
 
   // update pair volume data, use tracked amount if we have it as its probably more accurate
@@ -352,6 +352,7 @@ export async function swapEventHandler(
   let token1DayData: any = updateTokenDayData(token1 as TokenDb, event);
 
   // swap specific updating
+  console.log(stableswapDayData)
   stableswapDayData.dailyVolumeUSD =
     convertToDecimal(stableswapDayData.dailyVolumeUSD).plus(trackedAmountUSD);
   stableswapDayData.dailyVolumeETH =
