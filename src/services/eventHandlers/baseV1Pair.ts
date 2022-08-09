@@ -409,7 +409,7 @@ export async function transferEventHandler(
   const txHash: string = event.transactionHash;
 
   // ignore inital transfers for first adds
-  if (input.to == ADDRESS_ZERO && input.amount.equals(new Decimal(1000))) {
+  if (input.to == ADDRESS_ZERO && convertToDecimal(input.amount).equals(new Decimal(1000))) {
     return;
   }
 
