@@ -100,7 +100,7 @@ export class PairInput {
   id: string
 
   @Field((type)=>[String],{ nullable: true })
-  allPairs: [string]
+  id_in: [string]
 
   @Field((type => Int), { defaultValue: 1000, nullable: true })
   first: number

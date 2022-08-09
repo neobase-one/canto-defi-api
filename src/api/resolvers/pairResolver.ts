@@ -11,13 +11,13 @@ export class PairsResolver {
         if (!isNullOrUndefined(input.id)) {
             inputId = input.id;
         } else {
-            inputId = input.allPairs;
+            inputId = input.id_in;
         }
         let sortBy = input.orderBy;
         if (input.orderDirection === OrderDirection.DES) {
             sortBy = "-" + sortBy.trim;
         }
-        const val = await PairModel.find({ id: input.id }).sort(sortBy).limit(input.first).exec();
+        const val = await PairModel.find({ id: inputId }).sort(sortBy).limit(input.first).exec();
         console.log(val);
         return val;
     }
