@@ -647,8 +647,8 @@ export async function syncEventHandler(
   await bundle.save();
 
   // update derived ETH values
-  token0.derivedETH = await findEthPerToken(token0 as TokenDb);
-  token1.derivedETH = await findEthPerToken(token0 as TokenDb);
+  token0.derivedETH = await findEthPerToken(token0);
+  token1.derivedETH = await findEthPerToken(token1);
   await token0.save();
   await token1.save();
 
