@@ -18,7 +18,7 @@ import {
   StableswapFactoryModel,
 } from "../../models/stableswapFactory";
 import { Swap, SwapDb, SwapModel } from "../../models/swap";
-import { Token, TokenModel } from "../../models/token";
+import { Token, TokenDb, TokenModel } from "../../models/token";
 import { Transaction, TransactionDb, TransactionModel } from "../../models/transaction";
 import {
   BurnEventInput,
@@ -309,6 +309,7 @@ export async function swapEventHandler(
     transaction.mints = [];
     transaction.swaps = [];
     transaction.burns = [];
+    transaction = new TransactionModel(transaction);
   }
 
   // swaps
@@ -347,8 +348,8 @@ export async function swapEventHandler(
   let pairDayData: any = updatePairDayData(event);
   let pairHourData: any = updatePairHourData(event);
   let stableswapDayData: any = updateFactoryDayData(event);
-  let token0DayData: any = updateTokenDayData(token0 as Token, event);
-  let token1DayData: any = updateTokenDayData(token1 as Token, event);
+  let token0DayData: any = updateTokenDayData(token0 as TokenDb, event);
+  let token1DayData: any = updateTokenDayData(token1 as TokenDb, event);
 
   // swap specific updating
   stableswapDayData.dailyVolumeUSD =
@@ -646,8 +647,8 @@ export async function syncEventHandler(
   await bundle.save();
 
   // update derived ETH values
-  token0.derivedETH = findEthPerToken(token0 as Token);
-  token1.derivedETH = findEthPerToken(token0 as Token);
+  token0.derivedETH = findEthPerToken(token0 as TokenDb);
+  token1.derivedETH = findEthPerToken(token0 as TokenDb);
   await token0.save();
   await token1.save();
 

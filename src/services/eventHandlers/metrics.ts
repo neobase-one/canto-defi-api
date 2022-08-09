@@ -2,12 +2,12 @@ import Decimal from "decimal.js";
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../config";
-import { PairDayData } from "../../models/pairDayData";
-import { PairHourData } from "../../models/pairHourData";
+import { PairDayData, PairDayDataDb } from "../../models/pairDayData";
+import { PairHourData, PairHourDataDb } from "../../models/pairHourData";
 import { StableswapDayData } from "../../models/stableswapDayData";
 import { StableswapFactory } from "../../models/stableswapFactory";
-import { Token } from "../../models/token";
-import { TokenDayData } from "../../models/tokenDayData";
+import { Token, TokenDb } from "../../models/token";
+import { TokenDayData, TokenDayDataDb } from "../../models/tokenDayData";
 import { ONE_BD, ZERO_BD } from "../../utils/constants";
 import { getTimestamp } from "../../utils/helper";
 import { BundleService } from "./models/bundle";
@@ -53,7 +53,7 @@ export async function updateFactoryDayData(event: EventData) {
 
   await factoryDayData.save();
 
-  return factoryDayData as StableswapDayData;
+  return factoryDayData;
 }
 
 export async function updatePairDayData(event: EventData) {
@@ -87,7 +87,7 @@ export async function updatePairDayData(event: EventData) {
   pairDayData.dailyTxns = pairDayData.dailyTxns.plus(ONE_BD);
   await pairDayData.save();
 
-  return pairDayData as PairDayData;
+  return pairDayData as PairDayDataDb;
 }
 
 export async function updatePairHourData(event: EventData) {
@@ -107,8 +107,7 @@ export async function updatePairHourData(event: EventData) {
   let pair: any = await pairService.getByAddress(event.address);
   let pairHourData: any = await pairHourDataService.getById(hourPairId);
   if (pairHourData === null) {
-    pairHourData = new PairHourData();
-    pairHourData.justId(hourPairId);
+    pairHourData = new PairHourDataDb(hourPairId);
     pairHourData.hourStartUnix = new Decimal(hourStartUnix);
     pairHourData.pair = event.address;
   }
@@ -120,10 +119,10 @@ export async function updatePairHourData(event: EventData) {
   pairHourData.hourlyTxns = pairHourData.hourlyTxns.plus(ONE_BD);
   await pairHourData.save();
 
-  return pairHourData as PairHourData;
+  return pairHourData;
 }
 
-export async function updateTokenDayData(token: Token, event: EventData) {
+export async function updateTokenDayData(token: TokenDb, event: EventData) {
   // service
   const bundleService = Container.get(BundleService);
   const tokenDayDataService = Container.get(TokenDayDataService);
@@ -136,8 +135,7 @@ export async function updateTokenDayData(token: Token, event: EventData) {
 
   let tokenDayData: any = await tokenDayDataService.getById(tokenDayId);
   if (tokenDayData === null) {
-    tokenDayData = new TokenDayData();
-    tokenDayData.justId(tokenDayId);
+    tokenDayData = new TokenDayDataDb(tokenDayId);
     tokenDayData.date = dayStartTimestamp;
     tokenDayData.token = token.id;
     tokenDayData.priceUSD = token.derivedETH.times(bundle.ethPrice);
@@ -151,5 +149,5 @@ export async function updateTokenDayData(token: Token, event: EventData) {
   tokenDayData.dailyTxns = tokenDayData.dailyTxns.plus(ONE_BD);
   tokenDayData.save();
 
-  return tokenDayData as TokenDayData;
+  return tokenDayData;
 }
