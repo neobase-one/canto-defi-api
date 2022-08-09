@@ -4,6 +4,7 @@ import { StableswapFactoryResovler } from "./factoryResolver";
 import { HealthResolver } from "./healthResolver";
 import { PairsResolver } from "./pairsResolver";
 import { TokenDayDatasResolver } from "./tddResolver";
+import { TokensResolver } from "./tokenResolver";
 import { UniswapDayDatasResolver } from "./uddResolver";
 import { UniswapFactoriesResolver } from "./uniswapFactoriesResolver";
 
@@ -15,5 +16,6 @@ export const resolvers: [Function, ...Function[]] = [
   UniswapDayDatasResolver,
   BundlesResolver,
   PairsResolver,
-  UniswapFactoriesResolver
+  UniswapFactoriesResolver,
+  TokensResolver
 ];

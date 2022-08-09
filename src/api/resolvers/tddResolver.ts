@@ -8,16 +8,15 @@ export class TokenDayDatasResolver {
   @Query(returns => [TokenDayData])
   async tokenDayDatas(@Arg("input") input: TokenDayDatasInput) {
     if (!isNullOrUndefined(input.date_gt)) {
-      const val = await TokenDayDataModel.find({ date: {$gte:input.date_gt}}).exec();
+      const val = await TokenDayDataModel.find({ date: { $gte: input.date_gt } }).exec();
       console.log(val);
       console.log("in single param search");
       return val;
-  } else {
-      const val = await TokenDayDataModel.find({ id: input.tokenAddress}).exec();
+    } else {
+      const val = await TokenDayDataModel.find({ id: input.tokenAddress }).exec();
       console.log(val);
       console.log("in double param search");
       return val;
-  }
-    
+    }
   }
 }

@@ -61,8 +61,11 @@ export class HealthInput {
 
 @InputType()
 export class TokenInput {
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   id: string
+
+  @Field({ nullable: true })
+  skip: number  
 }
 
 @InputType()
