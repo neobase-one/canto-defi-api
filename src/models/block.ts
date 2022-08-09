@@ -1,4 +1,4 @@
-import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
+import { getModelForClass, Prop, Prop as Property } from "@typegoose/typegoose";
 import { ObjectId } from "mongodb";
 import { Field, ObjectType, ID, Int } from "type-graphql";
 import Decimal from "decimal.js";
@@ -10,18 +10,20 @@ export class BlockDb {
 
   readonly _id: ObjectId;
 
-  @Field((type) => ID)
   @Property({ default: "", required: false })
   id: string;
 
-  @Field((type) => Int)
   @Property({ name: "number", default: 0, required: false })
   number: number;
+
+  @Property({default: 0, required: false})
+  timestamp: number
 
   constructor (id: string) {
     this._id = new ObjectId();
     this.id = id;
     this.number = 0;
+    this.timestamp = 0;
   }
 
   toGenerated() {
@@ -45,6 +47,9 @@ export class Block {
   @Field((type) => Int)
   number: number;
 
+  @Field((type) => Int)
+  timestamp: number;
+
   // function to convert database object class into the return object
   // as defined in graphql schema
   // create blockType from block
@@ -52,5 +57,6 @@ export class Block {
     this._id = block._id;
     this.id = block.id;
     this.number = block.number;
+    this.timestamp = block.timestamp;
   }
 }
