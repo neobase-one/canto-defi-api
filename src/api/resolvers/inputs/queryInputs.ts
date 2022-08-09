@@ -19,10 +19,10 @@ export class TokenDayDatasInput {
   @Field({ nullable: true })
   tokenAddress: string
 
-  @Field((type=>Int),{ nullable: true })
+  @Field((type=>Int),{ defaultValue: 1000, nullable: true })
   first: number
 
-  @Field((type=>Int),{ nullable: true })
+  @Field((type=>Int),{ defaultValue: 0, nullable: true })
   skip: number
 
   @Field({ defaultValue: "date", nullable: true })
@@ -48,10 +48,10 @@ export class UniswapDayDatasInput {
   @Field((type) => Int,{ nullable: false })
   startTime: number
 
-  @Field({ defaultValue:0, nullable: true })
+  @Field((type) => Int,{ defaultValue:0, nullable: true })
   skip: number
 
-  @Field({ defaultValue:1000, nullable: true })
+  @Field((type) => Int,{ defaultValue:1000, nullable: true })
   first: number
   
   @Field({ defaultValue:"date",nullable: true })
@@ -63,11 +63,20 @@ export class UniswapDayDatasInput {
 
 @InputType()
 export class BlocksInput {
-  @Field({ nullable: false })
+  @Field((type)=>Int,{ nullable: false })
   timestampFrom: number
 
-  @Field({ nullable: false })
+  @Field((type)=>Int,{ nullable: false })
   timestampTo: number
+
+  @Field((type)=>Int,{ defaultValue:1, nullable: true })
+  first: number
+  
+  @Field({ defaultValue:"date",nullable: true })
+  orderBy: string
+  
+  @Field({ defaultValue:OrderDirection.ASC,nullable: true })
+  orderDirection: OrderDirection
 }
 
 @InputType()
