@@ -243,11 +243,11 @@ export async function swapEventHandler(
   let bundle: any = await bundleService.get();
 
   // get total amounts of derived USD and ETH for tracking
-  let derivedAmountETH = token1.derivedETH
+  let derivedAmountETH = convertToDecimal(token1.derivedETH)
     .times(amount1Total)
-    .plus(token0.derivedETH.times(amount0Total))
+    .plus(convertToDecimal(token0.derivedETH).times(amount0Total))
     .div(new Decimal("2"));
-  let derivedAmountUSD = derivedAmountETH.times(bundle.ethPrice);
+  let derivedAmountUSD = derivedAmountETH.times(convertToDecimal(bundle.ethPrice));
 
   // only accounts for volume through white listed tokens
   let trackedAmountUSD = await getTrackedVolumeUSD(
@@ -262,7 +262,7 @@ export async function swapEventHandler(
   if (bundle.ethPrice.equals(ZERO_BD)) {
     trackedAmountETH = ZERO_BD;
   } else {
-    trackedAmountETH = trackedAmountUSD.div(bundle.ethPrice);
+    trackedAmountETH = trackedAmountUSD.div(convertToDecimal(bundle.ethPrice));
   }
 
   // update token0 global volume and token liquidity stats
@@ -643,12 +643,12 @@ export async function syncEventHandler(
 
   // update ETH price now that reserves could have changed
   let bundle: any = await bundleService.get();
-  bundle.ethPrice = getEthPriceInUSD();
+  bundle.ethPrice = await getEthPriceInUSD();
   await bundle.save();
 
   // update derived ETH values
-  token0.derivedETH = findEthPerToken(token0 as TokenDb);
-  token1.derivedETH = findEthPerToken(token0 as TokenDb);
+  token0.derivedETH = await findEthPerToken(token0 as TokenDb);
+  token1.derivedETH = await findEthPerToken(token0 as TokenDb);
   await token0.save();
   await token1.save();
 
