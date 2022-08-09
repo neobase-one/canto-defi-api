@@ -3,11 +3,11 @@ import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../config";
 import { PairDayData, PairDayDataDb, PairDayDataModel } from "../../models/pairDayData";
-import { PairHourData, PairHourDataDb } from "../../models/pairHourData";
+import { PairHourData, PairHourDataDb, PairHourDataModel } from "../../models/pairHourData";
 import { StableswapDayData, StableswapDayDataDb, StableswapDayDataModel } from "../../models/stableswapDayData";
 import { StableswapFactory } from "../../models/stableswapFactory";
 import { Token, TokenDb } from "../../models/token";
-import { TokenDayData, TokenDayDataDb } from "../../models/tokenDayData";
+import { TokenDayData, TokenDayDataDb, TokenDayDataModel } from "../../models/tokenDayData";
 import { ONE_BD, ZERO_BD } from "../../utils/constants";
 import { convertToDecimal, getTimestamp } from "../../utils/helper";
 import { BundleService } from "./models/bundle";
@@ -111,6 +111,7 @@ export async function updatePairHourData(event: EventData) {
     pairHourData = new PairHourDataDb(hourPairId);
     pairHourData.hourStartUnix = new Decimal(hourStartUnix);
     pairHourData.pair = event.address;
+    pairHourData = new PairHourDataModel(pairHourData);
   }
 
   pairHourData.totalSupply = pair.totalSupply;
@@ -140,6 +141,7 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
     tokenDayData.date = dayStartTimestamp;
     tokenDayData.token = token.id;
     tokenDayData.priceUSD = token.derivedETH.times(bundle.ethPrice);
+    tokenDayData = new TokenDayDataModel(tokenDayData);
   }
   tokenDayData.priceUSD = token.derivedETH.times(bundle.ethPrice);
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
@@ -148,7 +150,7 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
     bundle.ethPrice
   );
   tokenDayData.dailyTxns = convertToDecimal(tokenDayData.dailyTxns).plus(ONE_BD);
-  tokenDayData.save();
+  await tokenDayData.save();
 
   return tokenDayData;
 }
