@@ -447,7 +447,7 @@ export async function transferEventHandler(
     transaction.blockNumber = new Decimal(event.blockNumber);
     transaction.timestamp = timestamp;
     transaction = new TransactionModel(transaction);
-    transaction.save();
+    await transaction.save();
   }
 
   // mints
@@ -670,7 +670,7 @@ export async function syncEventHandler(
   // use derived amounts within pair
   pair.trackedReserveETH = trackedLiquidityETH;
   pair.reserveETH = convertToDecimal(pair.reserve0)
-    .times(convertToDecimal(token0.derivedAmountETH))
+    .times(convertToDecimal(token0.derivedETH))
     .plus(convertToDecimal(convertToDecimal(pair.reserve1).times(convertToDecimal(token1.derivedETH))));
   pair.reserveUSD = convertToDecimal(pair.reserveETH).times(convertToDecimal(bundle.ethPrice));
 
