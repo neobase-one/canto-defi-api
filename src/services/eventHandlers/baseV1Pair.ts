@@ -89,7 +89,7 @@ export async function mintEventHandler(
 
   // update txn counts
   console.log(token0.txCount)
-  token0.txCount = convertToDecimal(token0.txCoun).plus(ONE_BD);
+  token0.txCount = convertToDecimal(token0.txCount).plus(ONE_BD);
   token1.txCount = convertToDecimal(token1.txCount).plus(ONE_BD);
 
   // get new amount of USD and ETH for tracking
@@ -669,7 +669,7 @@ export async function syncEventHandler(
   pair.trackedReserveETH = trackedLiquidityETH;
   pair.reserveETH = convertToDecimal(pair.reserve0)
     .times(convertToDecimal(token0.derivedAmountETH))
-    .plus(convertToDecimal(pair.reserve1.times(convertToDecimal(token1.derivedETH))));
+    .plus(convertToDecimal(convertToDecimal(pair.reserve1).times(convertToDecimal(token1.derivedETH))));
   pair.reserveUSD = convertToDecimal(pair.reserveETH).times(convertToDecimal(bundle.ethPrice));
 
   // use tracked amounts globally
