@@ -87,10 +87,13 @@ export class HealthInput {
 
 @InputType()
 export class TokenInput {
-  @Field({ nullable: true })
-  id: string
+  @Field((type)=>[String],{ nullable: true })
+  id_in: [string]
 
-  @Field({ nullable: true })
+  @Field((type => Int), { defaultValue: 500, nullable: true })
+  first: number
+
+  @Field((type => Int),{ nullable: true })
   skip: number
 }
 
