@@ -1,6 +1,6 @@
 import { Field, InputType, Int } from "type-graphql";
 
-enum OrderDirection {
+export enum OrderDirection {
   ASC = "ASC",
   DES = "DES"
 }
@@ -19,17 +19,20 @@ export class TokenDayDatasInput {
   @Field({ nullable: true })
   tokenAddress: string
 
-  @Field({ nullable: true })
+  @Field((type=>Int),{ nullable: true })
+  first: number
+
+  @Field((type=>Int),{ nullable: true })
   skip: number
 
-  @Field({ nullable: true })
+  @Field({ defaultValue: "date", nullable: true })
   orderBy: string
 
-  @Field({ nullable: true })
+  @Field({ defaultValue: OrderDirection.ASC, nullable: true })
   orderDirection: OrderDirection
   
-  @Field({ nullable: true })
-  date_gt: number
+  @Field((type=>Int),{ nullable: true })
+  date: number
 }
 
 @InputType()
