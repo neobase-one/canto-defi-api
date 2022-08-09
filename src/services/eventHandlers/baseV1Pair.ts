@@ -164,19 +164,19 @@ export async function burnEventHandler(
   let token1Amount = convertTokenToDecimal(input.amount1, token1.decimals);
 
   // update txn counts
-  token0.txCount = token0.txCount.plus(ONE_BD);
-  token1.txCount = token1.txCount.plus(ONE_BD);
+  token0.txCount = convertToDecimal(token0.txCount).plus(ONE_BD);
+  token1.txCount = convertToDecimal(token1.txCount).plus(ONE_BD);
 
   // get new amount of USD and ETH for tracking
   let bundle: any = await bundleService.get();
-  let amountTotalETH = token1.derivedETH
+  let amountTotalETH = convertToDecimal(token1.derivedETH)
     .times(token1Amount)
-    .plus(token0.derivedETH.times(token0Amount));
-  let amountTotalUSD = amountTotalETH.times(bundle.ethPrice);
+    .plus(convertToDecimal(token0.derivedETH).times(token0Amount));
+  let amountTotalUSD = amountTotalETH.times(convertToDecimal(bundle.ethPrice));
 
   // update txn counts
-  pair.txCount = pair.txCount.plus(ONE_BD);
-  factory.txCount = factory.txCount.plus(ONE_BD);
+  pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
+  factory.txCount = convertToDecimal(factory.txCount).plus(ONE_BD);
 
   // save entities
   await token0.save();
