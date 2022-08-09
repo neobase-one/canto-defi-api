@@ -88,7 +88,7 @@ export async function mintEventHandler(
   let token1Amount = convertTokenToDecimal(input.amount1, token1.decimal);
 
   // update txn counts
-  console.log(token0.txCount)
+  // console.log(token0.txCount)
   token0.txCount = convertToDecimal(token0.txCount).plus(ONE_BD);
   token1.txCount = convertToDecimal(token1.txCount).plus(ONE_BD);
 
@@ -352,7 +352,7 @@ export async function swapEventHandler(
   let token1DayData: any = await updateTokenDayData(token1, event);
 
   // swap specific updating
-  console.log(stableswapDayData)
+  // console.log(stableswapDayData)
   stableswapDayData.dailyVolumeUSD =
     convertToDecimal(stableswapDayData.dailyVolumeUSD).plus(trackedAmountUSD);
   stableswapDayData.dailyVolumeETH =

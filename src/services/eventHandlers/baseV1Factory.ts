@@ -39,7 +39,7 @@ export async function pairCreatedEventHandler(
   // console.log("PC", event.blockNumber)
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
   const timestamp: any = await getTimestamp(event.blockNumber);
-  console.log(timestamp)
+  // console.log(timestamp)
 
   // services
   const factoryService = Container.get(StableswapFactoryService);
