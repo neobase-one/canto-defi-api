@@ -617,8 +617,8 @@ export async function syncEventHandler(
   let token1: any = await tokenService.getByAddress(pair.token1);
 
   // reset factory liquiuty by subtracting only tracked liquidity
-  factory.totalLiquidityETH = factory.totalLiquidityETH.minus(
-    pair.trackedReserveETH
+  factory.totalLiquidityETH = convertToDecimal(factory.totalLiquidityETH).minus(
+    convertToDecimal(pair.trackedReserveETH)
   );
 
   // reset token total liquidity amount
