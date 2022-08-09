@@ -29,7 +29,7 @@ import {
 } from "../../types/event/baseV1Pair";
 import { BaseV1PairABI, MintEventSignature } from "../../utils/abiParser/baseV1Pair";
 import { ADDRESS_ZERO, BI_18, ONE_BD, ZERO_BD } from "../../utils/constants";
-import { convertTokenToDecimal, getTimestamp } from "../../utils/helper";
+import { convertToDecimal, convertTokenToDecimal, getTimestamp } from "../../utils/helper";
 import {
   createLiquidityPosition,
   createLiquiditySnapshot,
@@ -621,20 +621,20 @@ export async function syncEventHandler(
   );
 
   // reset token total liquidity amount
-  token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0);
-  token1.totalLiquidity = token1.totalLiquidity.minus(pair.reserve1);
+  token0.totalLiquidity = convertToDecimal(token0.totalLiquidity).minus(convertToDecimal(pair.reserve0));
+  token1.totalLiquidity = convertToDecimal(token1.totalLiquidity).minus(convertToDecimal(pair.reserve1));
 
   pair.reserve0 = convertTokenToDecimal(input.reserve0, token0.decimals);
   pair.reserve1 = convertTokenToDecimal(input.reserve1, token1.decimals);
 
-  if (!pair.reserve1.equals(ZERO_BD)) {
-    pair.token0Price = pair.reserve0.div(pair.reserve1);
+  if (!convertToDecimal(pair.reserve1).equals(ZERO_BD)) {
+    pair.token0Price = convertToDecimal(pair.reserve0).div(convertToDecimal(pair.reserve1));
   } else {
     pair.token0Price = ZERO_BD;
   }
 
-  if (!pair.reserve0.equals(ZERO_BD)) {
-    pair.token1Price = pair.reserve1.div(pair.reserve0);
+  if (!convertToDecimal(pair.reserve0).equals(ZERO_BD)) {
+    pair.token1Price = convertToDecimal(pair.reserve1).div(convertToDecimal(pair.reserve0));
   } else {
     pair.token1Price = ZERO_BD;
   }
@@ -653,34 +653,34 @@ export async function syncEventHandler(
 
   // get tracked liquidity - will be 0 if neither in whitelist
   let trackedLiquidityETH: Decimal;
-  if (!bundle.ethPrice.equals(ZERO_BD)) {
+  if (!convertToDecimal(bundle.ethPrice).equals(ZERO_BD)) {
     let trackedLiquidityUSD = await getTrackedLiquidityUSD(
       pair.reserve0,
       token0,
       pair.reserve1,
       token1
     );
-    trackedLiquidityETH = trackedLiquidityUSD.div(bundle.ethPrice);
+    trackedLiquidityETH = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.ethPrice));
   } else {
     trackedLiquidityETH = ZERO_BD;
   }
 
   // use derived amounts within pair
   pair.trackedReserveETH = trackedLiquidityETH;
-  pair.reserveETH = pair.reserve0
-    .times(token0.derivedAmountETH)
-    .plus(pair.reserve1.times(token1.derivedETH));
-  pair.reserveUSD = pair.reserveETH.times(bundle.ethPrice);
+  pair.reserveETH = convertToDecimal(pair.reserve0)
+    .times(convertToDecimal(token0.derivedAmountETH))
+    .plus(convertToDecimal(pair.reserve1.times(convertToDecimal(token1.derivedETH))));
+  pair.reserveUSD = convertToDecimal(pair.reserveETH).times(convertToDecimal(bundle.ethPrice));
 
   // use tracked amounts globally
   factory.totalLiquidityETH =
-    factory.totalLiquidityETH.plus(trackedLiquidityETH);
-  factory.totalLiquidityUSD = factory.totalLiquidityETH.times(bundle.ethPrice);
+    convertToDecimal(factory.totalLiquidityETH).plus(convertToDecimal(trackedLiquidityETH));
+  factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityETH).times(convertToDecimal(bundle.ethPrice));
   // todo: since just multiplication can try to not use USD if all calc based on ETH
 
   // correctly set liquidity amounts for each token
-  token0.totalLiquidity = token0.totalLiquidity.plus(pair.reserve0);
-  token1.totalLiquidity = token1.totalLiquidity.plus(pair.reserve1);
+  token0.totalLiquidity = convertToDecimal(token0.totalLiquidity).plus(convertToDecimal(pair.reserve0));
+  token1.totalLiquidity = convertToDecimal(token1.totalLiquidity).plus(convertToDecimal(pair.reserve1));
 
   // save
   await bundle.save();
