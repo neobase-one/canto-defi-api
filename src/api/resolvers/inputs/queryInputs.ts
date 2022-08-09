@@ -96,8 +96,20 @@ export class TokenInput {
 
 @InputType()
 export class PairInput {
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   id: string
+
+  @Field((type)=>[String],{ nullable: true })
+  allPairs: [string]
+
+  @Field((type => Int), { defaultValue: 1000, nullable: true })
+  first: number
+
+  @Field({ defaultValue: "date", nullable: true })
+  orderBy: string
+
+  @Field({ defaultValue: OrderDirection.ASC, nullable: true })
+  orderDirection: OrderDirection
 }
 
 @InputType()
