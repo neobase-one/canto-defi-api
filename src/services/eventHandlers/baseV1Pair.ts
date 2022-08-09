@@ -353,50 +353,50 @@ export async function swapEventHandler(
 
   // swap specific updating
   stableswapDayData.dailyVolumeUSD =
-    stableswapDayData.dailyVolumeUSD.plus(trackedAmountUSD);
+    convertToDecimal(stableswapDayData.dailyVolumeUSD).plus(trackedAmountUSD);
   stableswapDayData.dailyVolumeETH =
-    stableswapDayData.dailyVolumeETH.plus(trackedAmountETH);
+    convertToDecimal(stableswapDayData.dailyVolumeETH).plus(trackedAmountETH);
   stableswapDayData.dailyVolumeUntracked =
-    stableswapDayData.dailyVolumeUntracked.plus(derivedAmountUSD);
+    convertToDecimal(stableswapDayData.dailyVolumeUntracked).plus(derivedAmountUSD);
   stableswapDayData.save();
 
   // swap specific updating for pair
   pairDayData.dailyVolumeToken0 =
-    pairDayData.dailyVolumeToken0.plus(amount0Total);
+    convertToDecimal(pairDayData.dailyVolumeToken0).plus(amount0Total);
   pairDayData.dailyVolumeToken1 =
-    pairDayData.dailyVolumeToken1.plus(amount1Total);
+    convertToDecimal(pairDayData.dailyVolumeToken1).plus(amount1Total);
   pairDayData.dailyVolumeUSD =
-    pairDayData.dailyVolumeUSD.plus(trackedAmountUSD);
+    convertToDecimal(pairDayData.dailyVolumeUSD).plus(trackedAmountUSD);
   pairDayData.save();
 
   // update hourly pair data
   pairHourData.hourlyVolumeToken0 =
-    pairHourData.hourlyVolumeToken0.plus(amount0Total);
+    convertToDecimal(pairHourData.hourlyVolumeToken0).plus(amount0Total);
   pairHourData.hourlyVolumeToken1 =
-    pairHourData.hourlyVolumeToken1.plus(amount1Total);
+    convertToDecimal(pairHourData.hourlyVolumeToken1).plus(amount1Total);
   pairHourData.hourlyVolumeUSD =
-    pairHourData.hourlyVolumeUSD.plus(trackedAmountUSD);
+    convertToDecimal(pairHourData.hourlyVolumeUSD).plus(trackedAmountUSD);
   pairHourData.save();
 
   // swap specific updating for token0
   token0DayData.dailyVolumeToken =
-    token0DayData.dailyVolumeToken.plus(amount0Total);
-  token0DayData.dailyVolumeETH = token0DayData.dailyVolumeETH.plus(
-    amount0Total.times(token0.derivedETH)
+    convertToDecimal(token0DayData.dailyVolumeToken).plus(amount0Total);
+  token0DayData.dailyVolumeETH = convertToDecimal(token0DayData.dailyVolumeETH).plus(
+    amount0Total.times(convertToDecimal(token0.derivedETH))
   );
-  token0DayData.dailyVolumeUSD = token0DayData.dailyVolumeUSD.plus(
-    amount0Total.times(token0.derivedETH).times(bundle.ethPrice)
+  token0DayData.dailyVolumeUSD = convertToDecimal(token0DayData.dailyVolumeUSD).plus(
+    amount0Total.times(convertToDecimal(token0.derivedETH)).times(convertToDecimal(bundle.ethPrice))
   );
   token0DayData.save();
 
   // swap specific updating
   token1DayData.dailyVolumeToken =
-    token1DayData.dailyVolumeToken.plus(amount1Total);
-  token1DayData.dailyVolumeETH = token1DayData.dailyVolumeETH.plus(
-    amount1Total.times(token1.derivedETH)
+    convertToDecimal(token1DayData.dailyVolumeToken).plus(amount1Total);
+  token1DayData.dailyVolumeETH = convertToDecimal(token1DayData.dailyVolumeETH).plus(
+    amount1Total.times(convertToDecimal(token1.derivedETH))
   );
-  token1DayData.dailyVolumeUSD = token1DayData.dailyVolumeUSD.plus(
-    amount1Total.times(token1.derivedETH).times(bundle.ethPrice)
+  token1DayData.dailyVolumeUSD = convertToDecimal(token1DayData.dailyVolumeUSD).plus(
+    amount1Total.times(convertToDecimal(token1.derivedETH)).times(convertToDecimal(bundle.ethPrice))
   );
   token1DayData.save();
 }
