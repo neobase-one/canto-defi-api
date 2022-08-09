@@ -68,14 +68,14 @@ export async function findEthPerToken(token: TokenDb) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (
         pair.token0 == token.id &&
-        pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
+        convertToDecimal(pair.reserveETH).gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
       ) {
         let token1: any = await tokenService.getByAddress(pair.token1);
         return convertToDecimal(pair.token1Price).times(convertToDecimal(token1.derivedETH)); // return token1 per our token * Eth per token 1
       }
       if (
         pair.token1 == token.id &&
-        pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
+        convertToDecimal(pair.reserveETH).gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
       ) {
         let token0: any = await tokenService.getByAddress(pair.token0);
         return convertToDecimal(pair.token0Price).times(convertToDecimal(token0.derivedETH)); // return token0 per our token * ETH per token 0
@@ -111,7 +111,7 @@ export async function getTrackedVolumeUSD(
   }
 
   // if less than 5 LPs, require high minimum reserve amount amount or return 0
-  if (pair.liquidityProviderCount.lt(new Decimal(5))) {
+  if (convertToDecimal(pair.liquidityProviderCount).lt(new Decimal(5))) {
     let reserve0USD = convertToDecimal(pair.reserve0).times(price0);
     let reserve1USD = convertToDecimal(pair.reserve1).times(price1);
     if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
