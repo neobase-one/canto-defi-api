@@ -3,9 +3,9 @@
 import Decimal from "decimal.js";
 import Container from "typedi";
 import { web3 } from "../../loaders/web3";
-import { Pair } from "../../models/pair";
+import { Pair, PairDb } from "../../models/pair";
 import { StableswapFactory } from "../../models/stableswapFactory";
-import { Token } from "../../models/token";
+import { Token, TokenDb } from "../../models/token";
 import { BaseV1FactoryABI } from "../../utils/abiParser/baseV1factory";
 import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from "../../utils/constants";
 import { BundleService } from "./models/bundle";
@@ -61,7 +61,7 @@ let MINIMUM_LIQUIDITY_THRESHOLD_ETH = new Decimal("2");
 /**
  * Search through graph to find derived Eth per token.
  **/
-export async function findEthPerToken(token: Token) {
+export async function findEthPerToken(token: TokenDb) {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
 
   // services
@@ -104,10 +104,10 @@ export async function findEthPerToken(token: Token) {
  */
 export async function getTrackedVolumeUSD(
   tokenAmount0: Decimal,
-  token0: Token,
+  token0: TokenDb,
   tokenAmount1: Decimal,
-  token1: Token,
-  pair: Pair
+  token1: TokenDb,
+  pair: PairDb
 ) {
   // services
   const bundleService = Container.get(BundleService);
@@ -176,9 +176,9 @@ export async function getTrackedVolumeUSD(
  */
 export async function getTrackedLiquidityUSD(
   tokenAmount0: Decimal,
-  token0: Token,
+  token0: TokenDb,
   tokenAmount1: Decimal,
-  token1: Token
+  token1: TokenDb
 ) {
   // services
   const bundleService = Container.get(BundleService);
