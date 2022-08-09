@@ -342,14 +342,14 @@ export async function swapEventHandler(
   // update transaction
   swaps.push(swap.id);
   transaction.swaps = swaps;
-  transaction.save();
+  await transaction.save();
 
   // update day entities
   let pairDayData: any = await updatePairDayData(event);
   let pairHourData: any = await updatePairHourData(event);
   let stableswapDayData: any = await updateFactoryDayData(event);
-  let token0DayData: any = await updateTokenDayData(token0 as TokenDb, event);
-  let token1DayData: any = await updateTokenDayData(token1 as TokenDb, event);
+  let token0DayData: any = await updateTokenDayData(token0, event);
+  let token1DayData: any = await updateTokenDayData(token1, event);
 
   // swap specific updating
   console.log(stableswapDayData)
@@ -359,7 +359,7 @@ export async function swapEventHandler(
     convertToDecimal(stableswapDayData.dailyVolumeETH).plus(trackedAmountETH);
   stableswapDayData.dailyVolumeUntracked =
     convertToDecimal(stableswapDayData.dailyVolumeUntracked).plus(derivedAmountUSD);
-  stableswapDayData.save();
+  await stableswapDayData.save();
 
   // swap specific updating for pair
   pairDayData.dailyVolumeToken0 =
@@ -368,7 +368,7 @@ export async function swapEventHandler(
     convertToDecimal(pairDayData.dailyVolumeToken1).plus(amount1Total);
   pairDayData.dailyVolumeUSD =
     convertToDecimal(pairDayData.dailyVolumeUSD).plus(trackedAmountUSD);
-  pairDayData.save();
+  await pairDayData.save();
 
   // update hourly pair data
   pairHourData.hourlyVolumeToken0 =
@@ -377,7 +377,7 @@ export async function swapEventHandler(
     convertToDecimal(pairHourData.hourlyVolumeToken1).plus(amount1Total);
   pairHourData.hourlyVolumeUSD =
     convertToDecimal(pairHourData.hourlyVolumeUSD).plus(trackedAmountUSD);
-  pairHourData.save();
+  await pairHourData.save();
 
   // swap specific updating for token0
   token0DayData.dailyVolumeToken =
@@ -388,7 +388,7 @@ export async function swapEventHandler(
   token0DayData.dailyVolumeUSD = convertToDecimal(token0DayData.dailyVolumeUSD).plus(
     amount0Total.times(convertToDecimal(token0.derivedETH)).times(convertToDecimal(bundle.ethPrice))
   );
-  token0DayData.save();
+  await token0DayData.save();
 
   // swap specific updating
   token1DayData.dailyVolumeToken =
@@ -399,7 +399,7 @@ export async function swapEventHandler(
   token1DayData.dailyVolumeUSD = convertToDecimal(token1DayData.dailyVolumeUSD).plus(
     amount1Total.times(convertToDecimal(token1.derivedETH)).times(convertToDecimal(bundle.ethPrice))
   );
-  token1DayData.save();
+  await token1DayData.save();
 }
 
 export async function transferEventHandler(

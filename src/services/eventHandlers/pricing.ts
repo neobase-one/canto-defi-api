@@ -63,7 +63,6 @@ export async function findEthPerToken(token: TokenDb) {
     let factoryContract: any = await new web3.eth.Contract(BaseV1FactoryABI, FACTORY_ADDRESS);
     let pairAddress = await factoryContract.methods.getPair(token.id, WHITELIST[i], true).call();
     let pairAddress2 = await factoryContract.methods.getPair(token.id, WHITELIST[i], false).call();
-    console.log(pairAddress, pairAddress2)
     if (pairAddress != ADDRESS_ZERO) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (
