@@ -140,14 +140,14 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
     tokenDayData = new TokenDayDataDb(tokenDayId);
     tokenDayData.date = dayStartTimestamp;
     tokenDayData.token = token.id;
-    tokenDayData.priceUSD = token.derivedETH.times(bundle.ethPrice);
+    tokenDayData.priceUSD = convertToDecimal(token.derivedETH).times(convertToDecimal(bundle.ethPrice));
     tokenDayData = new TokenDayDataModel(tokenDayData);
   }
-  tokenDayData.priceUSD = token.derivedETH.times(bundle.ethPrice);
+  tokenDayData.priceUSD = convertToDecimal(token.derivedETH).times(convertToDecimal(bundle.ethPrice));
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
-  tokenDayData.totalLiquidityETH = token.totalLiquidity.times(token.derivedETH);
-  tokenDayData.totalLiquidityUSD = tokenDayData.totalLiquidityETH.times(
-    bundle.ethPrice
+  tokenDayData.totalLiquidityETH = convertToDecimal(token.totalLiquidity).times(convertToDecimal(token.derivedETH));
+  tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityETH).times(
+    convertToDecimal(bundle.ethPrice)
   );
   tokenDayData.dailyTxns = convertToDecimal(tokenDayData.dailyTxns).plus(ONE_BD);
   await tokenDayData.save();
