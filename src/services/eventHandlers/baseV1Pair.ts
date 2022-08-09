@@ -259,40 +259,40 @@ export async function swapEventHandler(
   );
 
   let trackedAmountETH: Decimal;
-  if (bundle.ethPrice.equals(ZERO_BD)) {
+  if (convertToDecimal(bundle.ethPrice).equals(ZERO_BD)) {
     trackedAmountETH = ZERO_BD;
   } else {
     trackedAmountETH = trackedAmountUSD.div(convertToDecimal(bundle.ethPrice));
   }
 
   // update token0 global volume and token liquidity stats
-  token0.tradeVolume = token0.tradeVolume.plus(amount0In.plus(amount0Out));
-  token0.tradeVolumeUSD = token0.tradeVolumeUSD.plus(trackedAmountUSD);
-  token0.untrackedVolumeUSD = token0.untrackedVolumeUSD.plus(derivedAmountUSD);
+  token0.tradeVolume = convertToDecimal(token0.tradeVolume).plus(amount0In.plus(amount0Out));
+  token0.tradeVolumeUSD = convertToDecimal(token0.tradeVolumeUSD).plus(trackedAmountUSD);
+  token0.untrackedVolumeUSD = convertToDecimal(token0.untrackedVolumeUSD).plus(derivedAmountUSD);
 
   // update token1 global volume and token liquidity stats
-  token1.tradeVolume = token1.tradeVolume.plus(amount1In.plus(amount1Out));
-  token1.tradeVolumeUSD = token1.tradeVolumeUSD.plus(trackedAmountUSD);
-  token1.untrackedVolumeUSD = token1.untrackedVolumeUSD.plus(derivedAmountUSD);
+  token1.tradeVolume = convertToDecimal(token1.tradeVolume).plus(amount1In.plus(amount1Out));
+  token1.tradeVolumeUSD = convertToDecimal(token1.tradeVolumeUSD).plus(trackedAmountUSD);
+  token1.untrackedVolumeUSD = convertToDecimal(token1.untrackedVolumeUSD).plus(derivedAmountUSD);
 
   // update txn counts
-  token0.txCount = token0.txCount.plus(ONE_BD);
-  token1.txCount = token1.txCount.plus(ONE_BD);
+  token0.txCount = convertToDecimal(token0.txCoun).plus(ONE_BD);
+  token1.txCount = convertToDecimal(token1.txCount).plus(ONE_BD);
 
   // update pair volume data, use tracked amount if we have it as its probably more accurate
-  pair.volumeUSD = pair.volumeUSD.plus(trackedAmountUSD);
-  pair.volumeToken0 = pair.volumeToken0.plus(amount0Total);
-  pair.volumeToken1 = pair.volumeToken1.plus(amount1Total);
-  pair.untrackedVolumeUSD = pair.untrackedVolumeUSD.plus(derivedAmountUSD);
-  pair.txCount = pair.txCount.plus(ONE_BD);
+  pair.volumeUSD = convertToDecimal(pair.volumeUSD).plus(trackedAmountUSD);
+  pair.volumeToken0 = convertToDecimal(pair.volumeToken0).plus(amount0Total);
+  pair.volumeToken1 = convertToDecimal(pair.volumeToken1).plus(amount1Total);
+  pair.untrackedVolumeUSD = convertToDecimal(pair.untrackedVolumeUSD).plus(derivedAmountUSD);
+  pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
   await pair.save();
 
   // update global values, only used tracked amounts for volume
-  factory.totalVolumeUSD = factory.totalVolumeUSD.plus(trackedAmountUSD);
-  factory.totalVolumeETH = factory.totalVolumeETH.plus(trackedAmountETH);
+  factory.totalVolumeUSD = convertToDecimal(factory.totalVolumeUSD).plus(trackedAmountUSD);
+  factory.totalVolumeETH = convertToDecimal(factory.totalVolumeETH).plus(trackedAmountETH);
   factory.untrackedVolumeUSD =
-    factory.untrackedVolumeUSD.plus(derivedAmountUSD);
-  factory.txCount = factory.txCount.plus(ONE_BD);
+    convertToDecimal(factory.untrackedVolumeUSD).plus(derivedAmountUSD);
+  factory.txCount = convertToDecimal(factory.txCount).plus(ONE_BD);
 
   // save entities
   await pair.save();
