@@ -2,9 +2,9 @@ import Decimal from "decimal.js";
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../config";
-import { PairDayData, PairDayDataDb } from "../../models/pairDayData";
+import { PairDayData, PairDayDataDb, PairDayDataModel } from "../../models/pairDayData";
 import { PairHourData, PairHourDataDb } from "../../models/pairHourData";
-import { StableswapDayData } from "../../models/stableswapDayData";
+import { StableswapDayData, StableswapDayDataDb, StableswapDayDataModel } from "../../models/stableswapDayData";
 import { StableswapFactory } from "../../models/stableswapFactory";
 import { Token, TokenDb } from "../../models/token";
 import { TokenDayData, TokenDayDataDb } from "../../models/tokenDayData";
@@ -41,9 +41,9 @@ export async function updateFactoryDayData(event: EventData) {
     dayId.toString()
   );
   if (factoryDayData === null) {
-    factoryDayData = new StableswapDayData();
-    factoryDayData.justId(dayId.toString());
+    factoryDayData = new StableswapDayDataDb(dayId.toString());
     factoryDayData.date = dayStartTimestamp;
+    factoryDayData = new StableswapDayDataModel(factoryDayData);
   }
 
   // update day data values
@@ -73,11 +73,12 @@ export async function updatePairDayData(event: EventData) {
   let pair: any = await pairService.getByAddress(event.address);
   let pairDayData: any = await pairDayDataService.getById(dayPairId);
   if (pairDayData === null) {
-    pairDayData = pairDayDataService.getById(dayPairId);
+    pairDayData = new PairDayDataDb(dayPairId);
     pairDayData.date = dayStartTimestamp;
     pairDayData.token0 = pair.token0;
     pairDayData.token1 = pair.token1;
     pairDayData.pairAddress = event.address;
+    pairDayData = new PairDayDataModel(pairDayData);
   }
 
   pairDayData.totalSupply = pair.totalSupply;
