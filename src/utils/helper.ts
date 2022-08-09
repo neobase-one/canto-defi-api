@@ -48,6 +48,6 @@ export async function getTimestamp(blockNumber: number) {
   return block.timestamp;
 }
 
-export async function convertToDecimal(decimal128: any) {
+export function convertToDecimal(decimal128: any) {
   return new Decimal(decimal128.toString());
 }
