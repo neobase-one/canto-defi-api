@@ -88,6 +88,7 @@ export async function mintEventHandler(
   let token1Amount = convertTokenToDecimal(input.amount1, token1.decimal);
 
   // update txn counts
+  console.log(token0.txCount)
   token0.txCount = token0.txCount.plus(ONE_BD);
   token1.txCount = token1.txCount.plus(ONE_BD);
 

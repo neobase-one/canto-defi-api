@@ -53,7 +53,7 @@ async function pairCreatedRangeEventHandler(contract: Contract, start: number) {
     }
   }
 
-  contract
+  await contract
     .getPastEvents(PairCreated, options)
     .then(async (events) => await processorServiceFunction(events));
 }

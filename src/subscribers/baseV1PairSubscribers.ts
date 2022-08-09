@@ -16,9 +16,9 @@ export async function baseV1PairIndexHistoricalEvents(
   const t = await web3.eth.getProtocolVersion();
   console.log(t);
   const addresses = Config.contracts.baseV1Pair.addresses;
-  
-    // console.log(contract);
-  for(var i=0; i<iter; i++) {
+
+  // console.log(contract);
+  for (var i = 0; i < iter; i++) {
     for (let address of addresses) {
       const contract = new web3.eth.Contract(BaseV1PairABI, address);
 
@@ -26,16 +26,16 @@ export async function baseV1PairIndexHistoricalEvents(
       await transferRangeEventHandler(contract, i);
 
       // Mint
-      // await mintRangeEventHandler(contract, i);
+      await mintRangeEventHandler(contract, i);
 
       // // Burn
-      // await burnRangeEventHandler(contract, i);
+      await burnRangeEventHandler(contract, i);
 
       // // Swap
-      // await swapRangeEventHandler(contract, i);
+      await swapRangeEventHandler(contract, i);
 
       // // Sync
-      // await syncRangeEventHandler(contract, i);
+      await syncRangeEventHandler(contract, i);
     }
   }
   // web3.eth.clearSubscriptions(); // todo
@@ -144,7 +144,7 @@ async function transferRangeEventHandler(contract: Contract, start: number) {
     }
   }
 
-  contract
+  await contract
     .getPastEvents(Transfer, options)
     .then(async (events) => await processorServiceFunction(events));
 }
@@ -171,7 +171,7 @@ async function syncRangeEventHandler(contract: Contract, start: number) {
     }
   }
 
-  contract
+  await contract
     .getPastEvents(Sync, options)
     .then(async (events) => await processorServiceFunction(events));
 }
