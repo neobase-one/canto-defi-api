@@ -19,10 +19,10 @@ export class TokenDayDatasInput {
   @Field({ nullable: true })
   tokenAddress: string
 
-  @Field((type=>Int),{ defaultValue: 1000, nullable: true })
+  @Field((type => Int), { defaultValue: 1000, nullable: true })
   first: number
 
-  @Field((type=>Int),{ defaultValue: 0, nullable: true })
+  @Field((type => Int), { defaultValue: 0, nullable: true })
   skip: number
 
   @Field({ defaultValue: "date", nullable: true })
@@ -30,52 +30,52 @@ export class TokenDayDatasInput {
 
   @Field({ defaultValue: OrderDirection.ASC, nullable: true })
   orderDirection: OrderDirection
-  
-  @Field((type=>Int),{ nullable: true })
+
+  @Field((type => Int), { nullable: true })
   date: number
 }
 
 @InputType()
 export class UniswapFactoriesInput {
-  @Field({nullable: false})
+  @Field({ nullable: false })
   id: string
 
-  @Field({nullable:true})
+  @Field({ nullable: true })
   block: number
 }
 @InputType()
 export class UniswapDayDatasInput {
-  @Field((type) => Int,{ nullable: false })
+  @Field((type) => Int, { nullable: false })
   startTime: number
 
-  @Field((type) => Int,{ defaultValue:0, nullable: true })
+  @Field((type) => Int, { defaultValue: 0, nullable: true })
   skip: number
 
-  @Field((type) => Int,{ defaultValue:1000, nullable: true })
+  @Field((type) => Int, { defaultValue: 1000, nullable: true })
   first: number
-  
-  @Field({ defaultValue:"date",nullable: true })
+
+  @Field({ defaultValue: "date", nullable: true })
   orderBy: string
-  
-  @Field({ defaultValue:OrderDirection.ASC,nullable: true })
+
+  @Field({ defaultValue: OrderDirection.ASC, nullable: true })
   orderDirection: OrderDirection
 }
 
 @InputType()
 export class BlocksInput {
-  @Field((type)=>Int,{ nullable: false })
+  @Field((type) => Int, { nullable: false })
   timestampFrom: number
 
-  @Field((type)=>Int,{ nullable: false })
+  @Field((type) => Int, { nullable: false })
   timestampTo: number
 
-  @Field((type)=>Int,{ defaultValue:1, nullable: true })
+  @Field((type) => Int, { defaultValue: 1, nullable: true })
   first: number
-  
-  @Field({ defaultValue:"date",nullable: true })
+
+  @Field({ defaultValue: "date", nullable: true })
   orderBy: string
-  
-  @Field({ defaultValue:OrderDirection.ASC,nullable: true })
+
+  @Field({ defaultValue: OrderDirection.ASC, nullable: true })
   orderDirection: OrderDirection
 }
 
@@ -91,7 +91,7 @@ export class TokenInput {
   id: string
 
   @Field({ nullable: true })
-  skip: number  
+  skip: number
 }
 
 @InputType()
@@ -186,7 +186,7 @@ export class BundleInput {
 
 @InputType()
 export class BundlesInput {
-  @Field({ nullable: false })
+  @Field((type) => Int, { nullable: false })
   id: number
 
   @Field({ nullable: true })
