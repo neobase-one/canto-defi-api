@@ -92,7 +92,7 @@ export async function createLiquiditySnapshot(
   snapshot.reserveUSD = pair.reserveUSD;
   snapshot.liquidityTokenTotalSupply = pair.totalSupply;
   snapshot.liquidityTokenBalance = position.liquidityTokenBalance;
-  // snapshot.liquidityPosition = position.id;
+  snapshot.liquidityPosition = position.id;
 
   await new LiquidityPositionSnapshotModel(snapshot).save();
   await new LiquidityPositionModel(position).save();
