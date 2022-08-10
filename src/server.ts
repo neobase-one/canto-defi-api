@@ -23,7 +23,7 @@ async function bootsrap() {
     },
   });
 
-  app.listen({ port: Config.port, cors: false }, () =>
+  app.listen({ port: Config.port }, () =>
     console.log(
       `🚀 Server ready at http://localhost:${Config.port}${Config.api.prefix}`
     )
