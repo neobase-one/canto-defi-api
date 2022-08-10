@@ -19,6 +19,8 @@ export const Config = {
   // server port
   port: parseInt(process.env.PORT || "8080"),
 
+  index: process.env.INDEX || "FALSE", // TRUE or FALSE
+
   // database url
   databaseUrl: process.env.MONGODB_URI || "",
 

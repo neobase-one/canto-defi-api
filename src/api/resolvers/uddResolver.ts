@@ -1,5 +1,6 @@
 import { Arg, Query, Resolver } from "type-graphql";
 import { StableswapDayData, StableswapDayDataModel } from "../../models/stableswapDayData";
+import { UniswapDayData, UniswapDayDataModel } from "../../models/uniswapDayData";
 import { OrderDirection, UniswapDayDatasInput } from "./inputs/queryInputs";
 
 @Resolver()

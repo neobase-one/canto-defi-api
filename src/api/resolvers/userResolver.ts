@@ -22,8 +22,8 @@ export class UsersResolver {
 
 
 
-query users {
-    user(id: "${account}", block: { number: ${ block }}) {
-    liquidityPositions
-}
-  }
+// query users {
+//     user(id: "${account}", block: { number: ${ block }}) {
+//     liquidityPositions
+// }
+//   }

@@ -23,14 +23,19 @@ async function bootsrap() {
     },
   });
 
-  app.listen({ port: Config.port }, () =>
+  app.listen({ port: Config.port, cors: false }, () =>
     console.log(
       `🚀 Server ready at http://localhost:${Config.port}${Config.api.prefix}`
     )
   );
   
   // INDEX
-  await indexChain();
+  if (Config.index === "TRUE") {
+    console.log("INDEXER ENABLED")
+    await indexChain();
+  } else {
+    console.log("INDEXER DISABLED")
+  }
 };
 
 bootsrap();

@@ -1,7 +1,9 @@
+import { collectFields } from "graphql/execution/execute";
 import { Log } from "web3-core";
 import { Contract, EventData } from "web3-eth-contract";
 import { Config } from "../config";
 import { web3 } from "../loaders/web3";
+import { EventDb, EventModel } from "../models/event";
 import { StableswapDayData } from "../models/stableswapDayData";
 import { pairCreatedEventHandler } from "../services/eventHandlers/baseV1Factory";
 import { PairCreatedEventInput } from "../types/event/baseV1Factory";
@@ -42,14 +44,27 @@ async function pairCreatedRangeEventHandler(contract: Contract, start: number) {
 
   async function processorServiceFunction(events: EventData[]) {
     for (let event of events) {
+      let eventId = event.transactionHash.concat("-").concat(event.logIndex.toString());
+      // check if event already indexed before
+      var eventIndex = await EventModel.findOne({id: eventId}).exec();
+      console.log(eventIndex);
+      if (eventIndex != null) {
+        console.log("Skip Prev Indexed: ", eventId);
+        continue;
+      }
+
       const decodedLog = web3.eth.abi.decodeLog(
         PairCreatedEventAbiInputs,
         event.raw.data,
         event.raw.topics.slice(1)
       );
-      console.log(`New PairCreated!`, event.blockNumber);
       const input = new PairCreatedEventInput(event.returnValues);
       await pairCreatedEventHandler(event, input);
+      
+      // add event as indexed
+      var eventDb = new EventDb(eventId);
+      await new EventModel(eventDb).save();
+      console.log(`New PairCreated!`, event.blockNumber);
     }
   }
 
@@ -74,7 +89,6 @@ export async function indexFactoryEvents(start: number, end: number) {
         event.raw.data,
         event.raw.topics.slice(1)
       );
-      console.log(`New PairCreated!`, event.blockNumber);
       const input = new PairCreatedEventInput(event.returnValues);
       await pairCreatedEventHandler(event, input);
     }
