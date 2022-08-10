@@ -10,7 +10,7 @@ export class BurnResolver {
         if (input.orderDirection === OrderDirection.DES) {
             sortBy = "-" + sortBy.trim;
         }
-        const val = await BurnModel.find({ pair: { pair: input.pair_in } }).sort(sortBy).limit(input.first).exec();
+        const val = await BurnModel.find({ pair: input.pair_in }).sort(sortBy).limit(input.first).exec();
         const result = val.map(burn => { return burn.toGenerated(); });
         return result;
     }

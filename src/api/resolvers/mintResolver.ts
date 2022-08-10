@@ -10,7 +10,7 @@ export class MintResolver {
         if (input.orderDirection === OrderDirection.DES) {
             sortBy = "-" + sortBy.trim;
         }
-        const val = await MintModel.find({ pair: { pair: input.pair_in } }).sort(sortBy).limit(input.first).exec();
+        const val = await MintModel.find({ pair: input.pair_in }).sort(sortBy).limit(input.first).exec();
         const result = val.map(mint => { return mint.toGenerated(); });
         return result;
     }
