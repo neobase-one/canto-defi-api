@@ -30,7 +30,7 @@ async function bootsrap() {
   );
   
   // INDEX
-  // await indexChain();
+  await indexChain();
 };
 
 bootsrap();
