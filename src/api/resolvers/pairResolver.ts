@@ -25,6 +25,7 @@ export class PairsResolver {
             val = await PairModel.find({ }).sort(sortBy)
           .skip(input.skip).limit(input.first).exec();
         }
+        val = val.map(pair=>pair.toGenerated());
         return val;
     }
 }

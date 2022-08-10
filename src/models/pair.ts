@@ -210,6 +210,7 @@ export class Pair {
     this.createdAtTimestamp = pair.createdAtTimestamp;
     this.createdAtBlockNumber = pair.createdAtBlockNumber;
     this.liquidityProviderCount = pair.liquidityProviderCount;
+    return this;
   }
 
   justId(id: string) {
