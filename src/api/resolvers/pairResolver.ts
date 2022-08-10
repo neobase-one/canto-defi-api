@@ -7,7 +7,7 @@ import { OrderDirection, PairInput } from "./inputs/queryInputs";
 export class PairsResolver {
     @Query(returns => [Pair])
     async getPairs(@Arg("input") input: PairInput) {
-        let inputId: string | [string];
+        let inputId: string | [string] | null = null;
         if (!isNullOrUndefined(input.id)) {
             inputId = input.id;
         } else {
@@ -17,9 +17,14 @@ export class PairsResolver {
         if (input.orderDirection === OrderDirection.DES) {
             sortBy = "-" + sortBy.trim;
         }
-        const val = await PairModel.find({ id: inputId }).sort(sortBy)
+        var val;
+        if (inputId) {
+            val = await PairModel.find({ id: inputId }).sort(sortBy)
           .skip(input.skip).limit(input.first).exec();
-        console.log(val);
+        } else {
+            val = await PairModel.find({ }).sort(sortBy)
+          .skip(input.skip).limit(input.first).exec();
+        }
         return val;
     }
 }
