@@ -64,37 +64,37 @@ export class StableswapDayDataDb {
 // graphql return object
 @ObjectType()
 export class StableswapDayData {
-  @Field((type) => ObjectIdScalar)
+  @Field((type) => ObjectIdScalar, {nullable: true})
   _id: ObjectId;
 
   @Field((type) => ID)
   id: string;
 
-  @Field()
+  @Field({nullable: true})
   date: number;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   dailyVolumeETH: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   dailyVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   dailyVolumeUntracked: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   totalVolumeETH: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   totalLiquidityETH: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   totalVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   totalLiquidityUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   txCount: Decimal;
 
   constructor() {
