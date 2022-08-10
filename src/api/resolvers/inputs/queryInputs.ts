@@ -51,7 +51,7 @@ export class UniswapDayDatasInput {
   @Field((type) => Int, { defaultValue: 0, nullable: true })
   skip: number
 
-  @Field((type) => Int, { defaultValue: 1, nullable: true })
+  @Field((type) => Int, { defaultValue: 5, nullable: true })
   first: number
 
   @Field({ defaultValue: "date", nullable: true })
@@ -69,7 +69,7 @@ export class BlocksInput {
   @Field((type) => Int, { nullable: false })
   timestampTo: number
 
-  @Field((type) => Int, { defaultValue: 1, nullable: true })
+  @Field((type) => Int, { defaultValue: 200, nullable: true })
   first: number
 
   @Field({ defaultValue: "date", nullable: true })
@@ -189,7 +189,7 @@ export class MintsInput {
   @Field((type) => String, { nullable: true })
   to: string
 
-  @Field((type) => Int, { defaultValue: 20, nullable: true })
+  @Field((type) => Int, { defaultValue: 200, nullable: true })
   first: number
 
   @Field({ defaultValue: "timestamp", nullable: true })
@@ -216,7 +216,7 @@ export class BurnsInput {
   @Field((type) => String, { nullable: true })
   to: string
 
-  @Field((type) => Int, { defaultValue: 20, nullable: true })
+  @Field((type) => Int, { defaultValue: 200, nullable: true })
   first: number
 
   @Field({ defaultValue: "timestamp", nullable: true })
@@ -237,7 +237,7 @@ export class SwapsInput {
   @Field((type) => [String], { nullable: false })
   pair_in: [string]
 
-  @Field((type) => Int, { defaultValue: 20, nullable: true })
+  @Field((type) => Int, { defaultValue: 200, nullable: true })
   first: number
 
   @Field({ defaultValue: "timestamp", nullable: true })
