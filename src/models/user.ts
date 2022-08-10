@@ -25,6 +25,11 @@ export class UserDb {
     this.liquidityPosition = "";
     this.usdSwapped = new Decimal(0); // todo: change to canto
   }
+
+  toGenerated() {
+    var m = new User()
+    return m.fromDb(this);
+  }
 }
 
 

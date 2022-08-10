@@ -131,6 +131,9 @@ export class UserInput {
 export class UsersInput {
   @Field({ nullable: false })
   id: string
+
+  @Field({ nullable: true })
+  block: string
 }
 
 @InputType()
