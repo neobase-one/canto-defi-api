@@ -10,9 +10,15 @@ export class TokensResolver {
         let inputId: string | [string];
         let limit: number;
         if (!isNullOrUndefined(input.id_in)) {
-            const val = await TokenModel.find({ id: input.id_in }).exec();
+            if(!isNullOrUndefined(input.block)){
+            const val = await TokenModel.find({ id: input.id_in, block: input.block }).exec();
             console.log(val);
             return val;
+            } else {
+                const val = await TokenModel.find({ id: input.id_in }).exec();
+            console.log(val);
+            return val;
+            }
         } else {
             let limit = input.first;
             if (input.skip !== 0) {
