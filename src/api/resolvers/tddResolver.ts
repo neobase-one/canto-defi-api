@@ -30,7 +30,7 @@ export class TokenDayDatasResolver {
       if (input.orderDirection === OrderDirection.DES) {
         sortBy = "-" + sortBy.trim;
       }
-      let val = await TokenDayDataModel.find({ id: input.tokenAddress }).sort(sortBy).limit(limit).exec();
+      let val = await TokenDayDataModel.find({ token: input.tokenAddress }).sort(sortBy).limit(limit).exec();
       val = val.slice(input.skip);
       console.log(val);
       console.log("in double param search");
