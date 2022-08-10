@@ -119,6 +119,9 @@ export class PairInput {
 
   @Field((type => Int), { defaultValue: 0, nullable: true })
   skip: number
+
+  @Field((type => Int), { nullable: true })
+  block: number
 }
 
 @InputType()
