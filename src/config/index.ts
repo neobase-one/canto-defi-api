@@ -34,7 +34,7 @@ export const Config = {
 
   // CANTO NODE
   canto: {
-    rpcBlockRange: 10_000,
+    rpcBlockRange: parseInt(process.env.MAX_BLOCK_RANGE || "5000"),
     latestBlockNumber: parseInt(process.env.LATEST_BLOCK_NUMBER || "250000"),
     jsonRpcUrl: process.env.JSON_RPC_URL || "",
     websocketUrl: process.env.WEBSOCKET_URL || "",

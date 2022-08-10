@@ -57,3 +57,36 @@ async function pairCreatedRangeEventHandler(contract: Contract, start: number) {
     .getPastEvents(PairCreated, options)
     .then(async (events) => await processorServiceFunction(events));
 }
+
+// UPGRADE
+export async function indexFactoryEvents(start: number, end: number) {
+  const options = {
+    fromBlock: start,
+    toBlock: end,
+    topics: Config.contracts.baseV1Factory.events.options.signatures,
+  }
+  console.log("BaseV1Factory", start, end);
+
+  async function processorServiceFunction(events: EventData[]) {
+    for (let event of events) {
+      const decodedLog = web3.eth.abi.decodeLog(
+        PairCreatedEventAbiInputs,
+        event.raw.data,
+        event.raw.topics.slice(1)
+      );
+      console.log(`New PairCreated!`, event.blockNumber);
+      const input = new PairCreatedEventInput(event.returnValues);
+      await pairCreatedEventHandler(event, input);
+    }
+  }
+
+  const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+  const contract = await new web3.eth.Contract(
+    BaseV1FactoryABI,
+    FACTORY_ADDRESS
+  );
+
+  await contract
+    .getPastEvents(PairCreated, options)
+    .then(async (events) => await processorServiceFunction(events));
+}

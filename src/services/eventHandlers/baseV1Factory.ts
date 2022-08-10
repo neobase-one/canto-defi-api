@@ -17,6 +17,8 @@ import { PairService } from "./models/pair";
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, fetchTokenTotalSupply } from "../../utils/token";
 import { ZERO_BD } from "../../utils/constants";
 import { getTimestamp } from "../../utils/helper";
+import { Index } from "@typegoose/typegoose";
+import { IndexDb, IndexModel } from "../../models";
 
 export async function initFactoryCollection() {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
@@ -30,6 +32,10 @@ export async function initFactoryCollection() {
   bundle.justId("1");
   // console.log(bundle);
   await new BundleModel(bundle).save();
+
+  // create new index
+  let index = new IndexDb();
+  await new IndexModel(index).save();
 }
 
 export async function pairCreatedEventHandler(

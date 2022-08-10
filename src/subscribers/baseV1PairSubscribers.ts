@@ -175,3 +175,167 @@ async function syncRangeEventHandler(contract: Contract, start: number) {
     .getPastEvents(Sync, options)
     .then(async (events) => await processorServiceFunction(events));
 }
+
+// UPGRADE
+export async function indexPairEvents(start: number, end: number) {
+  console.log("BaseV1Pair", start, end);
+
+  const t = await web3.eth.getProtocolVersion();
+  console.log(t);
+
+  const addresses = Config.contracts.baseV1Pair.addresses;
+
+  for (let address of addresses) {
+    const contract = await new web3.eth.Contract(BaseV1PairABI, address);
+
+    // Transfer
+    await transferEventRangeHandler(contract, start, end);
+
+    // Mint
+    await mintEventRangeHandler(contract, start, end);
+
+    // Burn
+    await burnEventRangeHandler(contract, start, end);
+
+    // Swap
+    await swapEventRangeHandler(contract, start, end);
+
+    // Sync
+    await syncEventRangeHandler(contract, start, end);
+  }
+  // web3.eth.clearSubscriptions(); // todo
+}
+
+async function mintEventRangeHandler(contract: Contract, start: number, end: number) {
+  const options = {
+    fromBlock: start,
+    toBlock: end,
+    // address: Config.contracts.baseV1Pair.addresses,
+    topics: [Config.contracts.baseV1Pair.events.mint.signature],
+  };
+
+  async function processorServiceFunction(events: EventData[]) {
+    for (let event of events) {
+      const decodedLog = web3.eth.abi.decodeLog(
+        MintEventAbiInputs,
+        event.raw.data,
+        event.raw.topics.slice(1)
+      );
+      console.log(`New Mint!`, event.blockNumber, event.address);
+      const input = new MintEventInput(event.returnValues);
+      await mintEventHandler(event, input);
+    }
+  }
+
+  contract
+    .getPastEvents(Mint, options)
+    .then(async (events) => await processorServiceFunction(events));
+}
+
+async function burnEventRangeHandler(contract: Contract, start: number, end: number) {
+  const range = Config.canto.rpcBlockRange;
+  const options = {
+    fromBlock: start,
+    toBlock: end,
+    // address: Config.contracts.baseV1Pair.addresses,
+    topics: [Config.contracts.baseV1Pair.events.burn.signature],
+  };
+
+  async function processorServiceFunction(events: EventData[]) {
+    for (let event of events) {
+      const decodedLog = web3.eth.abi.decodeLog(
+        BurnEventAbiInputs,
+        event.raw.data,
+        event.raw.topics.slice(1)
+      );
+      console.log(`New Burn!`, event.blockNumber, event.address);
+      const input = new BurnEventInput(event.returnValues);
+      await burnEventHandler(event, input);
+    }
+  }
+
+  contract
+    .getPastEvents(Burn, options)
+    .then(async (events) => await processorServiceFunction(events));
+}
+
+async function swapEventRangeHandler(contract: Contract, start: number, end: number) {
+  const range = Config.canto.rpcBlockRange;
+  const options = {
+    fromBlock: start,
+    toBlock: end,
+    // address: Config.contracts.baseV1Pair.addresses,
+    topics: [Config.contracts.baseV1Pair.events.swap.signature],
+  };
+
+  async function processorServiceFunction(events: EventData[]) {
+    for (let event of events) {
+      const decodedLog = web3.eth.abi.decodeLog(
+        SwapEventAbiInputs,
+        event.raw.data,
+        event.raw.topics.slice(1)
+      );
+      console.log(`New Swap!`, event.blockNumber, event.address);
+      const input = new SwapEventInput(event.returnValues);
+      await swapEventHandler(event, input);
+    }
+  }
+
+  contract
+    .getPastEvents(Swap, options)
+    .then(async (events) => await processorServiceFunction(events));
+}
+
+async function transferEventRangeHandler(contract: Contract, start: number, end: number) {
+  const range = Config.canto.rpcBlockRange;
+  const options = {
+    fromBlock: start,
+    toBlock: end,
+    // address: Config.contracts.baseV1Pair.addresses,
+    topics: [Config.contracts.baseV1Pair.events.transfer.signature],
+  };
+
+  async function processorServiceFunction(events: EventData[]) {
+    for (let event of events) {
+      const decodedLog = web3.eth.abi.decodeLog(
+        TransferEventAbiInputs,
+        event.raw.data,
+        event.raw.topics.slice(1)
+      );
+      console.log(`New Transfer!`, event.blockNumber, event.address);
+      const input = new TransferEventInput(event.returnValues);
+      await transferEventHandler(event, input);
+    }
+  }
+
+  await contract
+    .getPastEvents(Transfer, options)
+    .then(async (events) => await processorServiceFunction(events));
+}
+
+async function syncEventRangeHandler(contract: Contract, start: number, end: number) {
+  const range = Config.canto.rpcBlockRange;
+  const options = {
+    fromBlock: start,
+    toBlock: end,
+    // address: Config.contracts.baseV1Pair.addresses,
+    topics: [Config.contracts.baseV1Pair.events.sync.signature],
+  };
+
+  async function processorServiceFunction(events: EventData[]) {
+    for (let event of events) {
+      const decodedLog = web3.eth.abi.decodeLog(
+        SyncEventAbiInputs,
+        event.raw.data,
+        event.raw.topics.slice(1)
+      );
+      console.log(`New Sync!`, event.blockNumber, event.address);
+      const input = new SyncEventInput(event.returnValues);
+      await syncEventHandler(event, input);
+    }
+  }
+
+  await contract
+    .getPastEvents(Sync, options)
+    .then(async (events) => await processorServiceFunction(events));
+}
