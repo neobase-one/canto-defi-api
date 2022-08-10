@@ -93,7 +93,7 @@ export class TokenInput {
   @Field((type => Int), { defaultValue: 500, nullable: true })
   first: number
 
-  @Field((type => Int),{ nullable: true })
+  @Field((type => Int),{ defaultValue: 0, nullable: true })
   skip: number
 }
 
@@ -113,6 +113,9 @@ export class PairInput {
 
   @Field({ defaultValue: OrderDirection.ASC, nullable: true })
   orderDirection: OrderDirection
+
+  @Field((type => Int),{ defaultValue: 0, nullable: true })
+  skip: number
 }
 
 @InputType()

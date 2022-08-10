@@ -17,7 +17,8 @@ export class PairsResolver {
         if (input.orderDirection === OrderDirection.DES) {
             sortBy = "-" + sortBy.trim;
         }
-        const val = await PairModel.find({ id: inputId }).sort(sortBy).limit(input.first).exec();
+        const val = await PairModel.find({ id: inputId }).sort(sortBy)
+          .skip(input.skip).limit(input.first).exec();
         console.log(val);
         return val;
     }
