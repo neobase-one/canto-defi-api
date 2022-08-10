@@ -1,8 +1,11 @@
 import { BlocksResolver } from "./blockResolver";
 import { BundlesResolver } from "./bundleResolver";
+import { BurnResolver } from "./burnResolver";
 import { StableswapFactoryResovler } from "./factoryResolver";
 import { HealthResolver } from "./healthResolver";
+import { MintResolver } from "./mintResolver";
 import { PairsResolver } from "./pairResolver";
+import { SwapResolver } from "./swapResolver";
 import { TokenDayDatasResolver } from "./tddResolver";
 import { TokensResolver } from "./tokenResolver";
 import { UniswapDayDatasResolver } from "./uddResolver";
@@ -17,5 +20,8 @@ export const resolvers: [Function, ...Function[]] = [
   BundlesResolver,
   PairsResolver,
   UniswapFactoriesResolver,
-  TokensResolver
+  TokensResolver,
+  SwapResolver,
+  BurnResolver,
+  MintResolver
 ];

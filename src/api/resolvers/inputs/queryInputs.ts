@@ -87,16 +87,16 @@ export class HealthInput {
 
 @InputType()
 export class TokenInput {
-  @Field((type)=>[String],{ nullable: true })
+  @Field((type) => [String], { nullable: true })
   id_in: [string]
-  
+
   @Field((type => Int), { nullable: true })
   block: number
 
   @Field((type => Int), { defaultValue: 500, nullable: true })
   first: number
 
-  @Field((type => Int),{ defaultValue: 0, nullable: true })
+  @Field((type => Int), { defaultValue: 0, nullable: true })
   skip: number
 }
 
@@ -105,7 +105,7 @@ export class PairInput {
   @Field({ nullable: true })
   id: string
 
-  @Field((type)=>[String],{ nullable: true })
+  @Field((type) => [String], { nullable: true })
   id_in: [string]
 
   @Field((type => Int), { defaultValue: 1000, nullable: true })
@@ -117,7 +117,7 @@ export class PairInput {
   @Field({ defaultValue: OrderDirection.ASC, nullable: true })
   orderDirection: OrderDirection
 
-  @Field((type => Int),{ defaultValue: 0, nullable: true })
+  @Field((type => Int), { defaultValue: 0, nullable: true })
   skip: number
 }
 
@@ -171,8 +171,17 @@ export class MintInput {
 
 @InputType()
 export class MintsInput {
-  @Field({ nullable: false })
-  id: string
+  @Field((type) => [String], { nullable: false })
+  pair_in: [string]
+
+  @Field((type) => Int, { defaultValue: 20, nullable: true })
+  first: number
+
+  @Field({ defaultValue: "timestamp", nullable: true })
+  orderBy: string
+
+  @Field({ defaultValue: OrderDirection.ASC, nullable: true })
+  orderDirection: OrderDirection
 }
 
 @InputType()
@@ -183,8 +192,17 @@ export class BurnInput {
 
 @InputType()
 export class BurnsInput {
-  @Field({ nullable: false })
-  id: string
+  @Field((type) => [String], { nullable: false })
+  pair_in: [string]
+
+  @Field((type) => Int, { defaultValue: 20, nullable: true })
+  first: number
+
+  @Field({ defaultValue: "timestamp", nullable: true })
+  orderBy: string
+
+  @Field({ defaultValue: OrderDirection.ASC, nullable: true })
+  orderDirection: OrderDirection
 }
 
 @InputType()
@@ -195,8 +213,17 @@ export class SwapInput {
 
 @InputType()
 export class SwapsInput {
-  @Field({ nullable: false })
-  id: string
+  @Field((type) => [String], { nullable: false })
+  pair_in: [string]
+
+  @Field((type) => Int, { defaultValue: 20, nullable: true })
+  first: number
+
+  @Field({ defaultValue: "timestamp", nullable: true })
+  orderBy: string
+
+  @Field({ defaultValue: OrderDirection.ASC, nullable: true })
+  orderDirection: OrderDirection
 }
 
 @InputType()
