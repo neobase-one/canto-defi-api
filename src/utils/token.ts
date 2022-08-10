@@ -11,7 +11,7 @@ export async function fetchTokenSymbol(tokenAddress: string) {
   }
 
   var contract = await new web3.eth.Contract(Erc20ABI, tokenAddress);
-  var symbol = await contract.methods.symbol.call();
+  var symbol = await contract.methods.symbol().call();
   if (symbol == null) {
     symbol = ""
   }
@@ -27,7 +27,7 @@ export async function fetchTokenName(tokenAddress: string) {
   }
 
   var contract = await new web3.eth.Contract(Erc20ABI, tokenAddress);
-  var symbol = await contract.methods.symbol.call();
+  var symbol = await contract.methods.symbol().call();
   if (symbol == null) {
     symbol = ""
   }
@@ -43,7 +43,7 @@ export async function fetchTokenTotalSupply(tokenAddress: string) {
   }
 
   var contract = await new web3.eth.Contract(Erc20ABI, tokenAddress);
-  var totalSupply = await contract.methods.totalSupply.call();
+  var totalSupply = await contract.methods.totalSupply().call();
   if (totalSupply == null) {
     totalSupply = 0;
   }
