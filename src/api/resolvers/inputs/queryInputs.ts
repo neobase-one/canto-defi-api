@@ -177,8 +177,14 @@ export class MintInput {
 
 @InputType()
 export class MintsInput {
-  @Field((type) => [String], { nullable: false })
+  @Field((type) => [String], { nullable: true })
   pair_in: [string]
+
+  @Field((type) => String, { nullable: true })
+  pair: string
+
+  @Field((type) => String, { nullable: true })
+  to: string
 
   @Field((type) => Int, { defaultValue: 20, nullable: true })
   first: number
@@ -198,8 +204,14 @@ export class BurnInput {
 
 @InputType()
 export class BurnsInput {
-  @Field((type) => [String], { nullable: false })
+  @Field((type) => [String], { nullable: true })
   pair_in: [string]
+
+  @Field((type) => String, { nullable: true })
+  pair: string
+
+  @Field((type) => String, { nullable: true })
+  to: string
 
   @Field((type) => Int, { defaultValue: 20, nullable: true })
   first: number

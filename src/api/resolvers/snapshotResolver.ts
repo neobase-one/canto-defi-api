@@ -3,7 +3,7 @@ import { LiquidityPositionSnapshot, LiquidityPositionSnapshotModel } from "../..
 import { LiquidityPositionSnapshotsInput } from "./inputs/queryInputs";
 
 @Resolver()
-export class liquidityPositionSnapshotsResolver {
+export class LiquidityPositionSnapshotsResolver {
     @Query(returns => [LiquidityPositionSnapshot])
     async liquidityPositionSnapshots(@Arg("input") input: LiquidityPositionSnapshotsInput) {
         let limit = input.first;
