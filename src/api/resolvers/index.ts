@@ -3,6 +3,7 @@ import { BundlesResolver } from "./bundleResolver";
 import { BurnResolver } from "./burnResolver";
 import { StableswapFactoryResovler } from "./factoryResolver";
 import { HealthResolver } from "./healthResolver";
+import { LiquidityPositionsResolver } from "./lpResolver";
 import { MintResolver } from "./mintResolver";
 import { PairsResolver } from "./pairResolver";
 import { SwapResolver } from "./swapResolver";
@@ -23,5 +24,6 @@ export const resolvers: [Function, ...Function[]] = [
   TokensResolver,
   SwapResolver,
   BurnResolver,
-  MintResolver
+  MintResolver,
+  LiquidityPositionsResolver
 ];

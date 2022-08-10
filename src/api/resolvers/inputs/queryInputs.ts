@@ -142,7 +142,7 @@ export class LiquidityPositionInput {
 @InputType()
 export class LiquidityPositionsInput {
   @Field({ nullable: false })
-  id: string
+  user: string
 }
 
 @InputType()
