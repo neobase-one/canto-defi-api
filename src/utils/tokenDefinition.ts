@@ -29,7 +29,7 @@ export class TokenDefinition {
 
     // Add Note
     let tokenNote = new TokenDefinition(
-      "0x9b195c7cb901cbB5A44776cD09031f66ec033627",
+      "0x9b195c7cb901cbb5a44776cd09031f66ec033627",
       "NOTE",
       "Note",
       new Decimal("115792089237316195423570985008687907853269984665640564039457584007913129639935"),
@@ -39,7 +39,7 @@ export class TokenDefinition {
 
     // Add USDC
     let tokenUsdc = new TokenDefinition(
-      "0x88f0a187d4C33f7E18eb2871caB382AB895e32Db",
+      "0x88f0a187d4c33f7e18eb2871cab382ab895e32db",
       "USDC",
       "USDC",
       new Decimal("9000000000000000000000"),
@@ -49,7 +49,7 @@ export class TokenDefinition {
 
     // Add USDT
     let tokenUsdt = new TokenDefinition(
-      "0xddf962Eba787Aa11D5A69B6DC1FF8a8A50be825c",
+      "0xddf962eba787aa11d5a69b6dc1ff8a8a50be825c",
       "USDT",
       "USDT",
       new Decimal("9000000000000000000000"),
@@ -59,7 +59,7 @@ export class TokenDefinition {
 
     // Add ATOM
     let tokenAtom = new TokenDefinition(
-      "0xb6427565344049B54BF591D72e08F67cf095c5eF",
+      "0xb6427565344049b54bf591d72e08f67cf095c5ef",
       "ATOM",
       "ATOM",
       new Decimal("900000000000000000000000"),
@@ -69,7 +69,7 @@ export class TokenDefinition {
 
     // Add ETH
     let tokenEth = new TokenDefinition(
-      "0xEC98e09d49b5990F366a71Fae85e2e86923eE49b",
+      "0xec98e09d49b5990f366a71fae85e2e86923ee49b",
       "ETH",
       "ETH",
       new Decimal("9000000000000000000000000000000000"),
@@ -79,7 +79,7 @@ export class TokenDefinition {
 
     // Add WETH
     let tokenWeth = new TokenDefinition(
-      "0x9D840713d7817f519f2EBB33470fb50Fb86ac195",
+      "0x9d840713d7817f519f2ebb33470fb50fb86ac195",
       "WETH",
       "WETH",
       new Decimal("50923228985519684645752"),
