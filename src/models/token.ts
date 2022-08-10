@@ -69,40 +69,40 @@ export const TokenModel = getModelForClass(TokenDb);
 // decorator docs: https://typegraphql.com/docs/types-and-fields.html 
 @ObjectType()
 export class Token {
-  @Field((type) => ObjectIdScalar)
+  @Field((type) => ObjectIdScalar, {nullable: true})
   _id: ObjectId;
 
   @Field((type) => ID)
   id: string;
 
-  @Field((type) => String)
+  @Field((type) => String, {nullable: true})
   name: string;
 
-  @Field((type) => String)
+  @Field((type) => String, {nullable: true})
   symbol: string;
 
-  @Field((type) => Int)
+  @Field((type) => Int, {nullable: true})
   decimals: number;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   totalSupply: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   tradeVolume: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   tradeVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   untrackedVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   txCount: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   totalLiquidity: Decimal;
 
-  @Field((type) => DecimalScalar)
+  @Field((type) => DecimalScalar, {nullable: true})
   derivedETH: Decimal;
 
   fromDb(token: TokenDb) {
