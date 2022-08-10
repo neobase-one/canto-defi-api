@@ -111,6 +111,7 @@ export class StableswapFactory {
     this.totalLiquidityUSD = swap.totalLiquidityUSD;
     this.totalLiquidityETH = swap.totalLiquidityETH;
     this.txCount = swap.txCount;
+    return this;
   }
 
   justId(address:string){

@@ -160,6 +160,7 @@ export class Mint {
     this.sender = "";
     this.to = "";
     this.feeTo = "";
+    return this;
   }
 
   justId(id: string) {

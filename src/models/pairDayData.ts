@@ -147,6 +147,7 @@ export class PairDayData {
     this.dailyVolumeToken1 = pair.dailyVolumeToken1;
     this.dailyVolumeUSD = pair.dailyVolumeUSD;
     this.dailyTxns = pair.dailyTxns;
+    return this;
   }
 
   justId(id: string) {

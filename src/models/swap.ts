@@ -168,6 +168,7 @@ export class Swap {
     this.to = swap.to;
     this.sender = swap.sender;
     this.from = swap.from;
+    return this;
   }
 
   justId(id: string) {

@@ -123,6 +123,7 @@ export class StableswapDayData {
     this.totalVolumeUSD = swap.totalVolumeUSD;
     this.totalLiquidityUSD = swap.totalLiquidityUSD;
     this.txCount = swap.txCount;
+    return this;
   }
 
   justId(id:string){

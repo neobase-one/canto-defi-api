@@ -81,6 +81,7 @@ export class LiquidityPosition {
     p.justId(position.pair);
     this.pair = p; // todo:
     this.liquidityTokenBalance = position.liquidityTokenBalance;
+    return this;
   }
 
   justId(id: string) {

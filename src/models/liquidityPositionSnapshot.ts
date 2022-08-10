@@ -160,6 +160,7 @@ export class LiquidityPositionSnapshot {
     this.reserveUSD = position.reserveUSD;
     this.liquidityTokenTotalSupply = position.liquidityTokenTotalSupply;
     this.liquidityTokenBalance = position.liquidityTokenBalance;
+    return this;
   }
 
   justId(id: string){

@@ -52,6 +52,7 @@ export class Bundle {
     this._id = bundle._id;
     this.id = bundle.id;
     this.ethPrice = bundle.ethPrice;
+    return this;
   }
 
   justId(id:string) {

@@ -166,6 +166,7 @@ export class Burn {
     this.sender = burn.sender;
     this.to = burn.to;
     this.feeTo = burn.feeTo;
+    return this;
   }
 
   justId(id: string) {

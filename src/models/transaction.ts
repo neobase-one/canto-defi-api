@@ -114,6 +114,8 @@ export class Transaction {
       swapTypes.push(s);
     }
     this.burns = burnTypes;
+
+    return this;
   }
 
   justId(id: string) {

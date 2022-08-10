@@ -137,6 +137,7 @@ export class PairHourData {
     this.hourlyVolumeToken1 = pairDb.hourlyVolumeToken1;
     this.hourlyVolumeUSD = pairDb.hourlyVolumeUSD;
     this.hourlyTxns = pairDb.hourlyTxns;
+    return this;
   }
 
   justId(id: string) {

@@ -118,6 +118,7 @@ export class Token {
     this.txCount = token.txCount;
     this.totalLiquidity = token.totalLiquidity;
     this.derivedETH = token.derivedETH;
+    return this;
   }
 
   justId(id: string) {

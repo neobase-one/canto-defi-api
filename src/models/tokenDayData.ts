@@ -121,6 +121,7 @@ export class TokenDayData {
     this.totalLiquidityETH = tkn.totalLiquidityETH;
     this.totalLiquidityUSD = tkn.totalLiquidityUSD;
     this.priceUSD = tkn.priceUSD;
+    return this;
   }
 
   justId(id: string) {
