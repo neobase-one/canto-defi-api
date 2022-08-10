@@ -154,7 +154,13 @@ export class LiquidityPositionSnapshotInput {
 @InputType()
 export class LiquidityPositionSnapshotsInput {
   @Field({ nullable: false })
-  id: string
+  user: string
+
+  @Field((type => Int), { defaultValue: 1000, nullable: true })
+  first: number
+
+  @Field((type => Int), { defaultValue: 0, nullable: true })
+  skip: number
 }
 
 @InputType()
