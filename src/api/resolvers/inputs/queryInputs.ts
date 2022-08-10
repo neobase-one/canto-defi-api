@@ -51,7 +51,7 @@ export class UniswapDayDatasInput {
   @Field((type) => Int, { defaultValue: 0, nullable: true })
   skip: number
 
-  @Field((type) => Int, { defaultValue: 1000, nullable: true })
+  @Field((type) => Int, { defaultValue: 1, nullable: true })
   first: number
 
   @Field({ defaultValue: "date", nullable: true })
