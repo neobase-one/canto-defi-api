@@ -29,60 +29,60 @@ export class TokenDefinition {
 
     // Add Note
     let tokenNote = new TokenDefinition(
-      "0x9b195c7cb901cbb5a44776cd09031f66ec033627",
+      "0xD354EFE7F59A727BD988252726D86D6dd8d19547",
       "NOTE",
       "Note",
-      new Decimal("115792089237316195423570985008687907853269984665640564039457584007913129639935"),
+      new Decimal("115792089237316195423570985000000000000000000000000000000000"),
       18
     );
     staticDefinitions.push(tokenNote);
 
     // Add USDC
     let tokenUsdc = new TokenDefinition(
-      "0x88f0a187d4c33f7e18eb2871cab382ab895e32db",
+      "0x80b5a32E4F032B2a058b4F29EC95EEfEEB87aDcd",
       "USDC",
       "USDC",
-      new Decimal("9000000000000000000000"),
+      new Decimal("405002.366"),
       6
     );
     staticDefinitions.push(tokenUsdc);
 
     // Add USDT
     let tokenUsdt = new TokenDefinition(
-      "0xddf962eba787aa11d5a69b6dc1ff8a8a50be825c",
+      "0xd567B3d7B8FE3C79a1AD8dA978812cfC4Fa05e75",
       "USDT",
       "USDT",
-      new Decimal("9000000000000000000000"),
+      new Decimal("50909"),
       6
     );
     staticDefinitions.push(tokenUsdt);
 
     // Add ATOM
     let tokenAtom = new TokenDefinition(
-      "0xb6427565344049b54bf591d72e08f67cf095c5ef",
+      "0xecEEEfCEE421D8062EF8d6b4D814efe4dc898265",
       "ATOM",
       "ATOM",
-      new Decimal("900000000000000000000000"),
+      new Decimal("11.189621"),
       8
     );
     staticDefinitions.push(tokenAtom);
 
     // Add ETH
     let tokenEth = new TokenDefinition(
-      "0xec98e09d49b5990f366a71fae85e2e86923ee49b",
+      "0x5FD55A1B9FC24967C4dB09C513C3BA0DFa7FF687",
       "ETH",
       "ETH",
-      new Decimal("9000000000000000000000000000000000"),
+      new Decimal("68.9817999999999999"),
       18
     );
     staticDefinitions.push(tokenEth);
 
     // Add WETH
     let tokenWeth = new TokenDefinition(
-      "0x9d840713d7817f519f2ebb33470fb50fb86ac195",
-      "WETH",
-      "WETH",
-      new Decimal("50923228985519684645752"),
+      "0x826551890Dc65655a0Aceca109aB11AbDbD7a07B",
+      "wCANTO",
+      "wCANTO",
+      new Decimal("6704.117"),
       18
     );
     staticDefinitions.push(tokenWeth);

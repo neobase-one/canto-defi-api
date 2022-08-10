@@ -45,7 +45,7 @@ export const Config = {
   // CONTRACT ADDRESSES
   contracts: {
     baseV1Factory: {
-      addresses: ["0xF5C085044e5e86B61Ebd0fBE978aC6FCeeeD3F4f"],
+      addresses: ["0xE007cAc018C8bFFc70dFD0E8f6C24b2E7CFcefB9"],
       events: {
         pairCreated: {
           signature: Web3.utils.keccak256(PairCreatedEventSignature),
@@ -59,16 +59,10 @@ export const Config = {
     },
     baseV1Pair: {
       addresses: [
-        "0xE1764f6e5Cc49b3852DAE3801aDD1ADeb616B2b6", // CantoNoteLP
-        "0x6E618CF8F4c267CD62f023C5175463C25414A9Cc", // cCantoNoteLP
-        "0xa3aF7266388f394dd6EeA6132E01a251fb2dA888", // CantoAtomLP
-        "0x675E38831e76f21DcAceE11a7bA3aE03d902A64e", // cCantoAtomLP
-        "0xE297bA8e977a44F711566eCEd3195107e9379d8b", // NoteUSDCLP
-        "0xE8b1295a5Ef143dfb031d87ECee54631D0C62406", // cNoteUSDCLP
-        "0x1C7F0Ee20276B17DbD3cB2728Ae98fa47ecd4b46", // NoteUSDTLP
-        "0xc38fBdA1E983542ba3d3d946678c311447Dc6B0D", // cNoteUSDTLP
-        "0x72ebC7bD46789E04610bC360a07033db1e01274c", // CantoETHLP
-        "0x7921d4853100ACF556cF5fE647015Abb6118C996", // cCantoETHLP
+        "0x406376a1ea40cf149A31f6e23638f99900988f46", // note/usdt
+        "0x753eF0D3506D70D8266335C16A5ed7cC71Aa376a", // note/usdc
+        "0x03cD777F7DA9EE2884fc2FD111808467C4Df0203", // canto/eth
+        "0x4C7504dFEe142849d59a96D4A1954eE9c7ea7437", // canto/atom
       ],
       events: {
         mint: {

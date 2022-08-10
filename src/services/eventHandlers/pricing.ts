@@ -16,10 +16,7 @@ import { convertToDecimal } from "../../utils/helper";
 
 // todo: fix types + imports
 
-const WETH_ADDRESS = "0x9D840713d7817f519f2EBB33470fb50Fb86ac195";
-const USDC_WETH_PAIR = "0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc"; // created 10008355
-const DAI_WETH_PAIR = "0xa478c2975ab1ea89e8196811f51a7b7ade33eb11"; // created block 10042267
-const USDT_WETH_PAIR = "0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852"; // created block 10093341
+const WETH_ADDRESS = "0x826551890Dc65655a0Aceca109aB11AbDbD7a07B"; //wCANTO
 
 export async function getEthPriceInUSD() {
   return ONE_BD; // todo: verify calc
@@ -27,16 +24,16 @@ export async function getEthPriceInUSD() {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  "0x9b195c7cb901cbB5A44776cD09031f66ec033627", // NOTE
-  "0x88f0a187d4C33f7E18eb2871caB382AB895e32Db", // UDC
-  "0xddf962Eba787Aa11D5A69B6DC1FF8a8A50be825c", // USDT
-  "0xb6427565344049B54BF591D72e08F67cf095c5eF", // ATOM
-  "0xEC98e09d49b5990F366a71Fae85e2e86923eE49b", // ETH
-  "0x9D840713d7817f519f2EBB33470fb50Fb86ac195", // WETH
+  "0xD354EFE7F59A727BD988252726D86D6dd8d19547", // NOTE
+  "0x80b5a32E4F032B2a058b4F29EC95EEfEEB87aDcd", // USDC
+  "0xd567B3d7B8FE3C79a1AD8dA978812cfC4Fa05e75", // USDT
+  "0xecEEEfCEE421D8062EF8d6b4D814efe4dc898265", // ATOM
+  "0x5FD55A1B9FC24967C4dB09C513C3BA0DFa7FF687", // ETH
+  "0x826551890Dc65655a0Aceca109aB11AbDbD7a07B", // wCANTO
 ];
 
 export let UNTRACKED_PAIRS: string[] = [
-  "0x9ea3b5b4ec044b70375236a281986106457b20ef",
+  // "0x9ea3b5b4ec044b70375236a281986106457b20ef",
 ];
 
 // minimum liquidity required to count towards tracked volume for pairs with small # of Lps
