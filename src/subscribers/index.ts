@@ -32,7 +32,7 @@ export async function indexChain() {
     let chainBlockHead = await web3.eth.getBlockNumber();
     const MAX_RANGE = Config.canto.rpcBlockRange;
     let range = Math.min(Math.max(0, chainBlockHead - latestIndexedBlockHead), MAX_RANGE)
-    console.log(latestIndexedBlockHead, chainBlockHead, MAX_RANGE, range)
+    console.log("LAST_INDEXED", latestIndexedBlockHead, "CHAIN_HEAD", chainBlockHead, "MAX_RANGE", MAX_RANGE, "RANGE", range)
 
     //
     let start = latestIndexedBlockHead;
