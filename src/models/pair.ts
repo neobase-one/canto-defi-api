@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
-import { Token } from "./token";
+import { Token, TokenDb, TokenModel } from "./token";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { ZERO_BD } from "../utils/constants";
@@ -185,15 +185,11 @@ export class Pair {
     this.liquidityProviderCount = ZERO_BD;
   }
 
-  fromDb(pair: PairDb) {
+  async fromDb(pair: PairDb) {
     this._id = pair._id;
     this.id = pair.id;
-    var tk1 = new Token();
-    var tk2 = new Token();
-    tk1.justId(pair.token0);
-    tk2.justId(pair.token1);
-    this.token0 = tk1;
-    this.token1 = tk2;
+    this.token0 = await this.getToken(pair.token0);
+    console.log(this.token1);
     this.reserve0 = pair.reserve0;
     this.reserve1 = pair.reserve1;
     this.totalSupply = pair.totalSupply;
@@ -215,6 +211,11 @@ export class Pair {
 
   justId(id: string) {
     this.id = id;
+  }
+
+  async getToken(id:string):Promise<Token>{
+    const token = await TokenModel.find({id:id});
+    return token[0].toGenerated();
   }
 }
 
