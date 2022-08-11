@@ -1,0 +1,14 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /usr/src/app
+    environment:
+      - INDEX=FALSE
+      - PORT=$PORT
+      - MONGODB_URI=$MONGODB_URI
+      - LOG_LEVEL=$LOG_LEVEL
+    ports:
+      - 4000:4000

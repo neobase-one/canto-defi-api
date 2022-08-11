@@ -1,0 +1,14 @@
+version: '3'
+services:
+  indexer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /usr/src/app
+    environment:
+      - INDEX=TRUE
+      - MONGODB_URI=$MONGODB_URI
+      - LOG_LEVEL=$LOG_LEVEL
+      - WEBSOCKET_URL=$WEBSOCKET_URL
+      - MAX_BLOCK_RANGE=$MAX_BLOCK_RANGE
+      - START_BLOCK=$START_BLOCK
