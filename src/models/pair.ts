@@ -189,7 +189,7 @@ export class Pair {
     this._id = pair._id;
     this.id = pair.id;
     this.token0 = await this.getToken(pair.token0);
-    console.log(this.token1);
+    this.token1 = await this.getToken(pair.token1);
     this.reserve0 = pair.reserve0;
     this.reserve1 = pair.reserve1;
     this.totalSupply = pair.totalSupply;
