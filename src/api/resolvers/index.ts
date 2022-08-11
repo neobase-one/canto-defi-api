@@ -4,6 +4,7 @@ import { BurnResolver } from "./burnResolver";
 import { StableswapFactoryResovler } from "./factoryResolver";
 import { HealthResolver } from "./healthResolver";
 import { LiquidityPositionsResolver } from "./lpResolver";
+import { MarketResolver } from "./marketResolver";
 import { MintResolver } from "./mintResolver";
 import { PairsResolver } from "./pairResolver";
 import { LiquidityPositionSnapshotsResolver } from "./snapshotResolver";
@@ -29,5 +30,6 @@ export const resolvers: [Function, ...Function[]] = [
   MintResolver,
   LiquidityPositionsResolver,
   LiquidityPositionSnapshotsResolver,
-  TransactionsResolver
+  TransactionsResolver,
+  MarketResolver
 ];

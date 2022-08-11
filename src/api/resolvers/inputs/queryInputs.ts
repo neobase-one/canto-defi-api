@@ -318,3 +318,27 @@ export class TokenDayDataInput {
   @Field({ nullable: false })
   id: string
 }
+
+@InputType()
+export class MarketsInput {
+  @Field((type) => [String], { nullable: true })
+  id: [string]
+
+  @Field((type => Int), { defaultValue: 1000, nullable: true })
+  first: number
+
+  @Field((type => Int), { defaultValue: 0, nullable: true })
+  skip: number
+
+  @Field({ defaultValue: "totalCash", nullable: true })
+  orderBy: string
+
+  @Field({ defaultValue: OrderDirection.ASC, nullable: true })
+  orderDirection: OrderDirection
+}
+
+@InputType()
+export class MarketInput {
+  @Field({ nullable: false })
+  id: string
+}
