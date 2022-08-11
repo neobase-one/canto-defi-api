@@ -16,31 +16,66 @@ import { convertToDecimal } from "../../utils/helper";
 
 // todo: fix types + imports
 
-const WETH_ADDRESS = "0x826551890Dc65655a0Aceca109aB11AbDbD7a07B"; //wCANTO
+const wCANTO_ADDRESS = Config.canto.dexDashboard.wCANTO_ADDRESS;
+
+const NOTE_CANTO_PAIR = Config.canto.dexDashboard.NOTE_CANTO_PAIR;
+const CANTO_ETH_PAIR = Config.canto.dexDashboard.CANTO_ETH_PAIR;
+const CANTO_ATOM_PAIR = Config.canto.dexDashboard.CANTO_ATOM_PAIR;
 
 export async function getEthPriceInUSD() {
+  const pairService = Container.get(PairService);
+
+  let notePair: any = await pairService.getByAddress(NOTE_CANTO_PAIR); // token1 = wCANTO
+  let ethPair: any = await pairService.getByAddress(CANTO_ETH_PAIR); // token1 = wCANTO
+  let atomPair: any = await pairService.getByAddress(CANTO_ATOM_PAIR); // token0 = wCANTO
+
+  // all 3 created
+  if (notePair!==null && ethPair!==null && atomPair!==null) {
+    let totalLiquidityCANTO = convertToDecimal(notePair.reserve1)
+      .plus(convertToDecimal(ethPair.reserve1))
+      .plus(convertToDecimal(atomPair.reserve0));
+
+    let noteWeight = convertToDecimal(notePair.reserve1).div(totalLiquidityCANTO);
+    let ethWeight = convertToDecimal(ethPair.reserve1).div(totalLiquidityCANTO);
+    let atomWeight = convertToDecimal(atomPair.reserve0).div(totalLiquidityCANTO);
+
+    let price = convertToDecimal(notePair.token0Price).times(noteWeight)
+      .plus(convertToDecimal(ethPair.token0Price).times(ethWeight))
+      .plus(convertToDecimal(atomPair.token1Price).times(atomWeight));
+
+    return price;
+    // ETH & NOTE created
+  } else if (ethPair!==null && notePair!==null) {
+    let totalLiquidityCANTO = convertToDecimal(notePair.reserve1)
+      .plus(convertToDecimal(ethPair.reserve1));
+
+    let noteWeight = convertToDecimal(notePair.reserve1).div(totalLiquidityCANTO);
+    let ethWeight = convertToDecimal(ethPair.reserve1).div(totalLiquidityCANTO);
+
+    let price = convertToDecimal(notePair.token0Price).times(noteWeight)
+      .plus(convertToDecimal(ethPair.token0Price).times(ethWeight));
+
+    return price;
+    // NOTE created
+  } else if (notePair!==null) {
+    return convertToDecimal(notePair.token0Price);
+  } else {
+    return ZERO_BD;
+  }
+
   return ONE_BD; // todo: verify calc
 }
 
 // token where amounts should contribute to tracked volume and liquidity
-let WHITELIST: string[] = [
-  "0x4e71A2E537B7f9D9413D3991D37958c0b5e1e503", // NOTE
-  "0x80b5a32E4F032B2a058b4F29EC95EEfEEB87aDcd", // USDC
-  "0xd567B3d7B8FE3C79a1AD8dA978812cfC4Fa05e75", // USDT
-  "0xecEEEfCEE421D8062EF8d6b4D814efe4dc898265", // ATOM
-  "0x5FD55A1B9FC24967C4dB09C513C3BA0DFa7FF687", // ETH
-  "0x826551890Dc65655a0Aceca109aB11AbDbD7a07B", // wCANTO
-];
+let WHITELIST: string[] = Config.canto.dexDashboard.WHITELIST;
 
-export let UNTRACKED_PAIRS: string[] = [
-  // "0x9ea3b5b4ec044b70375236a281986106457b20ef",
-];
+export let UNTRACKED_PAIRS: string[] = Config.canto.dexDashboard.UNTRACKED_PAIRS;
 
 // minimum liquidity required to count towards tracked volume for pairs with small # of Lps
-let MINIMUM_USD_THRESHOLD_NEW_PAIRS = new Decimal("400000");
+let MINIMUM_USD_THRESHOLD_NEW_PAIRS = Config.canto.dexDashboard.MINIMUM_USD_THRESHOLD_NEW_PAIRS;
 
 // minimum liquidity for price to get tracked
-let MINIMUM_LIQUIDITY_THRESHOLD_ETH = new Decimal("2");
+let MINIMUM_LIQUIDITY_THRESHOLD_ETH = Config.canto.dexDashboard.MINIMUM_LIQUIDITY_THRESHOLD_ETH;
 
 /**
  * Search through graph to find derived Eth per token.
@@ -52,14 +87,13 @@ export async function findEthPerToken(token: TokenDb) {
   const pairService = Container.get(PairService);
   const tokenService = Container.get(TokenService);
 
-  if (token.id == WETH_ADDRESS) {
+  if (token.id == wCANTO_ADDRESS) {
     return ONE_BD;
   }
   // loop through whitelist and check if paired with any
   for (let i = 0; i < WHITELIST.length; ++i) {
     let factoryContract: any = await new web3.eth.Contract(BaseV1FactoryABI, FACTORY_ADDRESS);
     let pairAddress = await factoryContract.methods.getPair(token.id, WHITELIST[i], true).call();
-    let pairAddress2 = await factoryContract.methods.getPair(token.id, WHITELIST[i], false).call();
     if (pairAddress != ADDRESS_ZERO) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (

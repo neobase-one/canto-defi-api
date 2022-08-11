@@ -3,7 +3,7 @@ import Container from "typedi";
 import { Log } from "web3-core";
 import { Contract, EventData } from "web3-eth-contract";
 import { Config } from "../../config";
-import { Bundle, BundleModel } from "../../models/bundle";
+import { Bundle, BundleDb, BundleModel } from "../../models/bundle";
 import {
   StableswapFactory,
   StableswapFactoryDb,
@@ -20,23 +20,24 @@ import { getTimestamp } from "../../utils/helper";
 import { Index } from "@typegoose/typegoose";
 import { IndexDb, IndexModel } from "../../models";
 
-export async function initFactoryCollection() {
-  const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
-  // create new factory w address
-  let factory = new StableswapFactoryDb(FACTORY_ADDRESS);
-  // console.log("INIT", factory);
-  await new StableswapFactoryModel(factory).save();
+// export async function initFactoryCollection() {
+//   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+//   // create new factory w address
+//   let factory = new StableswapFactoryDb(FACTORY_ADDRESS);
+//   // console.log("INIT", factory);
+//   await new StableswapFactoryModel(factory).save();
 
-  // create new bundle
-  let bundle = new Bundle();
-  bundle.justId("1");
-  // console.log(bundle);
-  await new BundleModel(bundle).save();
+//   // create new bundle
+//   let bundle = new Bundle();
+//   bundle.justId("1");
+//   // console.log(bundle);
+//   await new BundleModel(bundle).save();
 
-  // create new index
-  let index = new IndexDb();
-  await new IndexModel(index).save();
-}
+//   // create new index
+//   const START_BLOCK = Config.indexer.startBlock;
+//   let index = new IndexDb(START_BLOCK);
+//   await new IndexModel(index).save();
+// }
 
 export async function pairCreatedEventHandler(
   event: EventData,
@@ -54,6 +55,13 @@ export async function pairCreatedEventHandler(
 
   // update factory
   let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
+  if (factory === null) {
+    factory = new StableswapFactoryDb(FACTORY_ADDRESS);
+    factory = new StableswapFactoryModel(factory);
+
+    let bundle = new BundleDb("1");
+    await new BundleModel(bundle).save();
+  }
   factory.pairCount = factory.pairCount + 1;
   factory.block = new Decimal(event.blockNumber);
   // console.log(factory);

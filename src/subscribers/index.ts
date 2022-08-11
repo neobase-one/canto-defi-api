@@ -1,6 +1,6 @@
 import { Config } from "../config";
 import { web3 } from "../loaders/web3";
-import { IndexModel } from "../models";
+import { IndexDb, IndexModel } from "../models";
 import { baseV1FactoryIndexHistoricalEvents, indexFactoryEvents } from "./baseV1FactorySubscribers";
 import { baseV1PairIndexHistoricalEvents, indexPairEvents } from "./baseV1PairSubscribers";
 import { blockIndexHistorical, indexBlocks } from "./blockSubscribers";
@@ -26,7 +26,13 @@ export async function indexChain() {
       .sort({ lastBlockNumber: "desc" })
       .limit(1).exec(); // returns list
 
-    indexDb = indexDb[0];
+    if (indexDb.length !== 0) {
+      indexDb = indexDb[0];
+    } else {
+      // first time starting indexer
+      const START_BLOCK = Config.indexer.startBlock;
+      indexDb = new IndexDb(START_BLOCK);
+    }
 
     let latestIndexedBlockHead = indexDb.lastBlockNumber;
     let chainBlockHead = await web3.eth.getBlockNumber();

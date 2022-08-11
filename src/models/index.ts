@@ -7,9 +7,9 @@ export class IndexDb {
   @Property({default: 0, required: false})
   lastBlockNumber: number;
 
-  constructor() {
+  constructor(startBlock: number) {
     this._id = new ObjectId();
-    this.lastBlockNumber = 0;
+    this.lastBlockNumber = startBlock;
   }
 }
 

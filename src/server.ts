@@ -24,7 +24,7 @@ async function bootsrap() {
   });
 
   // INDEX OR API
-  if (Config.index === "TRUE") {
+  if (Config.indexer.index === "TRUE") {
     console.log("INDEXER ENABLED")
     await indexChain();
   } else {
