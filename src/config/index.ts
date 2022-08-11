@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import dotenv from "dotenv";
 import Web3 from "web3";
 import { PairCreatedEventSignature } from "../utils/abiParser/baseV1factory";
@@ -19,6 +20,11 @@ export const Config = {
   // server port
   port: parseInt(process.env.PORT || "8080"),
 
+  indexer: {
+    index: process.env.INDEX || "FALSE", // TRUE or FALSE
+    startBlock: parseInt(process.env.START_BLOCK || "0")
+  },
+
   // database url
   databaseUrl: process.env.MONGODB_URI || "",
 
@@ -34,16 +40,37 @@ export const Config = {
 
   // CANTO NODE
   canto: {
-    rpcBlockRange: 10_000,
-    latestBlockNumber: parseInt(process.env.LATEST_BLOCK_NUMBER || "250000"),
-    jsonRpcUrl: process.env.JSON_RPC_URL || "",
+    rpcBlockRange: parseInt(process.env.MAX_BLOCK_RANGE || "5000"),
     websocketUrl: process.env.WEBSOCKET_URL || "",
+    // stableswap dash needs all these
+    dexDashboard: {
+      wCANTO_ADDRESS: "0x826551890Dc65655a0Aceca109aB11AbDbD7a07B", //wCANTO
+      NOTE_CANTO_PAIR: "0x1D20635535307208919f0b67c3B2065965A85aA9", // token1 = wCANTO
+      CANTO_ETH_PAIR: "0x216400ba362d8FCE640085755e47075109718C8B", // token1 = wCANTO
+      CANTO_ATOM_PAIR: "0x30838619C55B787BafC3A4cD9aEa851C1cfB7b19", // token0 = wCANTO
+      // token where amounts should contribute to tracked volume and liquidity
+      WHITELIST: [
+        "0x4e71A2E537B7f9D9413D3991D37958c0b5e1e503", // NOTE
+        "0x80b5a32E4F032B2a058b4F29EC95EEfEEB87aDcd", // USDC
+        "0xd567B3d7B8FE3C79a1AD8dA978812cfC4Fa05e75", // USDT
+        "0xecEEEfCEE421D8062EF8d6b4D814efe4dc898265", // ATOM
+        "0x5FD55A1B9FC24967C4dB09C513C3BA0DFa7FF687", // ETH
+        "0x826551890Dc65655a0Aceca109aB11AbDbD7a07B", // wCANTO
+      ],
+      UNTRACKED_PAIRS: [
+      ],
+      // minimum liquidity required to count towards tracked volume for pairs with small # of Lps
+      MINIMUM_USD_THRESHOLD_NEW_PAIRS: new Decimal("400"),
+      // minimum liquidity for price to get tracked
+      MINIMUM_LIQUIDITY_THRESHOLD_ETH: new Decimal("2"),
+
+    }
   },
 
   // CONTRACT ADDRESSES
   contracts: {
     baseV1Factory: {
-      addresses: ["0xF5C085044e5e86B61Ebd0fBE978aC6FCeeeD3F4f"],
+      addresses: ["0xE387067f12561e579C5f7d4294f51867E0c1cFba"],
       events: {
         pairCreated: {
           signature: Web3.utils.keccak256(PairCreatedEventSignature),
@@ -57,16 +84,11 @@ export const Config = {
     },
     baseV1Pair: {
       addresses: [
-        "0xE1764f6e5Cc49b3852DAE3801aDD1ADeb616B2b6", // CantoNoteLP
-        "0x6E618CF8F4c267CD62f023C5175463C25414A9Cc", // cCantoNoteLP
-        "0xa3aF7266388f394dd6EeA6132E01a251fb2dA888", // CantoAtomLP
-        "0x675E38831e76f21DcAceE11a7bA3aE03d902A64e", // cCantoAtomLP
-        "0xE297bA8e977a44F711566eCEd3195107e9379d8b", // NoteUSDCLP
-        "0xE8b1295a5Ef143dfb031d87ECee54631D0C62406", // cNoteUSDCLP
-        "0x1C7F0Ee20276B17DbD3cB2728Ae98fa47ecd4b46", // NoteUSDTLP
-        "0xc38fBdA1E983542ba3d3d946678c311447Dc6B0D", // cNoteUSDTLP
-        "0x72ebC7bD46789E04610bC360a07033db1e01274c", // CantoETHLP
-        "0x7921d4853100ACF556cF5fE647015Abb6118C996", // cCantoETHLP
+        "0x1D20635535307208919f0b67c3B2065965A85aA9", // note/canto
+        "0x35DB1f3a6A6F07f82C76fCC415dB6cFB1a7df833", // note/usdt
+        "0x9571997a66D63958e1B3De9647C22bD6b9e7228c", // note/usdc
+        "0x216400ba362d8FCE640085755e47075109718C8B", // canto/eth
+        "0x30838619C55B787BafC3A4cD9aEa851C1cfB7b19", // canto/atom
       ],
       events: {
         mint: {

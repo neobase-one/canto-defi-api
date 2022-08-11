@@ -29,64 +29,64 @@ export class TokenDefinition {
 
     // Add Note
     let tokenNote = new TokenDefinition(
-      "0x9b195c7cb901cbB5A44776cD09031f66ec033627",
+      "0x4e71A2E537B7f9D9413D3991D37958c0b5e1e503",
+      "NOTE",
       "Note",
-      "Note",
-      new Decimal("0"),
-      9
+      new Decimal("115792089237316195423570985000000000000000000000000000000000"),
+      18
     );
     staticDefinitions.push(tokenNote);
 
     // Add USDC
     let tokenUsdc = new TokenDefinition(
-      "0x88f0a187d4C33f7E18eb2871caB382AB895e32Db",
+      "0x80b5a32E4F032B2a058b4F29EC95EEfEEB87aDcd",
       "USDC",
       "USDC",
-      new Decimal("0"),
-      9
+      new Decimal("405002.366"),
+      6
     );
     staticDefinitions.push(tokenUsdc);
 
     // Add USDT
     let tokenUsdt = new TokenDefinition(
-      "0xddf962Eba787Aa11D5A69B6DC1FF8a8A50be825c",
+      "0xd567B3d7B8FE3C79a1AD8dA978812cfC4Fa05e75",
       "USDT",
       "USDT",
-      new Decimal("0"),
-      9
+      new Decimal("50909"),
+      6
     );
     staticDefinitions.push(tokenUsdt);
 
     // Add ATOM
     let tokenAtom = new TokenDefinition(
-      "0xb6427565344049B54BF591D72e08F67cf095c5eF",
+      "0xecEEEfCEE421D8062EF8d6b4D814efe4dc898265",
       "ATOM",
       "ATOM",
-      new Decimal("0"),
-      9
+      new Decimal("11.189621"),
+      6
     );
     staticDefinitions.push(tokenAtom);
 
     // Add ETH
     let tokenEth = new TokenDefinition(
-      "0xEC98e09d49b5990F366a71Fae85e2e86923eE49b",
+      "0x5FD55A1B9FC24967C4dB09C513C3BA0DFa7FF687",
       "ETH",
       "ETH",
-      new Decimal("0"),
-      9
+      new Decimal("68.9817999999999999"),
+      18
     );
     staticDefinitions.push(tokenEth);
 
     // Add WETH
     let tokenWeth = new TokenDefinition(
-      "0x9D840713d7817f519f2EBB33470fb50Fb86ac195",
-      "WETH",
-      "WETH",
-      new Decimal("0"),
-      9
+      "0x826551890Dc65655a0Aceca109aB11AbDbD7a07B",
+      "wCANTO",
+      "wCANTO",
+      new Decimal("6704.117"),
+      18
     );
     staticDefinitions.push(tokenWeth);
-    
+
 
     return staticDefinitions;
   }

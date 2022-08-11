@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 import loaders from "./loaders";
 import { Config } from "./config";
-import { indexHistoricalEvents, initSubscribers } from "./subscribers";
+import { indexChain, indexHistoricalEvents, initSubscribers } from "./subscribers";
 
 async function bootsrap() {
   const app = express();
@@ -23,18 +23,18 @@ async function bootsrap() {
     },
   });
 
-  app.listen({ port: Config.port }, () =>
-    console.log(
-      `🚀 Server ready at http://localhost:${Config.port}${Config.api.prefix}`
-    )
-  );
-  
-  // HISTORICAL EVENTS
-  indexHistoricalEvents(Config.canto.latestBlockNumber);
-
-
-  // SUBSCRIPTIONS
-  initSubscribers();
+  // INDEX OR API
+  if (Config.indexer.index === "TRUE") {
+    console.log("INDEXER ENABLED")
+    await indexChain();
+  } else {
+    console.log("INDEXER DISABLED")
+    app.listen({ port: Config.port }, () =>
+      console.log(
+        `🚀 Server ready at http://localhost:${Config.port}${Config.api.prefix}`
+      )
+    );
+  }
 };
 
 bootsrap();

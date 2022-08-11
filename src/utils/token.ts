@@ -1,34 +1,54 @@
 import Decimal from "decimal.js"
+import { web3 } from "../loaders/web3";
+import { Erc20ABI } from "./abiParser/erc20";
 import { TokenDefinition } from "./tokenDefinition"
 
-export function fetchTokenSymbol(tokenAddress: string): string {
+export async function fetchTokenSymbol(tokenAddress: string) {
   // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
   if(staticDefinition != null) {
     return (staticDefinition as TokenDefinition).symbol
   }
+
+  var contract = await new web3.eth.Contract(Erc20ABI, tokenAddress);
+  var symbol = await contract.methods.symbol().call();
+  if (symbol == null) {
+    symbol = ""
+  }
   
-  return "";
+  return symbol;
 }
 
-export function fetchTokenName(tokenAddress: string): string {
+export async function fetchTokenName(tokenAddress: string) {
   // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
   if(staticDefinition != null) {
     return (staticDefinition as TokenDefinition).name
   }
 
+  var contract = await new web3.eth.Contract(Erc20ABI, tokenAddress);
+  var symbol = await contract.methods.symbol().call();
+  if (symbol == null) {
+    symbol = ""
+  }
+
   return "";
 }
 
-export function fetchTokenTotalSupply(tokenAddress: string): Decimal {
+export async function fetchTokenTotalSupply(tokenAddress: string) {
   // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
   if(staticDefinition != null) {
     return (staticDefinition as TokenDefinition).totalSupply
   }
 
-  return new Decimal("0");
+  var contract = await new web3.eth.Contract(Erc20ABI, tokenAddress);
+  var totalSupply = await contract.methods.totalSupply().call();
+  if (totalSupply == null) {
+    totalSupply = 0;
+  }
+
+  return new Decimal(totalSupply.toString());
 }
 
 export function fetchTokenDecimals(tokenAddress: string): number {
@@ -38,5 +58,5 @@ export function fetchTokenDecimals(tokenAddress: string): number {
     return (staticDefinition as TokenDefinition).decimals
   }
 
-  return 0;
+  return 18;
 }
