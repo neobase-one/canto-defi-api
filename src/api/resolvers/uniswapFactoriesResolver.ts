@@ -15,7 +15,7 @@ export class UniswapFactoriesResolver {
             // const result = val.map(factory => { return factory.toGenerated(); });
             // return result;
         } else {
-            const val = await StableswapFactoryModel.find({ address: input.id, block: new Decimal(input.block) }).exec();
+            const val = await StableswapFactoryModel.find({ address: input.id, block: { $lte: new Decimal(input.block) } }).exec();
             return val;
             // const result = val.map(factory => { return factory.toGenerated(); });
             // return result;
