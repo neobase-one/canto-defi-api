@@ -10,6 +10,7 @@ import { LiquidityPositionSnapshotsResolver } from "./snapshotResolver";
 import { SwapResolver } from "./swapResolver";
 import { TokenDayDatasResolver } from "./tddResolver";
 import { TokensResolver } from "./tokenResolver";
+import { TransactionsResolver } from "./transactionResolver";
 import { UniswapDayDatasResolver } from "./uddResolver";
 import { UniswapFactoriesResolver } from "./uniswapFactoriesResolver";
 
@@ -27,5 +28,6 @@ export const resolvers: [Function, ...Function[]] = [
   BurnResolver,
   MintResolver,
   LiquidityPositionsResolver,
-  LiquidityPositionSnapshotsResolver
+  LiquidityPositionSnapshotsResolver,
+  TransactionsResolver
 ];

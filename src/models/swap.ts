@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
-import { Pair } from "./pair";
+import { Pair, PairModel } from "./pair";
 import { Ref } from "../types/ref";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { ZERO_BD } from "../utils/constants";
@@ -148,16 +148,14 @@ export class Swap {
     this.from = "";
   }
 
-  fromDb(swap: SwapDb) {
+  async fromDb(swap: SwapDb) {
     this._id = swap._id;
     this.id = swap.id;
     var t = new Transaction();
     t.justId(swap.transaction);
     this.transaction = t;
     this.timestamp = swap.timestamp;
-    var p = new Pair();
-    p.justId(swap.pair);
-    this.pair = p;
+    this.pair = await this.getPair(swap.pair);
     this.liquidity = swap.liquidity;
     this.amount0In = swap.amount0In;
     this.amount1In = swap.amount1In;
@@ -169,6 +167,11 @@ export class Swap {
     this.sender = swap.sender;
     this.from = swap.from;
     return this;
+  }
+
+  async getPair(id:string):Promise<Pair>{
+    const pair = await PairModel.find({id:id});
+    return pair[0].toGenerated();
   }
 
   justId(id: string) {

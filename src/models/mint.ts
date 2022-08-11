@@ -1,11 +1,10 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
 import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID, Float, Int } from "type-graphql";
+import { ObjectType, Field, ID} from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { Transaction } from "./transaction";
-import { Ref } from "../types/ref";
-import { Pair } from "./pair";
+import { Pair, PairModel } from "./pair";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { ZERO_BD } from "../utils/constants";
 
@@ -141,26 +140,28 @@ export class Mint {
     this.feeTo = "";
   }
 
-  fromDb(mdb: MintDb) {
+  async fromDb(mdb: MintDb) {
     this._id = mdb._id;
     this.id = mdb.id;
     var t = new Transaction();
     t.justId(mdb.transaction);
     this.transaction = t;
-    this.timestamp = ZERO_BD;
-    var p = new Pair()
-    p.justId(mdb.pair);
-    this.pair = p;
-    this.liquidity = ZERO_BD;
-    this.amount0 = ZERO_BD;
-    this.amount1 = ZERO_BD;
-    this.logIndex = ZERO_BD;
-    this.amountUSD = ZERO_BD;
-    this.feeLiquidity = ZERO_BD;
-    this.sender = "";
-    this.to = "";
-    this.feeTo = "";
+    this.timestamp = mdb.timestamp;
+    this.pair = await this.getPair(mdb.pair);
+    this.liquidity = mdb.liquidity;
+    this.amount0 = mdb.amount0;
+    this.amount1 = mdb.amount1;
+    this.logIndex = mdb.logIndex;
+    this.amountUSD = mdb.amountUSD;
+    this.feeLiquidity = mdb.feeLiquidity;
+    this.sender = mdb.sender;
+    this.to = mdb.to;
+    this.feeTo = mdb.feeTo;
     return this;
+  }
+  async getPair(id:string):Promise<Pair>{
+    const pair = await PairModel.find({id:id});
+    return pair[0].toGenerated();
   }
 
   justId(id: string) {
