@@ -97,7 +97,8 @@ export async function mintEventHandler(
   let amountTotalETH = convertToDecimal(token1.derivedETH)
     .times(token1Amount)
     .plus(convertToDecimal(token0.derivedETH).times(token0Amount));
-  let amountTotalUSD = amountTotalETH.times(convertToDecimal(bundle.ethPrice));
+  // let amountTotalUSD = amountTotalETH.times(convertToDecimal(bundle.ethPrice));
+  let amountTotalUSD = amountTotalETH;
 
   // update txn counts
   pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
@@ -172,7 +173,8 @@ export async function burnEventHandler(
   let amountTotalETH = convertToDecimal(token1.derivedETH)
     .times(token1Amount)
     .plus(convertToDecimal(token0.derivedETH).times(token0Amount));
-  let amountTotalUSD = amountTotalETH.times(convertToDecimal(bundle.ethPrice));
+  // let amountTotalUSD = amountTotalETH.times(convertToDecimal(bundle.ethPrice));
+  let amountTotalUSD = amountTotalETH;
 
   // update txn counts
   pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
@@ -247,7 +249,8 @@ export async function swapEventHandler(
     .times(amount1Total)
     .plus(convertToDecimal(token0.derivedETH).times(amount0Total))
     .div(new Decimal("2"));
-  let derivedAmountUSD = derivedAmountETH.times(convertToDecimal(bundle.ethPrice));
+  // let derivedAmountUSD = derivedAmountETH.times(convertToDecimal(bundle.ethPrice));
+  let derivedAmountUSD = derivedAmountETH;
 
   // only accounts for volume through white listed tokens
   let trackedAmountUSD = await getTrackedVolumeUSD(
@@ -258,12 +261,12 @@ export async function swapEventHandler(
     pair
   );
 
-  let trackedAmountETH: Decimal;
-  if (convertToDecimal(bundle.ethPrice).equals(ZERO_BD)) {
-    trackedAmountETH = ZERO_BD;
-  } else {
-    trackedAmountETH = trackedAmountUSD.div(convertToDecimal(bundle.ethPrice));
-  }
+  let trackedAmountETH: Decimal = trackedAmountUSD;
+  // if (convertToDecimal(bundle.ethPrice).equals(ZERO_BD)) {
+  //   trackedAmountETH = ZERO_BD;
+  // } else {
+  //   trackedAmountETH = trackedAmountUSD.div(convertToDecimal(bundle.ethPrice));
+  // }
 
   // update token0 global volume and token liquidity stats
   token0.tradeVolume = convertToDecimal(token0.tradeVolume).plus(amount0In.plus(amount0Out));
@@ -386,7 +389,8 @@ export async function swapEventHandler(
     amount0Total.times(convertToDecimal(token0.derivedETH))
   );
   token0DayData.dailyVolumeUSD = convertToDecimal(token0DayData.dailyVolumeUSD).plus(
-    amount0Total.times(convertToDecimal(token0.derivedETH)).times(convertToDecimal(bundle.ethPrice))
+    // amount0Total.times(convertToDecimal(token0.derivedETH)).times(convertToDecimal(bundle.ethPrice))
+    amount0Total.times(convertToDecimal(token0.derivedETH))
   );
   await token0DayData.save();
 
@@ -397,7 +401,8 @@ export async function swapEventHandler(
     amount1Total.times(convertToDecimal(token1.derivedETH))
   );
   token1DayData.dailyVolumeUSD = convertToDecimal(token1DayData.dailyVolumeUSD).plus(
-    amount1Total.times(convertToDecimal(token1.derivedETH)).times(convertToDecimal(bundle.ethPrice))
+    // amount1Total.times(convertToDecimal(token1.derivedETH)).times(convertToDecimal(bundle.ethPrice))
+    amount1Total.times(convertToDecimal(token1.derivedETH))
   );
   await token1DayData.save();
 }
@@ -655,29 +660,32 @@ export async function syncEventHandler(
 
   // get tracked liquidity - will be 0 if neither in whitelist
   let trackedLiquidityETH: Decimal;
-  if (!convertToDecimal(bundle.ethPrice).equals(ZERO_BD)) {
+  // if (!convertToDecimal(bundle.ethPrice).equals(ZERO_BD)) {
     let trackedLiquidityUSD = await getTrackedLiquidityUSD(
       pair.reserve0,
       token0,
       pair.reserve1,
       token1
     );
-    trackedLiquidityETH = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.ethPrice));
-  } else {
-    trackedLiquidityETH = ZERO_BD;
-  }
+    // trackedLiquidityETH = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.ethPrice));
+    trackedLiquidityETH = convertToDecimal(trackedLiquidityUSD);
+  // } else {
+    // trackedLiquidityETH = ZERO_BD;
+  // }
 
   // use derived amounts within pair
   pair.trackedReserveETH = trackedLiquidityETH;
   pair.reserveETH = convertToDecimal(pair.reserve0)
     .times(convertToDecimal(token0.derivedETH))
     .plus(convertToDecimal(convertToDecimal(pair.reserve1).times(convertToDecimal(token1.derivedETH))));
-  pair.reserveUSD = convertToDecimal(pair.reserveETH).times(convertToDecimal(bundle.ethPrice));
+  // pair.reserveUSD = convertToDecimal(pair.reserveETH).times(convertToDecimal(bundle.ethPrice));
+  pair.reserveUSD = convertToDecimal(pair.reserveETH);
 
   // use tracked amounts globally
   factory.totalLiquidityETH =
     convertToDecimal(factory.totalLiquidityETH).plus(convertToDecimal(trackedLiquidityETH));
-  factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityETH).times(convertToDecimal(bundle.ethPrice));
+  // factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityETH).times(convertToDecimal(bundle.ethPrice));
+  factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityETH);
   // todo: since just multiplication can try to not use USD if all calc based on ETH
 
   // correctly set liquidity amounts for each token

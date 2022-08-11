@@ -91,28 +91,42 @@ export async function findEthPerToken(token: TokenDb) {
     return ONE_BD;
   }
   // loop through whitelist and check if paired with any
+  let factoryContract: any = await new web3.eth.Contract(BaseV1FactoryABI, FACTORY_ADDRESS);
   for (let i = 0; i < WHITELIST.length; ++i) {
-    let factoryContract: any = await new web3.eth.Contract(BaseV1FactoryABI, FACTORY_ADDRESS);
-    let pairAddress = await factoryContract.methods.getPair(token.id, WHITELIST[i], true).call();
+    let pairAddress = await getPairAddress(factoryContract, token.id, WHITELIST[i]);
+    // console.log("ETH PER TOKEN: ", token.id, WHITELIST[i], pairAddress);
     if (pairAddress != ADDRESS_ZERO) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (
-        pair.token0 == token.id &&
-        convertToDecimal(pair.reserveETH).gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
+        pair.token0 == token.id 
+        // && convertToDecimal(pair.reserveETH).gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
       ) {
         let token1: any = await tokenService.getByAddress(pair.token1);
         return convertToDecimal(pair.token1Price).times(convertToDecimal(token1.derivedETH)); // return token1 per our token * Eth per token 1
       }
       if (
-        pair.token1 == token.id &&
-        convertToDecimal(pair.reserveETH).gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
+        pair.token1 == token.id 
+        // && convertToDecimal(pair.reserveETH).gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
       ) {
         let token0: any = await tokenService.getByAddress(pair.token0);
         return convertToDecimal(pair.token0Price).times(convertToDecimal(token0.derivedETH)); // return token0 per our token * ETH per token 0
       }
     }
   }
+  // console.log("L", token.id)
   return ZERO_BD; // nothing was found return 0
+}
+
+async function getPairAddress(contract: any, t0: any, ti: any) {
+  let p1 = await contract.methods.getPair(t0, ti, true).call();
+  let p2 = await contract.methods.getPair(t0, ti, false).call();
+  if (p1 !== ADDRESS_ZERO) {
+    return p1;
+  } else if (p2 !== ADDRESS_ZERO) {
+    return p2;
+  } else {
+    return ADDRESS_ZERO;
+  }
 }
 
 /**
@@ -134,8 +148,10 @@ export async function getTrackedVolumeUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: any = await bundleService.get();
-  let price0 = convertToDecimal(token0.derivedETH).times(convertToDecimal(bundle.ethPrice));
-  let price1 = convertToDecimal(token1.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  // let price0 = convertToDecimal(token0.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  let price0 = convertToDecimal(token0.derivedETH);
+  // let price1 = convertToDecimal(token1.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  let price1 = convertToDecimal(token1.derivedETH);
 
   // dont count tracked volume on these pairs - usually rebass tokens
   if (UNTRACKED_PAIRS.includes(pair.id)) {
@@ -208,8 +224,10 @@ export async function getTrackedLiquidityUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: any = await bundleService.get();
-  let price0 = convertToDecimal(token0.derivedETH).times(convertToDecimal(bundle.ethPrice));
-  let price1 = convertToDecimal(token1.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  // let price0 = convertToDecimal(token0.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  let price0 = convertToDecimal(token0.derivedETH);
+  // let price1 = convertToDecimal(token1.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  let price1 = convertToDecimal(token1.derivedETH);
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {

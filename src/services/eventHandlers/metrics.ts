@@ -48,7 +48,7 @@ export async function updateFactoryDayData(event: EventData) {
 
   // update day data values
   factoryDayData.totalLiquidityETH = factory.totalLiquidityETH;
-  factoryDayData.totalLiquidityETH = factory.totalLiquidityETH;
+  factoryDayData.totalLiquidityUSD = factory.totalLiquidityETH;
   factoryDayData.txCount = factory.txCount;
 
   await factoryDayData.save();
@@ -140,15 +140,16 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
     tokenDayData = new TokenDayDataDb(tokenDayId);
     tokenDayData.date = dayStartTimestamp;
     tokenDayData.token = token.id;
-    tokenDayData.priceUSD = convertToDecimal(token.derivedETH).times(convertToDecimal(bundle.ethPrice));
+    // tokenDayData.priceUSD = convertToDecimal(token.derivedETH).times(convertToDecimal(bundle.ethPrice));
+    tokenDayData.priceUSD = convertToDecimal(token.derivedETH);
     tokenDayData = new TokenDayDataModel(tokenDayData);
   }
-  tokenDayData.priceUSD = convertToDecimal(token.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  // tokenDayData.priceUSD = convertToDecimal(token.derivedETH).times(convertToDecimal(bundle.ethPrice));
+  tokenDayData.priceUSD = convertToDecimal(token.derivedETH);
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
   tokenDayData.totalLiquidityETH = convertToDecimal(token.totalLiquidity).times(convertToDecimal(token.derivedETH));
-  tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityETH).times(
-    convertToDecimal(bundle.ethPrice)
-  );
+  // tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityETH).times(convertToDecimal(bundle.ethPrice));
+  tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityETH);
   tokenDayData.dailyTxns = convertToDecimal(tokenDayData.dailyTxns).plus(ONE_BD);
   await tokenDayData.save();
 
