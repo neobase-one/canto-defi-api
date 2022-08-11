@@ -29,7 +29,7 @@ export class TokenDefinition {
 
     // Add Note
     let tokenNote = new TokenDefinition(
-      "0xD354EFE7F59A727BD988252726D86D6dd8d19547",
+      "0x4e71A2E537B7f9D9413D3991D37958c0b5e1e503",
       "NOTE",
       "Note",
       new Decimal("115792089237316195423570985000000000000000000000000000000000"),
@@ -63,7 +63,7 @@ export class TokenDefinition {
       "ATOM",
       "ATOM",
       new Decimal("11.189621"),
-      8
+      6
     );
     staticDefinitions.push(tokenAtom);
 

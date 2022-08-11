@@ -45,7 +45,7 @@ export const Config = {
   // CONTRACT ADDRESSES
   contracts: {
     baseV1Factory: {
-      addresses: ["0xE007cAc018C8bFFc70dFD0E8f6C24b2E7CFcefB9"],
+      addresses: ["0xE387067f12561e579C5f7d4294f51867E0c1cFba"],
       events: {
         pairCreated: {
           signature: Web3.utils.keccak256(PairCreatedEventSignature),
@@ -59,10 +59,11 @@ export const Config = {
     },
     baseV1Pair: {
       addresses: [
-        "0x406376a1ea40cf149A31f6e23638f99900988f46", // note/usdt
-        "0x753eF0D3506D70D8266335C16A5ed7cC71Aa376a", // note/usdc
-        "0x03cD777F7DA9EE2884fc2FD111808467C4Df0203", // canto/eth
-        "0x4C7504dFEe142849d59a96D4A1954eE9c7ea7437", // canto/atom
+        "0x1D20635535307208919f0b67c3B2065965A85aA9", // note/canto
+        "0x35DB1f3a6A6F07f82C76fCC415dB6cFB1a7df833", // note/usdt
+        "0x9571997a66D63958e1B3De9647C22bD6b9e7228c", // note/usdc
+        "0x216400ba362d8FCE640085755e47075109718C8B", // canto/eth
+        "0x30838619C55B787BafC3A4cD9aEa851C1cfB7b19", // canto/atom
       ],
       events: {
         mint: {

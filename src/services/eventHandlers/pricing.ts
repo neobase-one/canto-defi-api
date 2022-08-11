@@ -24,7 +24,7 @@ export async function getEthPriceInUSD() {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  "0xD354EFE7F59A727BD988252726D86D6dd8d19547", // NOTE
+  "0x4e71A2E537B7f9D9413D3991D37958c0b5e1e503", // NOTE
   "0x80b5a32E4F032B2a058b4F29EC95EEfEEB87aDcd", // USDC
   "0xd567B3d7B8FE3C79a1AD8dA978812cfC4Fa05e75", // USDT
   "0xecEEEfCEE421D8062EF8d6b4D814efe4dc898265", // ATOM
