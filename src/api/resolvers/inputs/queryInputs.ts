@@ -176,6 +176,21 @@ export class TransactionInput {
 }
 
 @InputType()
+export class TransactionsInput {
+  @Field((type) => [String], { nullable: true })
+  id: [string]
+
+  @Field((type => Int), { defaultValue: 100, nullable: true })
+  first: number
+
+  @Field({ defaultValue: "timestamp", nullable: true })
+  orderBy: string
+
+  @Field({ defaultValue: OrderDirection.ASC, nullable: true })
+  orderDirection: OrderDirection
+}
+
+@InputType()
 export class MintInput {
   @Field({ nullable: false })
   id: string
@@ -237,8 +252,11 @@ export class SwapInput {
 
 @InputType()
 export class SwapsInput {
-  @Field((type) => [String], { nullable: false })
+  @Field((type) => [String], { nullable: true })
   pair_in: [string]
+
+  @Field((type) => String, { nullable: true })
+  pair: string
 
   @Field((type) => Int, { defaultValue: 200, nullable: true })
   first: number

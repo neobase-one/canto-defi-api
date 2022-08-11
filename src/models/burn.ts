@@ -5,7 +5,7 @@ import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
 import { Transaction } from "./transaction";
 import {Ref} from '../types/ref';
-import { Pair } from "./pair";
+import { Pair, PairModel } from "./pair";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { ZERO_BD } from "../utils/constants";
 
@@ -148,14 +148,12 @@ export class Burn {
     this.feeTo = "";
   }
   
-  fromDb(burn: BurnDb) {
+  async fromDb(burn: BurnDb) {
     this._id = burn._id;
     this.id = burn.id;
     this.transaction = burn.transaction;
     this.timestamp = burn.timestamp;
-    var p = new Pair();
-    p.justId(burn.pair);
-    this.pair = p;
+    this.pair = await this.getPair(burn.pair);
     this.liquidity = burn.liquidity;
     this.amount0 = burn.amount0;
     this.amount1 = burn.amount1;
@@ -167,6 +165,11 @@ export class Burn {
     this.to = burn.to;
     this.feeTo = burn.feeTo;
     return this;
+  }
+
+  async getPair(id:string):Promise<Pair>{
+    const pair = await PairModel.find({id:id});
+    return pair[0].toGenerated();
   }
 
   justId(id: string) {

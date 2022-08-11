@@ -1,6 +1,6 @@
 import { isNullOrUndefined } from "@typegoose/typegoose/lib/internal/utils";
 import { Arg, Query, Resolver } from "type-graphql";
-import { Mint, MintModel } from "../../models/mint";
+import { Mint, MintDb, MintModel } from "../../models/mint";
 import { MintsInput, OrderDirection } from "./inputs/queryInputs";
 
 @Resolver()
@@ -13,13 +13,29 @@ export class MintResolver {
                 sortBy = "-" + sortBy.trim;
             }
             const val = await MintModel.find({ pair: input.pair_in }).sort(sortBy).limit(input.first).exec();
-            const result = val.map(mint => { return mint.toGenerated(); });
+            const result = await this.toGenerated(val as unknown as [MintDb]);
             return result;
-        } else {
+        } else if (!isNullOrUndefined(input.pair) && !isNullOrUndefined(input.to)){
             const val = await MintModel.find({ to: input.to, pair: input.pair }).exec();
-            const result = val.map(mint => { return mint.toGenerated(); });
+            const result = await this.toGenerated(val as unknown as [MintDb]);
+            return result;
+        } else if (!isNullOrUndefined(input.pair) && isNullOrUndefined(input.to)) {
+            const val = await MintModel.find({ pair: input.pair }).exec();
+            const result = await this.toGenerated(val as unknown as [MintDb]);
+            return result;
+        } else if (isNullOrUndefined(input.pair) && isNullOrUndefined(input.pair)) {
+            const val = await MintModel.find().exec();
+            const result = await this.toGenerated(val as unknown as [MintDb]);
             return result;
         }
+    }
 
+    async toGenerated(mints: [MintDb]): Promise<Mint[]> {
+        var result: Mint[]=[];
+        for (var i = 0; i < mints.length; i++) {
+            var mint = await mints[i].toGenerated();
+            result.push(mint);
+        }
+        return result;
     }
 }

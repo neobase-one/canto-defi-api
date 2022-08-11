@@ -3,9 +3,9 @@ import { ObjectId } from "mongodb";
 import { ObjectType, Field, ID, Float, Int } from "type-graphql";
 import { DecimalScalar } from "../types/decimalScalar";
 import Decimal from "decimal.js";
-import { Mint } from "./mint";
-import { Burn } from "./burn";
-import { Swap } from "./swap";
+import { Mint, MintModel } from "./mint";
+import { Burn, BurnModel } from "./burn";
+import { Swap, SwapModel } from "./swap";
 import { ObjectIdScalar } from "../types/objectIdScalar";
 import { ZERO_BD } from "../utils/constants";
 
@@ -42,9 +42,9 @@ export class TransactionDb {
     this.swaps = [];
   }
 
-  toGenerated() {
+  async toGenerated() {
     var t = new Transaction()
-    return t.fromDb(this);
+    return await(t.fromDb(this));
   }
 }
 
@@ -73,7 +73,7 @@ export class Transaction {
   burns: Burn[];
 
   @Field((type) => [Swap])
-  swaps: string[];
+  swaps: Swap[];
 
   constructor() {
     this._id = new ObjectId();
@@ -85,7 +85,7 @@ export class Transaction {
     this.swaps = [];
   }
 
-  fromDb(txn: TransactionDb) {
+  async fromDb(txn: TransactionDb) {
     this._id = txn._id;
     this.id = txn.id;
     this.timestamp = txn.timestamp;
@@ -93,32 +93,44 @@ export class Transaction {
 
     let mintTypes = [];
     for (let mintId of txn.mints) {
-      var m = new Mint();
-      m.justId(mintId);
+      var m = await this.getMint(mintId);
       mintTypes.push(m);
     }
     this.mints = mintTypes;
 
     let burnTypes = [];
     for (let burnId of txn.burns) {
-      var b = new Burn();
-      b.justId(burnId)
+      var b = await this.getBurn(burnId);
       burnTypes.push(b);
     }
     this.burns = burnTypes;
 
     let swapTypes = [];
     for (let swapId of txn.swaps) {
-      var s = new Swap();
-      s.justId(swapId);
+      var s = await this.getSwap(swapId);
       swapTypes.push(s);
     }
-    this.burns = burnTypes;
+    this.swaps = swapTypes;
 
     return this;
   }
 
   justId(id: string) {
     this.id = id;
+  }
+
+  async getMint(id:string):Promise<Mint>{
+    const mintList = await MintModel.find({id:id});
+    return mintList[0].toGenerated();
+  }
+
+  async getSwap(id:string):Promise<Swap>{
+    const swapList = await SwapModel.find({id:id});
+    return swapList[0].toGenerated();
+  }
+
+  async getBurn(id:string):Promise<Burn>{
+    const burnList = await BurnModel.find({id:id});
+    return burnList[0].toGenerated();
   }
 }

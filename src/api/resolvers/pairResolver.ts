@@ -1,8 +1,6 @@
 import { isNullOrUndefined } from "@typegoose/typegoose/lib/internal/utils";
-import { query } from "express";
 import { Arg, Query, Resolver } from "type-graphql";
-import { File } from "winston/lib/winston/transports";
-import { Pair, PairModel } from "../../models/pair";
+import { Pair, PairDb, PairModel } from "../../models/pair";
 import { OrderDirection, PairInput } from "./inputs/queryInputs";
 
 @Resolver()
@@ -32,5 +30,13 @@ export class PairsResolver {
         
         val = val.map(pair=>pair.toGenerated());
         return val;
+    }
+    async toGenerated(pairs: [PairDb]): Promise<Pair[]> {
+        var result: Pair[]=[];
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = await pairs[i].toGenerated();
+            result.push(pair);
+        }
+        return result;
     }
 }
