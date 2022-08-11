@@ -76,7 +76,7 @@ export async function pairCreatedEventHandler(
 
   let token1: any = await tokenService.getOrCreate(input.token1);
   token1.symbol = await fetchTokenSymbol(input.token1);
-  token1.name = token0.symbol;
+  token1.name = token1.symbol;
   token1.totalSupply = await fetchTokenTotalSupply(input.token1);
   token1.decimals = fetchTokenDecimals(input.token1);
 
