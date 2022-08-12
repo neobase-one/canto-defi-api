@@ -12,45 +12,62 @@ export class MarketDb {
 
     @Property({ default: "", required: false })
     id: string;
-
+    @Property({ default: "", required: false })
+    name: string;
     @Property({ default: "", required: false })
     symbol: string;
-
     @Property({ default: new Decimal("0"), required: false })
     accrualBlockNumber: Decimal;
-
     @Property({ required: false })
     totalSupply: Decimal;
-
     @Property({ required: false })
     exchangeRate: Decimal;
-
     @Property({ default: new Decimal("0"), required: false })
     totalReserves: Decimal;
-
     @Property({ default: new Decimal("0"), required: false })
     totalCash: Decimal;
-
     @Property({ default: new Decimal("0"), required: false })
     totalDeposits: Decimal;
-
     @Property({ default: new Decimal("0"), required: false })
     totalBorrows: Decimal;
-
     @Property({ default: new Decimal("0"), required: false })
     perBlockBorrowInterest: Decimal;
-
     @Property({ default: new Decimal("0"), required: false })
     perBlockSupplyInterest: Decimal;
-
     @Property({ default: new Decimal("0"), required: false })
     borrowIndex: Decimal;
-
     @Property({ default: new Decimal("0"), required: false })
     tokenPerEthRatio: Decimal;
-
     @Property({ default: new Decimal("0"), required: false })
     tokenPerUSDRatio: Decimal;
+    @Property({ default: new Decimal("0"), required: false })
+    borrowRate: Decimal;
+    @Property({ default: new Decimal("0"), required: false })
+    collateralFactor: Decimal;
+    @Property({ default: "", required: false })
+    interestRateModelAddress: string
+    @Property({ default: new Decimal("0"), required: false })
+    numberOfBorrowers: Decimal;
+    @Property({ default: new Decimal("0"), required: false })
+    numberOfSuppliers: Decimal;
+    @Property({ default: new Decimal("0"), required: false })
+    supplyRate: Decimal;
+    @Property({ default: "", required: false })
+    underlyingAddress: string
+    @Property({ default: "", required: false })
+    underlyingName: string
+    @Property({ default: new Decimal("0"), required: false })
+    underlyingPrice: Decimal;
+    @Property({ default: "", required: false })
+    underlyingSymbol: string;
+    @Property({ default: new Decimal("0"), required: false })
+    blockTimestamp: Decimal;
+    @Property({ default: new Decimal("0"), required: false })
+    reserveFactor: Decimal;
+    @Property({ default: new Decimal("0"), required: false })
+    underlyingPriceUSD: Decimal;
+    @Property({ default: new Decimal("0"), required: false })
+    underlyingDecimals: Decimal;
 
     constructor(id: string) {
         this._id = new ObjectId();
