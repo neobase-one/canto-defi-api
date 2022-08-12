@@ -1,6 +1,6 @@
 import { isNullOrUndefined } from "@typegoose/typegoose/lib/internal/utils";
 import { Arg, Query, Resolver } from "type-graphql";
-import { Market, MarketModel } from "../../../models/dex/market";
+import { Market, MarketModel } from "../../../models/lending/market";
 import { OrderDirection, MarketsInput, MarketInput } from "../inputs/queryInputs";
 
 @Resolver()

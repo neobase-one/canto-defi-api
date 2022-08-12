@@ -9,7 +9,7 @@ import * as path from "path";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { TextEncoder, TextDecoder } from "util";
 import { typeDefs } from "../schema";
-import { resolvers } from "../api/resolvers/dex";
+import { resolvers } from "../api/resolvers";
 
 export default async () => {
   const schema = await buildSchema({
