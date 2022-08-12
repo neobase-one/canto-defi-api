@@ -1,9 +1,9 @@
 import { Config } from "../config";
 import { web3 } from "../loaders/web3";
-import { IndexDb, IndexModel } from "../models";
-import { baseV1FactoryIndexHistoricalEvents, indexFactoryEvents } from "./baseV1FactorySubscribers";
-import { baseV1PairIndexHistoricalEvents, indexPairEvents } from "./baseV1PairSubscribers";
-import { blockIndexHistorical, indexBlocks } from "./blockSubscribers";
+import { IndexDb, IndexModel } from "../models/dex";
+import { baseV1FactoryIndexHistoricalEvents, indexFactoryEvents } from "./dex/baseV1FactorySubscribers";
+import { baseV1PairIndexHistoricalEvents, indexPairEvents } from "./dex/baseV1PairSubscribers";
+import { blockIndexHistorical, indexBlocks } from "./dex/blockSubscribers";
 
 export async function indexHistoricalEvents(latestBlockNumber: number) {
   // Block
