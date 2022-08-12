@@ -28,10 +28,11 @@ import {
   NewPriceOracleInput,
 } from "../../types/event/lending/comptroller";
 import { EventDb, EventModel } from "../../models/dex/event";
+import { Config } from "../../config";
 
 export async function indexComptollerEvents(start: number, end: number) {
-  // todo: lending: address
-  const COMPTROLLER_ADDRESS = "";
+  console.log("Comptroller", start, end);
+  const COMPTROLLER_ADDRESS = Config.contracts.comptroller.addresses[0];
 
   const options = {
     fromBlock: start,

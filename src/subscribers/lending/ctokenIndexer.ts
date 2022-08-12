@@ -1,4 +1,5 @@
 import { EventData } from "web3-eth-contract";
+import { Config } from "../../config";
 import { web3 } from "../../loaders/web3";
 import { EventModel, EventDb } from "../../models/dex/event";
 import {
@@ -34,7 +35,7 @@ import { ALL_EVENTS } from "../../utils/constants";
 export async function indexcTokenEvents(start: number, end: number) {
   console.log("cTokens", start, end);
 
-  let addresses: any = []; // todo:
+  let addresses: any = Config.contracts.cToken.addresses;
 
   for (let address of addresses) {
     const options = {
