@@ -5,7 +5,7 @@ import Decimal from "decimal.js";
 1. Borrow(address,uint256,uint256,uint256)
 2. RepayBorrow(address,address,uint256,uint256,uint256)
 3. LiquidateBorrow(address,address,uint256,address,uint256)
-4. AccrueInterest(uint256,uint256,uint256)
+4. AccrueInterest(uint256,uint256,uint256,uint256)
 5. NewReserveFactor(uint256,uint256)
 6. Transfer(indexed address,indexed address,uint256)
 7. NewMarketInterestRateModel(address,address)
