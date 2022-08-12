@@ -17,3 +17,5 @@ export let BI_18 = 18;
 // export const EMPTY_USER = new User("");
 // export const EMPTY_POSITION = new LiquidityPosition("");
 // export const EMPTY_TOKEN = new Token("");
+
+export const ALL_EVENTS = "allEvents";
