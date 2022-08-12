@@ -1,7 +1,6 @@
-import { getModelForClass, Prop, Prop as Property } from "@typegoose/typegoose";
+import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
 import { ObjectId } from "mongodb";
-import { Field, ObjectType, ID, Int } from "type-graphql";
-import Decimal from "decimal.js";
+import { Field, ID, Int, ObjectType } from "type-graphql";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
 
 

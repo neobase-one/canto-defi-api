@@ -1,6 +1,10 @@
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
+import { AccountCTokenModel } from "../../../models/lending/accountCToken";
 import { MarketEnteredInput, MarketExitedInput, NewCloseFactorInput, NewCollateralFactorInput, NewLiquidationIncentiveInput, NewPriceOracleInput } from "../../../types/event/lending/comptroller";
+import { getTimestamp } from "../../../utils/helper";
+import { ComptrollerService } from "../models/comptroller";
+import { updateCommonCTokenStats } from "../models/helper";
 import { MarketService } from "../models/market";
 
 // todo: remove unused services
@@ -11,13 +15,22 @@ export async function handleMarketEnteredEvent(
 ) {
     // service
     const marketService = Container.get(MarketService);
-
     let market = await marketService.getByAddress(event.address);
-
-    //no action on market objects
-    //todo::updation of accountCToken table
-
-
+    if (market !== null) {
+        let accountID = input.account;
+        let timestamp = await getTimestamp(event.blockNumber);
+        let cTokenStats = await updateCommonCTokenStats(
+            market.id,
+            market.symbol,
+            accountID,
+            event.transactionHash,
+            timestamp,
+            event.blockNumber,
+        )
+        cTokenStats.enteredMarket = true
+        const cToken = new AccountCTokenModel(cTokenStats);
+        cToken.save();
+    }
 }
 
 export async function handleMarketExitedEvent(
@@ -26,11 +39,22 @@ export async function handleMarketExitedEvent(
 ) {
     // service
     const marketService = Container.get(MarketService);
-
     let market = await marketService.getByAddress(event.address);
-
-    //no action on market objects
-    //todo::updation of accountCToken table
+    if (market !== null) {
+        let accountID = input.account;
+        let timestamp = await getTimestamp(event.blockNumber);
+        let cTokenStats = await updateCommonCTokenStats(
+            market.id,
+            market.symbol,
+            accountID,
+            event.transactionHash,
+            timestamp,
+            event.blockNumber,
+        )
+        cTokenStats.enteredMarket = false
+        const cToken = new AccountCTokenModel(cTokenStats);
+        cToken.save();
+    }
 }
 
 export async function handleNewCloseFactorEvent(
@@ -38,12 +62,13 @@ export async function handleNewCloseFactorEvent(
     input: NewCloseFactorInput
 ) {
     // service
-    const marketService = Container.get(MarketService);
+    const comptrollerService = Container.get(ComptrollerService);
 
-    let market = await marketService.getByAddress(event.address);
-
-    //no action on market objects
-    //todo::updation of accountCToken table
+    let comptroller = await comptrollerService.getById('1');
+    if (comptroller !== null) {
+        comptroller.closeFactor = input.newCloseFactorMantissa
+        comptroller.save();
+    }
 }
 
 export async function handleNewCollateralFactorEvent(
@@ -64,21 +89,25 @@ export async function handleNewLiquidationIncentiveEvent(
     input: NewLiquidationIncentiveInput
 ) {
     // service
-    const marketService = Container.get(MarketService);
+    const comptrollerService = Container.get(ComptrollerService);
 
-    let market = await marketService.getByAddress(event.address);
-
-    //no action on market objects
- }
+    let comptroller = await comptrollerService.getById('1');
+    if (comptroller !== null) {
+        comptroller.liquidationIncentive = input.newLiquidationIncentiveMantissa;
+        comptroller.save();
+    }
+}
 
 export async function handleNewPriceOracleEvent(
     event: EventData,
     input: NewPriceOracleInput
-) { 
+) {
     // service
-    const marketService = Container.get(MarketService);
+    const comptrollerService = Container.get(ComptrollerService);
 
-    let market = await marketService.getByAddress(event.address);
-
-    //no action on market objects
+    let comptroller = await comptrollerService.getById('1');
+    if (comptroller !== null) {
+        comptroller.priceOracle = input.newPriceOracle;
+        comptroller.save();
+    }
 }
