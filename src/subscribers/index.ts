@@ -4,6 +4,8 @@ import { IndexDb, IndexModel } from "../models/dex";
 import { baseV1FactoryIndexHistoricalEvents, indexFactoryEvents } from "./dex/baseV1FactorySubscribers";
 import { baseV1PairIndexHistoricalEvents, indexPairEvents } from "./dex/baseV1PairSubscribers";
 import { blockIndexHistorical, indexBlocks } from "./dex/blockSubscribers";
+import { indexComptollerEvents } from "./lending/comptollerIndexer";
+import { indexcTokenEvents } from "./lending/ctokenIndexer";
 
 export async function indexHistoricalEvents(latestBlockNumber: number) {
   // Block
@@ -50,6 +52,14 @@ export async function indexChain() {
     await indexFactoryEvents(start, end);
 
     await indexPairEvents(start, end);
+
+    // Lending
+    // Comptroller
+    await indexComptollerEvents(start, end);
+
+    // cToken
+    await indexcTokenEvents(start, end);
+
 
     // update last indexed block
     indexDb.lastBlockNumber = end;

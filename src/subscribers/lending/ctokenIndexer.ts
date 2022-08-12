@@ -58,7 +58,6 @@ async function processEvents(events: EventData[]) {
     let eventId = event.transactionHash.concat("-").concat(event.logIndex.toString());
     // check if event already indexed before
     var eventIndex = await EventModel.findOne({ id: eventId }).exec();
-    console.log(eventIndex);
     if (eventIndex != null) {
       console.log("Skip Prev Indexed: ", eventId);
       continue;
@@ -67,24 +66,31 @@ async function processEvents(events: EventData[]) {
     //
     var eventName = event.event;
     if (eventName === Borrow) {
+      // console.log(event.blockNumber, event.event, event.transactionHash);
       let input = new BorrowInput(event.returnValues);
       handleBorrowEvent(event, input);
     } else if (eventName === RepayBorrow) {
+      // console.log(event.blockNumber, event.event, event.transactionHash);
       let input = new RepayBorrowInput(event.returnValues);
       handleRepayBorrowEvent(event, input);
     } else if (eventName === LiquidateBorrow) {
+      // console.log(event.blockNumber, event.event, event.transactionHash);
       let input = new LiquidateBorrowInput(event.returnValues);
       handleLiquidateBorrowEvent(event, input);
     } else if (eventName === AccrueInterest) {
+      // console.log(event.blockNumber, event.event, event.transactionHash);
       let input = new AccrueInterestInput(event.returnValues);
       handleAccrueInterestEvent(event, input);
     } else if (eventName === NewReserveFactor) {
+      // console.log(event.blockNumber, event.event, event.transactionHash);
       let input = new NewReserveFactorInput(event.returnValues);
       handleNewReserveFactorEvent(event, input);
     } else if (eventName === Transfer) {
+      // console.log(event.blockNumber, event.event, event.transactionHash);
       let input = new TransferInput(event.returnValues);
       handleTransferEvent(event, input);
     } else if (eventName === NewMarketInterestRateModel) {
+      // console.log(event.blockNumber, event.event, event.transactionHash);
       let input = new NewMarketInterestRateModelInput(event.returnValues);
       handleNewMarketInterestRateModelEvent(event, input);
     } else {
@@ -93,6 +99,6 @@ async function processEvents(events: EventData[]) {
     // add event as indexed
     var eventDb = new EventDb(eventId);
     await new EventModel(eventDb).save();
-    console.log(`New {}! {}`, event.event, event.blockNumber);
+    console.log(`cToken`, event.event, event.blockNumber, event.transactionHash);
   }
 }

@@ -58,7 +58,6 @@ async function processEvents(events: EventData[]) {
       .concat(event.logIndex.toString());
     // check if event already indexed before
     var eventIndex = await EventModel.findOne({ id: eventId }).exec();
-    console.log(eventIndex);
     if (eventIndex != null) {
       console.log("Skip Prev Indexed: ", eventId);
       continue;
@@ -67,21 +66,27 @@ async function processEvents(events: EventData[]) {
     //
     var eventName = event.event;
     if (eventName === MarketEntered) {
+      // console.log(event.blockNumber, event.event, event.transactionHash)
       let input = new MarketEnteredInput(event.returnValues);
       handleMarketEnteredEvent(event, input);
     } else if (eventName === MarketExited) {
+      // console.log(event.blockNumber, event.event, event.transactionHash)
       let input = new MarketExitedInput(event.returnValues);
       handleMarketExitedEvent(event, input);
     } else if (eventName === NewCloseFactor) {
+      // console.log(event.blockNumber, event.event, event.transactionHash)
       let input = new NewCloseFactorInput(event.returnValues);
       handleNewCloseFactorEvent(event, input);
     } else if (eventName === NewCollateralFactor) {
+      // console.log(event.blockNumber, event.event, event.transactionHash)
       let input = new NewCollateralFactorInput(event.returnValues);
       handleNewCollateralFactorEvent(event, input);
     } else if (eventName === NewLiquidationIncentive) {
+      // console.log(event.blockNumber, event.event, event.transactionHash)
       let input = new NewLiquidationIncentiveInput(event.returnValues);
       handleNewLiquidationIncentiveEvent(event, input);
     } else if (eventName === NewPriceOracle) {
+      // console.log(event.blockNumber, event.event, event.transactionHash)
       let input = new NewPriceOracleInput(event.returnValues);
       handleNewPriceOracleEvent(event, input);
     } else {
@@ -90,6 +95,6 @@ async function processEvents(events: EventData[]) {
     // add event as indexed
     var eventDb = new EventDb(eventId);
     await new EventModel(eventDb).save();
-    console.log(`New {}! {}`, event.event, event.blockNumber);
+    console.log(`Comptroller`, event.event, event.blockNumber, event.transactionHash);
   }
 }
