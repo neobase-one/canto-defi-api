@@ -41,7 +41,7 @@ export async function handleBorrowEvent(
       input.borrowAmount
     );
     const cToken = new AccountCTokenModel(cTokenStats);
-    cToken.save();
+    await cToken.save();
 
     let accountDb: any = await accountService.getById(accountID);
     if (accountDb == null) {
@@ -49,14 +49,14 @@ export async function handleBorrowEvent(
     }
     accountDb.hasBorrowed = true;
     const account = new AccountModel(accountDb as AccountDb);
-    account.save();
+    await account.save();
 
     if (
       previousBorrow.equals(ZERO_BD) &&
       !input.accountBorrows.equals(ZERO_BD) // checking edge case for borrwing 0
     ) {
       market.numberOfBorrowers = market.numberOfBorrowers.add(1);
-      market.save();
+      await market.save();
     }
   }
 }
@@ -93,7 +93,7 @@ export async function handleRepayBorrowEvent(
       repayAmountBD
     )
     const cToken = new AccountCTokenModel(cTokenStats);
-    cToken.save();
+    await cToken.save();
 
     let account: any = await accountService.getById(accountID);
     if (account == null) {
@@ -102,7 +102,7 @@ export async function handleRepayBorrowEvent(
 
     if (cTokenStats.storedBorrowBalance.equals(ZERO_BD)) {
       market.numberOfBorrowers = market.numberOfBorrowers.minus(1);
-      market.save();
+      await market.save();
     }
   }
 }
@@ -120,7 +120,7 @@ export async function handleLiquidateBorrowEvent(
   }
   liquidatorDb.countLiquidator = liquidatorDb.countLiquidator + 1;
   const liquidator = new AccountModel(liquidatorDb as AccountDb);
-  liquidator.save();
+  await liquidator.save();
 
   let borrowerID = input.borrower;
   let borrowerDb: any = await accountService.getById(borrowerID);
@@ -129,7 +129,7 @@ export async function handleLiquidateBorrowEvent(
   }
   borrowerDb.countLiquidated = borrowerDb.countLiquidated + 1;
   const borrower = new AccountModel(borrowerDb as AccountDb);
-  borrower.save();
+  await borrower.save();
 }
 
 export async function handleAccrueInterestEvent(
@@ -149,7 +149,7 @@ export async function handleNewReserveFactorEvent(
   let market = await marketService.getByAddress(event.address);
   if (market !== null) {
     market.reserveFactor = input.newReserveFactorMantissa;
-    market.save()
+    await market.save()
   }
 }
 
@@ -186,7 +186,7 @@ export async function handleTransferEvent(
   if (accountFromID != marketID) {
     let accountFrom = await accountService.getById(accountFromID);
     if (accountFrom == null) {
-      createAccount(accountFromID)
+      await createAccount(accountFromID)
     }
 
     // Update cTokenStats common for all events, and return the stats to update unique
@@ -208,11 +208,11 @@ export async function handleTransferEvent(
       amountUnderylingTruncated,
     )
     const cTokenStats = new AccountCTokenModel(cTokenStatsFrom);
-    cTokenStats.save();
+    await cTokenStats.save();
 
     if (cTokenStatsFrom.cTokenBalance.equals(ZERO_BD)) {
       market.numberOfSuppliers = market.numberOfSuppliers.minus(1);
-      new MarketModel(market).save();
+      await new MarketModel(market).save();
     }
   }
 
@@ -224,7 +224,7 @@ export async function handleTransferEvent(
   if (accountToID != marketID) {
     let accountTo = await accountService.getById(accountToID);
     if (accountTo == null) {
-      createAccount(accountToID)
+      await createAccount(accountToID);
     }
 
     // Update cTokenStats common for all events, and return the stats to update unique
@@ -246,14 +246,14 @@ export async function handleTransferEvent(
     cTokenStatsTo.totalUnderlyingSupplied = cTokenStatsTo.totalUnderlyingSupplied.plus(
       amountUnderylingTruncated,
     )
-    new AccountCTokenModel(cTokenStatsTo).save();
+    await new AccountCTokenModel(cTokenStatsTo).save();
 
     if (
       previousCTokenBalanceTo.equals(ZERO_BD) &&
       !input.amount.equals(ZERO_BD) // checking edge case for transfers of 0
     ) {
       market.numberOfSuppliers = market.numberOfSuppliers.plus(1);
-      new MarketModel(market).save();
+      await new MarketModel(market).save();
     }
   }
 }
@@ -270,5 +270,5 @@ export async function handleNewMarketInterestRateModelEvent(
     market = await createMarket(marketID);
   }
   market.interestRateModelAddress = input.newInterestRateModel;
-  new MarketModel(market as MarketDb).save();
+  await new MarketModel(market as MarketDb).save();
 }

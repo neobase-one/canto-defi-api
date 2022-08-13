@@ -1,6 +1,7 @@
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { AccountCTokenModel } from "../../../models/lending/accountCToken";
+import { ComptrollerDb, ComptrollerModel } from "../../../models/lending/comptroller";
 import { MarketEnteredInput, MarketExitedInput, NewCloseFactorInput, NewCollateralFactorInput, NewLiquidationIncentiveInput, NewPriceOracleInput } from "../../../types/event/lending/comptroller";
 import { getTimestamp } from "../../../utils/helper";
 import { ComptrollerService } from "../models/comptroller";
@@ -29,7 +30,7 @@ export async function handleMarketEnteredEvent(
         )
         cTokenStats.enteredMarket = true
         const cToken = new AccountCTokenModel(cTokenStats);
-        cToken.save();
+        await cToken.save();
     }
 }
 
@@ -53,7 +54,7 @@ export async function handleMarketExitedEvent(
         )
         cTokenStats.enteredMarket = false
         const cToken = new AccountCTokenModel(cTokenStats);
-        cToken.save();
+        await cToken.save();
     }
 }
 
@@ -67,7 +68,7 @@ export async function handleNewCloseFactorEvent(
     let comptroller = await comptrollerService.getById('1');
     if (comptroller !== null) {
         comptroller.closeFactor = input.newCloseFactorMantissa
-        comptroller.save();
+        await comptroller.save();
     }
 }
 
@@ -80,7 +81,7 @@ export async function handleNewCollateralFactorEvent(
     let market = await marketService.getByAddress(event.address);
     if (market !== null) {
         market.collateralFactor = input.newCloseFactorMantissa;
-        market.save();
+        await market.save();
     }
 }
 
@@ -94,7 +95,7 @@ export async function handleNewLiquidationIncentiveEvent(
     let comptroller = await comptrollerService.getById('1');
     if (comptroller !== null) {
         comptroller.liquidationIncentive = input.newLiquidationIncentiveMantissa;
-        comptroller.save();
+        await comptroller.save();
     }
 }
 
@@ -105,9 +106,11 @@ export async function handleNewPriceOracleEvent(
     // service
     const comptrollerService = Container.get(ComptrollerService);
 
-    let comptroller = await comptrollerService.getById('1');
-    if (comptroller !== null) {
-        comptroller.priceOracle = input.newPriceOracle;
-        comptroller.save();
+    let comptroller:any = await comptrollerService.getById('1');
+    if (comptroller === null) {
+        comptroller = new ComptrollerDb('1');  
     }
+    comptroller.priceOracle = input.newPriceOracle;
+    const comp = new ComptrollerModel(comptroller as ComptrollerDb);
+    await comptroller.save();
 }

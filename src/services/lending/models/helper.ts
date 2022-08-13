@@ -40,13 +40,13 @@ export function createAccountCToken(
   return cTokenStats
 }
 
-export function createAccount(accountID: string): AccountDb {
+export async function createAccount(accountID: string): Promise<AccountDb> {
   let accountDb = new AccountDb(accountID)
   accountDb.countLiquidated = ZERO_BD
   accountDb.countLiquidator = ZERO_BD
   accountDb.hasBorrowed = false
   const account = new AccountModel(accountDb);
-  account.save();
+  await account.save();
   return account
 }
 
