@@ -1,18 +1,21 @@
 /* eslint-disable prefer-const */ // to satisfy AS compiler
 
 // For each division by 10, add one to exponent to truncate one significant figure
+
 import Container from 'typedi';
 import { web3 } from '../../../loaders/web3';
 import { AccountDb, AccountModel } from '../../../models/lending/account';
 import { AccountCTokenDb } from '../../../models/lending/accountCToken';
 import { Market, MarketDb } from '../../../models/lending/market';
-import { ZERO_BD } from '../../../utils/constants';
+import { cTokenABI } from '../../../utils/abiParser/ctoken';
+import { ONE_BD, ZERO_BD } from '../../../utils/constants';
+import { bigDecimalExp18, convertToDecimal, exponentToBigDecimal } from '../../../utils/helper';
 import { AccountService } from './account';
 import { MarketService } from './market';
-import { cTokenABI } from '../../../utils/abiParser/ctoken';
 import Decimal from 'decimal.js';
 import { Erc20ABI } from '../../../utils/abiParser/erc20';
 import { fetchTokenDecimals, fetchTokenSymbol, fetchTokenName } from '../../../utils/dex/token';
+import { ComptrollerService } from './comptroller';
 
 
 export function createAccountCToken(
@@ -125,6 +128,15 @@ export async function createMarket(marketAddress: string): Promise<MarketDb> {
   return market
 }
 
+
+let cUSDCAddress = '0x39aa39c021dfbae8fac545936693ac917d5e7563'
+let cETHAddress = '0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5'
+let daiAddress = '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'
+export let mantissaFactor = 18
+export let cTokenDecimals = 8
+export let mantissaFactorBD: Decimal = exponentToBigDecimal(18)
+export let cTokenDecimalsBD: Decimal = exponentToBigDecimal(8)
+
 export async function updateMarket(
   marketAddress: string,
   blockNumber: number,
@@ -133,106 +145,150 @@ export async function updateMarket(
   const marketService = Container.get(MarketService);
   const accountService = Container.get(AccountService);
 
-  let marketDb: any = await marketService.getByAddress(marketAddress);
-  if (marketDb == null) {
-    marketDb = await createMarket(marketAddress);
+  let market: any = await marketService.getByAddress(marketAddress);
+  if (market == null) {
+    market = await createMarket(marketAddress);
   }
-  let m = marketDb as MarketDb;
+  // market = market as MarketDb;
   // Only updateMarket if it has not been updated this block
-  if (m.accrualBlockNumber.equals(blockNumber)) {
-    let contractAddress = m.id;
-    // let contract = web3.CToken.bind(contractAddress)
-    // let usdPriceInEth = getUSDCpriceETH(blockNumber)
+  if (!market.accrualBlockNumber.equals(blockNumber)) {
+    let contractAddress = market.id;
+    let contract = await new web3.eth.Contract(cTokenABI, contractAddress);
+    let usdPriceInEth = await getUSDCPriceETH(blockNumber);
 
-    // // if cETH, we only update USD price
-    // if (market.id == cETHAddress) {
-    //   market.underlyingPriceUSD = market.underlyingPrice
-    //     .div(usdPriceInEth)
-    //     .truncate(market.underlyingDecimals)
-    // } else {
-    //   let tokenPriceEth = getTokenPrice(
-    //     blockNumber,
-    //     contractAddress,
-    //     market.underlyingAddress as Address,
-    //     market.underlyingDecimals,
-    //   )
-    //   market.underlyingPrice = tokenPriceEth.truncate(market.underlyingDecimals)
-    //   // if USDC, we only update ETH price
-    //   if (market.id != cUSDCAddress) {
-    //     market.underlyingPriceUSD = market.underlyingPrice
-    //       .div(usdPriceInEth)
-    //       .truncate(market.underlyingDecimals)
-    //   }
-    // }
+    // if cETH, only update USD price
+    if (market.id == cETHAddress) {
+      market.underlyingPriceUSD = convertToDecimal(market.underlyingPrice)
+        .div(usdPriceInEth)
+        .toDecimalPlaces(convertToDecimal(market.underlyingDecimals).toNumber());
+    } else {
+      let tokenPriceEth = await getTokenPrice(
+        blockNumber,
+        contractAddress,
+        market.underlyingAddress,
+        market.underlyingDecimals
+      )
 
-    // market.accrualBlockNumber = contract.accrualBlockNumber().toI32()
-    // market.blockTimestamp = blockTimestamp
-    // market.totalSupply = contract
-    //   .totalSupply()
-    //   .toBigDecimal()
-    //   .div(cTokenDecimalsBD)
+      market.underlyingPrice = convertToDecimal(tokenPriceEth)
+        .toDecimalPlaces(convertToDecimal(market.underlyingDecimals).toNumber());
 
-    // /* Exchange rate explanation
-    //    In Practice
-    //     - If you call the cDAI contract on etherscan it comes back (2.0 * 10^26)
-    //     - If you call the cUSDC contract on etherscan it comes back (2.0 * 10^14)
-    //     - The real value is ~0.02. So cDAI is off by 10^28, and cUSDC 10^16
-    //    How to calculate for tokens with different decimals
-    //     - Must div by tokenDecimals, 10^market.underlyingDecimals
-    //     - Must multiply by ctokenDecimals, 10^8
-    //     - Must div by mantissa, 10^18
-    //  */
-    // market.exchangeRate = contract
-    //   .exchangeRateStored()
-    //   .toBigDecimal()
-    //   .div(exponentToBigDecimal(market.underlyingDecimals))
-    //   .times(cTokenDecimalsBD)
-    //   .div(mantissaFactorBD)
-    //   .truncate(mantissaFactor)
-    // market.borrowIndex = contract
-    //   .borrowIndex()
-    //   .toBigDecimal()
-    //   .div(mantissaFactorBD)
-    //   .truncate(mantissaFactor)
+      // if USDC, only update ETH price
+      if (market.id != cUSDCAddress) {
+        market.underlyingPriceUSD = convertToDecimal(market.underlyingPrice)
+          .div(usdPriceInEth)
+          .toDecimalPlaces(convertToDecimal(market.underlyingDecimals).toNumber());
+      }
+    }
 
-    // market.reserves = contract
-    //   .totalReserves()
-    //   .toBigDecimal()
-    //   .div(exponentToBigDecimal(market.underlyingDecimals))
-    //   .truncate(market.underlyingDecimals)
-    // market.totalBorrows = contract
-    //   .totalBorrows()
-    //   .toBigDecimal()
-    //   .div(exponentToBigDecimal(market.underlyingDecimals))
-    //   .truncate(market.underlyingDecimals)
-    // market.cash = contract
-    //   .getCash()
-    //   .toBigDecimal()
-    //   .div(exponentToBigDecimal(market.underlyingDecimals))
-    //   .truncate(market.underlyingDecimals)
+    let accrualBlockNumber = await contract.methods.accrualBlockNumber().call();
+    market.accrualBlockNumber = convertToDecimal(accrualBlockNumber);
+    market.blockTimestamp = blockTimestamp;
+    let totalSupply =  await contract.methods.totalSupply().call();
+    market.totalSupply = convertToDecimal(totalSupply).div(cTokenDecimalsBD);
 
-    // // Must convert to BigDecimal, and remove 10^18 that is used for Exp in Compound Solidity
-    // market.supplyRate = contract
-    //   .borrowRatePerBlock()
-    //   .toBigDecimal()
-    //   .times(BigDecimal.fromString('2102400'))
-    //   .div(mantissaFactorBD)
-    //   .truncate(mantissaFactor)
+    /* Exchange rate explanation
+       In Practice
+        - If you call the cDAI contract on etherscan it comes back (2.0 * 10^26)
+        - If you call the cUSDC contract on etherscan it comes back (2.0 * 10^14)
+        - The real value is ~0.02. So cDAI is off by 10^28, and cUSDC 10^16
+       How to calculate for tokens with different decimals
+        - Must div by tokenDecimals, 10^market.underlyingDecimals
+        - Must multiply by ctokenDecimals, 10^8
+        - Must div by mantissa, 10^18
+     */
+    let exchangeRateStored = await contract.methods.exchangeRateStored().call();
+    market.exchangeRate = convertToDecimal(exchangeRateStored)
+      .div(exponentToBigDecimal(market.underlyingDecimals))
+      .times(cTokenDecimalsBD)
+      .div(mantissaFactorBD)
+      .toDecimalPlaces(mantissaFactor)
 
-    // // This fails on only the first call to cZRX. It is unclear why, but otherwise it works.
-    // // So we handle it like this.
-    // let supplyRatePerBlock = contract.try_supplyRatePerBlock()
-    // if (supplyRatePerBlock.reverted) {
-    //   log.info('***CALL FAILED*** : cERC20 supplyRatePerBlock() reverted', [])
-    //   market.borrowRate = zeroBD
-    // } else {
-    //   market.borrowRate = supplyRatePerBlock.value
-    //     .toBigDecimal()
-    //     .times(BigDecimal.fromString('2102400'))
-    //     .div(mantissaFactorBD)
-    //     .truncate(mantissaFactor)
-    // }
-    // market.save()
+    let borrowIndex = await contract.methods.borrowIndex().call();
+    market.borrowIndex = convertToDecimal(borrowIndex)
+      .div(mantissaFactorBD)
+      .toDecimalPlaces(mantissaFactor);
+
+    let reserves = await contract.methods.marketReserves().call();
+    market.reserves = convertToDecimal(reserves)
+      .div(exponentToBigDecimal(market.underlyingDecimals))
+      .toDecimalPlaces(market.underlyingDecimals)
+    
+    let totalBorrows = await contract.methods.totalBorrows().call();
+    market.totalBorrows = convertToDecimal(totalBorrows)
+      .div(exponentToBigDecimal(market.underlyingDecimals))
+      .toDecimalPlaces(market.underlyingDecimals);
+    
+    let cash = await contract.methods.getCash().call();
+    market.cash = convertToDecimal(cash)
+      .div(exponentToBigDecimal(market.underlyingDecimals))
+      .toDecimalPlaces(market.underlyingDecimals);
+    
+    // must convert to Decimal and remove 10^18 used in Exp in Compound Solidity
+    let borrowRatePerBlock = await contract.methods.borrowRatePerBlock().call();
+    market.supplyRate = convertToDecimal(borrowRatePerBlock)
+      .times(new Decimal("21202400"))
+      .div(mantissaFactorBD)
+      .toDecimalPlaces(mantissaFactor);
+
+    // (in commpund code they have some fall back, we have removed it)
+    try {
+      let supplyRatePerBlock = await contract.methods.supplyRatePerBlock().call();
+      market.borrowRate = convertToDecimal(supplyRatePerBlock)
+        .times(new Decimal("2102400"))
+        .div(mantissaFactorBD)
+        .toDecimalPlaces(mantissaFactor);
+    } catch (e) {
+      market.borrowRate = ZERO_BD;
+      console.log("cToken ", blockNumber, market.id, " supplyRatePerBlock() failed")
+    }
+
+    await market.save();
   }
-  return m.toGenerated();
+
+  return market;
+}
+
+async function getTokenPrice(
+  blockNumber: number,
+  eventAddress: string,
+  underlyingAddress: string, 
+  underlyingDecimals: number) {
+    
+  // services
+  let comptrollerService = Container.get(ComptrollerService);
+
+  // 
+  let comptroller = await comptrollerService.getById('1');
+  let oracleAddress = comptroller.priceOracle;
+  let priceOracle1Address = "" // todo: move to config
+
+
+  let contract = await new web3.eth.Contract(cTokenABI, oracleAddress); // todo: update abi
+  // let underlyingPrice = await contract.methods.oracle().call();
+  // let price = await contract.methods.getUnderlyingPrice(underlyingAddress).call();
+  // let underlyingPrice = convertToDecimal(price).div(mantissaFactorBD);
+  // return underlyingPrice
+
+  return ONE_BD;
+
+}
+
+async function getUSDCPriceETH(blockNumber: number) {
+  // services
+  let comptrollerService = Container.get(ComptrollerService);
+
+  // 
+  let comptroller = await comptrollerService.getById('1');
+  let oracleAddress = comptroller.priceOracle;
+  let priceOracle1Address = "" // todo: move to config
+  let USDCAddress = "" // todo: move to config
+
+
+  let contract = await new web3.eth.Contract(cTokenABI, oracleAddress); // todo: update abi
+  // let underlyingPrice = await contract.methods.oracle().call();
+  // let price = await contract.methods.getUnderlyingPrice(underlyingAddress).call();
+  // let underlyingPrice = convertToDecimal(price).div(mantissaFactorBD);
+  // return underlyingPrice
+
+  return ONE_BD;
 }
