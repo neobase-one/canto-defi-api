@@ -177,7 +177,7 @@ export async function handleTransferEvent(
   let market = marketDb as MarketDb;
   let amountUnderlying = market.exchangeRate.times(input.amount);
   let marketUnderlyingDecimals = market.underlyingDecimals.toNumber();
-  let amountUnderylingTruncated = amountUnderlying.toPrecision(marketUnderlyingDecimals);
+  let amountUnderylingTruncated = amountUnderlying.toDecimalPlaces(marketUnderlyingDecimals);
 
   let accountFromID = input.from;
 
