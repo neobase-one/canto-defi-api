@@ -2,12 +2,18 @@
 
 // For each division by 10, add one to exponent to truncate one significant figure
 import Container from 'typedi';
+import { web3 } from '../../../loaders/web3';
 import { AccountDb, AccountModel } from '../../../models/lending/account';
 import { AccountCTokenDb } from '../../../models/lending/accountCToken';
 import { Market, MarketDb } from '../../../models/lending/market';
 import { ZERO_BD } from '../../../utils/constants';
 import { AccountService } from './account';
 import { MarketService } from './market';
+import { cTokenABI } from '../../../utils/abiParser/ctoken';
+import Decimal from 'decimal.js';
+import { Erc20ABI } from '../../../utils/abiParser/erc20';
+import { fetchTokenDecimals, fetchTokenSymbol, fetchTokenName } from '../../../utils/dex/token';
+
 
 export function createAccountCToken(
   cTokenStatsID: string,
@@ -65,61 +71,56 @@ export async function updateCommonCTokenStats(
   return cTokenStats as AccountCTokenDb
 }
 
-export function createMarket(marketAddress: string): MarketDb {
-  let market: MarketDb
-  let contract = CToken.bind(Address.fromString(marketAddress))
+export async function createMarket(marketAddress: string): Promise<MarketDb> {
+  let cUSDCAddress = '0x39aa39c021dfbae8fac545936693ac917d5e7563'
+  let cETHAddress = '0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5'
 
+  let market: MarketDb;
+  let contract = new web3.eth.Contract(cTokenABI, marketAddress);
   // It is CETH, which has a slightly different interface
   if (marketAddress == cETHAddress) {
-    market = new Market(marketAddress)
-    market.underlyingAddress = Address.fromString(
-      '0x0000000000000000000000000000000000000000',
-    )
-    market.underlyingDecimals = 18
-    market.underlyingPrice = BigDecimal.fromString('1')
-    market.underlyingName = 'Ether'
-    market.underlyingSymbol = 'ETH'ß
+    market = new MarketDb(marketAddress);
+    market.underlyingAddress = '0x0000000000000000000000000000000000000000';
+
+    market.underlyingDecimals = new Decimal('18');
+    market.underlyingPrice = new Decimal('1');
+    market.underlyingName = 'Ether';
+    market.underlyingSymbol = 'ETH';
 
     // It is all other CERC20 contracts
   } else {
-    market = new Market(marketAddress)
-    market.underlyingAddress = contract.underlying()
-    let underlyingContract = ERC20.bind(market.underlyingAddress as Address)
-    market.underlyingDecimals = underlyingContract.decimals()
-    if (market.underlyingAddress.toHexString() != daiAddress) {
-      market.underlyingName = underlyingContract.name()
-      market.underlyingSymbol = underlyingContract.symbol()
-    } else {
-      market.underlyingName = 'Dai Stablecoin v1.0 (DAI)'
-      market.underlyingSymbol = 'DAI'
-    }
+    market = new MarketDb(marketAddress);
+    let underLyingAddress = await contract.methods.underlying().call();
+    market.underlyingAddress = String(underLyingAddress);
+    market.underlyingDecimals = new Decimal(fetchTokenDecimals(market.underlyingAddress));
+    market.underlyingName = await fetchTokenName(market.underlyingAddress);
+    market.underlyingSymbol = await fetchTokenSymbol(market.underlyingAddress);
+
     if (marketAddress == cUSDCAddress) {
-      market.underlyingPriceUSD = BigDecimal.fromString('1')
+      market.underlyingPriceUSD = new Decimal('1')
     }
   }
 
-  market.borrowRate = zeroBD
-  market.cash = zeroBD
-  market.collateralFactor = zeroBD
-  market.exchangeRate = zeroBD
-  market.interestRateModelAddress = Address.fromString(
-    '0x0000000000000000000000000000000000000000',
-  )
-  market.name = contract.name()
-  market.numberOfBorrowers = 0
-  market.numberOfSuppliers = 0
-  market.reserves = zeroBD
-  market.supplyRate = zeroBD
-  market.symbol = contract.symbol()
-  market.totalBorrows = zeroBD
-  market.totalSupply = zeroBD
-  market.underlyingPrice = zeroBD
+  market.borrowRate = ZERO_BD;
+  market.totalCash = ZERO_BD;
+  market.collateralFactor = ZERO_BD;
+  market.exchangeRate = ZERO_BD;
+  market.interestRateModelAddress = '0x0000000000000000000000000000000000000000';
+  market.name = await fetchTokenName(marketAddress);
+  market.numberOfBorrowers = ZERO_BD;
+  market.numberOfSuppliers = ZERO_BD;
+  market.totalReserves = ZERO_BD;
+  market.supplyRate = ZERO_BD;
+  market.symbol = await fetchTokenSymbol(marketAddress);
+  market.totalBorrows = ZERO_BD;
+  market.totalSupply = ZERO_BD;
+  market.underlyingPrice = ZERO_BD;
 
-  market.accrualBlockNumber = 0
-  market.blockTimestamp = 0
-  market.borrowIndex = zeroBD
-  market.reserveFactor = BigInt.fromI32(0)
-  market.underlyingPriceUSD = zeroBD
+  market.accrualBlockNumber = ZERO_BD;
+  market.blockTimestamp = ZERO_BD;
+  market.borrowIndex = ZERO_BD;
+  market.reserveFactor = ZERO_BD;
+  market.underlyingPriceUSD = ZERO_BD;
 
   return market
 }

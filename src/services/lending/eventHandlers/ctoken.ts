@@ -137,7 +137,7 @@ export async function handleAccrueInterestEvent(
   input: AccrueInterestInput
 ) {
   let timestamp = await getTimestamp(event.blockNumber);
-  updateMarket(event.address, event.blockNumber, timestamp);
+  await updateMarket(event.address, event.blockNumber, timestamp);
 }
 
 export async function handleNewReserveFactorEvent(
@@ -267,7 +267,7 @@ export async function handleNewMarketInterestRateModelEvent(
   let marketID = event.address;
   let market:any = await marketService.getByAddress(marketID);
   if (market == null) {
-    market = createMarket(marketID)
+    market = await createMarket(marketID);
   }
   market.interestRateModelAddress = input.newInterestRateModel;
   new MarketModel(market as MarketDb).save();
