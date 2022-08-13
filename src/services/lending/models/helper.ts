@@ -159,28 +159,29 @@ export async function updateMarket(
     let contractAddress = market.id;
     let contract = await new web3.eth.Contract(cTokenABI, contractAddress);
     let usdPriceInEth = await getUSDCPriceETH(blockNumber);
+    let underlyingDecimals = convertToDecimal(market.underlyingDecimals).toNumber();
 
     // if cETH, only update USD price
     if (market.id == cETHAddress) {
       market.underlyingPriceUSD = convertToDecimal(market.underlyingPrice)
         .div(usdPriceInEth)
-        .toDecimalPlaces(convertToDecimal(market.underlyingDecimals).toNumber());
+        .toDecimalPlaces(convertToDecimal(underlyingDecimals).toNumber());
     } else {
       let tokenPriceEth = await getTokenPrice(
         blockNumber,
         contractAddress,
         market.underlyingAddress,
-        market.underlyingDecimals
+        underlyingDecimals
       )
 
       market.underlyingPrice = convertToDecimal(tokenPriceEth)
-        .toDecimalPlaces(convertToDecimal(market.underlyingDecimals).toNumber());
+        .toDecimalPlaces(convertToDecimal(underlyingDecimals).toNumber());
 
       // if USDC, only update ETH price
       if (market.id != cUSDCAddress) {
         market.underlyingPriceUSD = convertToDecimal(market.underlyingPrice)
           .div(usdPriceInEth)
-          .toDecimalPlaces(convertToDecimal(market.underlyingDecimals).toNumber());
+          .toDecimalPlaces(convertToDecimal(underlyingDecimals).toNumber());
       }
     }
 
@@ -200,7 +201,6 @@ export async function updateMarket(
         - Must multiply by ctokenDecimals, 10^8
         - Must div by mantissa, 10^18
      */
-    let underlyingDecimals = convertToDecimal(market.underlyingDecimals).toNumber();
     let exchangeRateStored = await contract.methods.exchangeRateStored().call();
     market.exchangeRate = convertToDecimal(exchangeRateStored)
       .div(exponentToBigDecimal(underlyingDecimals))
