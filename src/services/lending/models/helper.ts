@@ -259,7 +259,10 @@ async function getTokenPrice(
 
   // 
   let comptroller = await comptrollerService.getById('1');
-  let oracleAddress = comptroller.priceOracle;
+  let oracleAddress = "";
+  if (comptroller !== null) {
+    oracleAddress = comptroller.priceOracle;
+  }
   let priceOracle1Address = "" // todo: move to config
 
 
@@ -279,7 +282,10 @@ async function getUSDCPriceETH(blockNumber: number) {
 
   // 
   let comptroller = await comptrollerService.getById('1');
-  let oracleAddress = comptroller.priceOracle;
+  let oracleAddress = "";
+  if (comptroller !== null) {
+    oracleAddress = comptroller.priceOracle;
+  }
   let priceOracle1Address = "" // todo: move to config
   let USDCAddress = "" // todo: move to config
 
