@@ -17,6 +17,7 @@ import { Erc20ABI } from '../../../utils/abiParser/erc20';
 import { fetchTokenDecimals, fetchTokenSymbol, fetchTokenName } from '../../../utils/dex/token';
 import { ComptrollerService } from './comptroller';
 import { Config } from '../../../config';
+import { isNullOrUndefined } from '@typegoose/typegoose/lib/internal/utils';
 
 
 export function createAccountCToken(
@@ -65,10 +66,16 @@ export async function updateCommonCTokenStats(
   if (cTokenStats == null) {
     cTokenStats = createAccountCToken(cTokenStatsID, marketSymbol, accountID, marketID)
   }
-  let txHashes = cTokenStats.transactionHashes
+  let txHashes = cTokenStats.transactionHashes as string[];
+  if(isNullOrUndefined(txHashes)){
+    txHashes = [];
+  }
   txHashes.push(txHash)
   cTokenStats.transactionHashes = txHashes
-  let txTimes = cTokenStats.transactionTimes
+  let txTimes = cTokenStats.transactionTimes as number[];
+  if(isNullOrUndefined(txTimes)){
+    txTimes = [];
+  }
   txTimes.push(timestamp)
   cTokenStats.transactionTimes = txTimes
   cTokenStats.accrualBlockNumber = blockNumber

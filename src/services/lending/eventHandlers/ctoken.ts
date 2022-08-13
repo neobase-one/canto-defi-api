@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { AccountDb, AccountModel } from "../../../models/lending/account";
@@ -5,7 +6,7 @@ import { AccountCTokenModel } from "../../../models/lending/accountCToken";
 import { MarketDb, MarketModel } from "../../../models/lending/market";
 import { AccrueInterestInput, BorrowInput, LiquidateBorrowInput, NewMarketInterestRateModelInput, NewReserveFactorInput, RepayBorrowInput, TransferInput } from "../../../types/event/lending/ctoken";
 import { ZERO_BD } from "../../../utils/constants";
-import { getTimestamp } from "../../../utils/helper";
+import { convertToDecimal, getTimestamp } from "../../../utils/helper";
 import { AccountService } from "../models/account";
 import { createAccount, updateCommonCTokenStats, updateMarket, createMarket } from "../models/helper";
 import { MarketService } from "../models/market";
@@ -37,7 +38,7 @@ export async function handleBorrowEvent(
     let previousBorrow = cTokenStats.storedBorrowBalance;
     cTokenStats.storedBorrowBalance = input.accountBorrows;
     cTokenStats.accountBorrowIndex = market.borrowIndex;
-    cTokenStats.totalUnderlyingBorrowed = cTokenStats.totalUnderlyingBorrowed.plus(
+    cTokenStats.totalUnderlyingBorrowed = convertToDecimal(cTokenStats.totalUnderlyingBorrowed).plus(
       input.borrowAmount
     );
     const cToken = new AccountCTokenModel(cTokenStats);
@@ -55,7 +56,7 @@ export async function handleBorrowEvent(
       previousBorrow.equals(ZERO_BD) &&
       !input.accountBorrows.equals(ZERO_BD) // checking edge case for borrwing 0
     ) {
-      market.numberOfBorrowers = market.numberOfBorrowers.add(1);
+      market.numberOfBorrowers = convertToDecimal(market.numberOfBorrowers).add(1);
       await market.save();
     }
   }
@@ -89,7 +90,7 @@ export async function handleRepayBorrowEvent(
     cTokenStats.storedBorrowBalance = input.accountBorrows;
 
     cTokenStats.accountBorrowIndex = market.borrowIndex
-    cTokenStats.totalUnderlyingRepaid = cTokenStats.totalUnderlyingRepaid.plus(
+    cTokenStats.totalUnderlyingRepaid = convertToDecimal(cTokenStats.totalUnderlyingRepaid).plus(
       repayAmountBD
     )
     const cToken = new AccountCTokenModel(cTokenStats);
@@ -101,7 +102,7 @@ export async function handleRepayBorrowEvent(
     }
 
     if (cTokenStats.storedBorrowBalance.equals(ZERO_BD)) {
-      market.numberOfBorrowers = market.numberOfBorrowers.minus(1);
+      market.numberOfBorrowers = convertToDecimal(market.numberOfBorrowers).minus(1);
       await market.save();
     }
   }
@@ -165,7 +166,8 @@ export async function handleTransferEvent(
   let marketDb: any = await marketService.getByAddress(marketID);
 
   if (marketDb !== null) {
-    if (!marketDb.accrualBlockNumber.equals(event.blockNumber)) {
+    let accrualBlockNumber = marketDb.accrualBlockNumber as Decimal;
+    if (accrualBlockNumber !== new Decimal(event.blockNumber)) {
       let timestamp = await getTimestamp(event.blockNumber);
       marketDb = await updateMarket(
         event.address,
@@ -175,8 +177,9 @@ export async function handleTransferEvent(
     }
   }
   let market = marketDb as MarketDb;
-  let amountUnderlying = market.exchangeRate.times(input.amount);
-  let marketUnderlyingDecimals = market.underlyingDecimals.toNumber();
+  let exchangeRate = convertToDecimal(market.exchangeRate);
+  let amountUnderlying = exchangeRate.times(input.amount);
+  let marketUnderlyingDecimals = convertToDecimal(market.underlyingDecimals).toNumber();
   let amountUnderylingTruncated = amountUnderlying.toDecimalPlaces(marketUnderlyingDecimals);
 
   let accountFromID = input.from;
@@ -200,18 +203,18 @@ export async function handleTransferEvent(
       event.blockNumber,
     )
 
-    cTokenStatsFrom.cTokenBalance = cTokenStatsFrom.cTokenBalance.minus(
+    cTokenStatsFrom.cTokenBalance = convertToDecimal(cTokenStatsFrom.cTokenBalance).minus(
       input.amount
     )
 
-    cTokenStatsFrom.totalUnderlyingRedeemed = cTokenStatsFrom.totalUnderlyingRedeemed.plus(
+    cTokenStatsFrom.totalUnderlyingRedeemed = convertToDecimal(cTokenStatsFrom.totalUnderlyingRedeemed).plus(
       amountUnderylingTruncated,
     )
     const cTokenStats = new AccountCTokenModel(cTokenStatsFrom);
     await cTokenStats.save();
 
     if (cTokenStatsFrom.cTokenBalance.equals(ZERO_BD)) {
-      market.numberOfSuppliers = market.numberOfSuppliers.minus(1);
+      market.numberOfSuppliers = convertToDecimal(market.numberOfSuppliers).minus(1);
       await new MarketModel(market).save();
     }
   }
@@ -238,12 +241,12 @@ export async function handleTransferEvent(
       event.blockNumber,
     );
 
-    let previousCTokenBalanceTo = cTokenStatsTo.cTokenBalance
-    cTokenStatsTo.cTokenBalance = cTokenStatsTo.cTokenBalance.plus(
+    let previousCTokenBalanceTo = convertToDecimal(cTokenStatsTo.cTokenBalance)
+    cTokenStatsTo.cTokenBalance = convertToDecimal(cTokenStatsTo.cTokenBalance).plus(
       input.amount
     )
 
-    cTokenStatsTo.totalUnderlyingSupplied = cTokenStatsTo.totalUnderlyingSupplied.plus(
+    cTokenStatsTo.totalUnderlyingSupplied = convertToDecimal(cTokenStatsTo.totalUnderlyingSupplied).plus(
       amountUnderylingTruncated,
     )
     await new AccountCTokenModel(cTokenStatsTo).save();
@@ -252,7 +255,7 @@ export async function handleTransferEvent(
       previousCTokenBalanceTo.equals(ZERO_BD) &&
       !input.amount.equals(ZERO_BD) // checking edge case for transfers of 0
     ) {
-      market.numberOfSuppliers = market.numberOfSuppliers.plus(1);
+      market.numberOfSuppliers = convertToDecimal(market.numberOfSuppliers).plus(1);
       await new MarketModel(market).save();
     }
   }
@@ -265,7 +268,7 @@ export async function handleNewMarketInterestRateModelEvent(
   const marketService = Container.get(MarketService);
 
   let marketID = event.address;
-  let market:any = await marketService.getByAddress(marketID);
+  let market: any = await marketService.getByAddress(marketID);
   if (market == null) {
     market = await createMarket(marketID);
   }

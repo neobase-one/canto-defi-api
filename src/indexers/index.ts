@@ -49,9 +49,9 @@ export async function indexChain() {
     // index
     indexBlocks(start, end);
 
-    await indexFactoryEvents(start, end);
+    //await indexFactoryEvents(start, end);
 
-    await indexPairEvents(start, end);
+    //await indexPairEvents(start, end);
 
     // Lending
     // Comptroller
