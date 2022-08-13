@@ -8,7 +8,7 @@ import { AccountDb, AccountModel } from '../../../models/lending/account';
 import { AccountCTokenDb } from '../../../models/lending/accountCToken';
 import { Market, MarketDb } from '../../../models/lending/market';
 import { cTokenABI } from '../../../utils/abiParser/ctoken';
-import { ONE_BD, ZERO_BD } from '../../../utils/constants';
+import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from '../../../utils/constants';
 import { bigDecimalExp18, convertToDecimal, exponentToBigDecimal } from '../../../utils/helper';
 import { AccountService } from './account';
 import { MarketService } from './market';
@@ -16,6 +16,7 @@ import Decimal from 'decimal.js';
 import { Erc20ABI } from '../../../utils/abiParser/erc20';
 import { fetchTokenDecimals, fetchTokenSymbol, fetchTokenName } from '../../../utils/dex/token';
 import { ComptrollerService } from './comptroller';
+import { Config } from '../../../config';
 
 
 export function createAccountCToken(
@@ -75,15 +76,15 @@ export async function updateCommonCTokenStats(
 }
 
 export async function createMarket(marketAddress: string): Promise<MarketDb> {
-  let cUSDCAddress = '0x39aa39c021dfbae8fac545936693ac917d5e7563'
-  let cETHAddress = '0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5'
+  let cUSDCAddress = Config.canto.lendingDashboard.cUSDC_ADDRESS;
+  let cETHAddress = Config.canto.lendingDashboard.cETH_ADDRESS;
 
   let market: MarketDb;
   let contract = new web3.eth.Contract(cTokenABI, marketAddress);
   // It is CETH, which has a slightly different interface
   if (marketAddress == cETHAddress) {
     market = new MarketDb(marketAddress);
-    market.underlyingAddress = '0x0000000000000000000000000000000000000000';
+    market.underlyingAddress = ADDRESS_ZERO;
 
     market.underlyingDecimals = new Decimal('18');
     market.underlyingPrice = new Decimal('1');
@@ -108,7 +109,7 @@ export async function createMarket(marketAddress: string): Promise<MarketDb> {
   market.totalCash = ZERO_BD;
   market.collateralFactor = ZERO_BD;
   market.exchangeRate = ZERO_BD;
-  market.interestRateModelAddress = '0x0000000000000000000000000000000000000000';
+  market.interestRateModelAddress = ADDRESS_ZERO;
   market.name = await fetchTokenName(marketAddress);
   market.numberOfBorrowers = ZERO_BD;
   market.numberOfSuppliers = ZERO_BD;
@@ -129,19 +130,20 @@ export async function createMarket(marketAddress: string): Promise<MarketDb> {
 }
 
 
-let cUSDCAddress = '0x39aa39c021dfbae8fac545936693ac917d5e7563'
-let cETHAddress = '0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5'
-let daiAddress = '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'
-export let mantissaFactor = 18
-export let cTokenDecimals = 8
-export let mantissaFactorBD: Decimal = exponentToBigDecimal(18)
-export let cTokenDecimalsBD: Decimal = exponentToBigDecimal(8)
-
 export async function updateMarket(
   marketAddress: string,
   blockNumber: number,
   blockTimestamp: number,
 ): Promise<Market> {
+  let cUSDCAddress = Config.canto.lendingDashboard.cUSDC_ADDRESS;
+  let cETHAddress = Config.canto.lendingDashboard.cETH_ADDRESS;
+
+  let mantissaFactor = Config.canto.lendingDashboard.MANTISSA_FACTOR;
+  let cTokenDecimals = Config.canto.lendingDashboard.cTOKEN_DECIMALS;
+  let mantissaFactorBD: Decimal = exponentToBigDecimal(18)
+  let cTokenDecimalsBD: Decimal = exponentToBigDecimal(8)
+
+  console.log("enter")
   const marketService = Container.get(MarketService);
   const accountService = Container.get(AccountService);
 
@@ -149,9 +151,11 @@ export async function updateMarket(
   if (market == null) {
     market = await createMarket(marketAddress);
   }
+  console.log("boo1")
+
   // market = market as MarketDb;
   // Only updateMarket if it has not been updated this block
-  if (!market.accrualBlockNumber.equals(blockNumber)) {
+  if (!convertToDecimal(market.accrualBlockNumber).equals(convertToDecimal(blockNumber))) {
     let contractAddress = market.id;
     let contract = await new web3.eth.Contract(cTokenABI, contractAddress);
     let usdPriceInEth = await getUSDCPriceETH(blockNumber);
@@ -196,9 +200,10 @@ export async function updateMarket(
         - Must multiply by ctokenDecimals, 10^8
         - Must div by mantissa, 10^18
      */
+    let underlyingDecimals = convertToDecimal(market.underlyingDecimals).toNumber();
     let exchangeRateStored = await contract.methods.exchangeRateStored().call();
     market.exchangeRate = convertToDecimal(exchangeRateStored)
-      .div(exponentToBigDecimal(market.underlyingDecimals))
+      .div(exponentToBigDecimal(underlyingDecimals))
       .times(cTokenDecimalsBD)
       .div(mantissaFactorBD)
       .toDecimalPlaces(mantissaFactor)
@@ -208,20 +213,20 @@ export async function updateMarket(
       .div(mantissaFactorBD)
       .toDecimalPlaces(mantissaFactor);
 
-    let reserves = await contract.methods.marketReserves().call();
+    let reserves = await contract.methods.totalReserves().call(); // todo: correct method?
     market.reserves = convertToDecimal(reserves)
-      .div(exponentToBigDecimal(market.underlyingDecimals))
-      .toDecimalPlaces(market.underlyingDecimals)
+      .div(exponentToBigDecimal(underlyingDecimals))
+      .toDecimalPlaces(underlyingDecimals)
     
     let totalBorrows = await contract.methods.totalBorrows().call();
     market.totalBorrows = convertToDecimal(totalBorrows)
-      .div(exponentToBigDecimal(market.underlyingDecimals))
-      .toDecimalPlaces(market.underlyingDecimals);
+      .div(exponentToBigDecimal(underlyingDecimals))
+      .toDecimalPlaces(underlyingDecimals);
     
     let cash = await contract.methods.getCash().call();
     market.cash = convertToDecimal(cash)
-      .div(exponentToBigDecimal(market.underlyingDecimals))
-      .toDecimalPlaces(market.underlyingDecimals);
+      .div(exponentToBigDecimal(underlyingDecimals))
+      .toDecimalPlaces(underlyingDecimals);
     
     // must convert to Decimal and remove 10^18 used in Exp in Compound Solidity
     let borrowRatePerBlock = await contract.methods.borrowRatePerBlock().call();

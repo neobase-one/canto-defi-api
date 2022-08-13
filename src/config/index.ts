@@ -66,6 +66,19 @@ export const Config = {
       // minimum liquidity for price to get tracked
       MINIMUM_LIQUIDITY_THRESHOLD_ETH: new Decimal("2"),
 
+    },
+    // lending dash needs all these
+    lendingDashboard: {
+      // "0x8c1D2b6b650a85aBC1c033580e88DD5d9D9aC40A", // cNoteDelegator
+      // "0x0dD6241bFE519fB1c1B654877b66311c355804c5", // cUsdcDelegator
+      // "0xD7Ff6Ba11422D47Aeff3DAE08CC1Ff5F30975D80", // cUsdtDelegator
+      // "0x732Dcd6021fE992a935a26A6C5861312f0cBE5B2", // cAtomDelegator
+      // "0x830b9849E7D79B92408a86A557e7baAACBeC6030", // cEthDelegator
+      // "0xB65Ec550ff356EcA6150F733bA9B954b2e0Ca488", // cCanto
+      cUSDC_ADDRESS: "0x0dD6241bFE519fB1c1B654877b66311c355804c5",
+      cETH_ADDRESS: "0x830b9849E7D79B92408a86A557e7baAACBeC6030",
+      MANTISSA_FACTOR: 18,
+      cTOKEN_DECIMALS: 8
     }
   },
 
