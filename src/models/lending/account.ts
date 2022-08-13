@@ -17,8 +17,8 @@ export class AccountDb {
     @Property({ default: "", required: true })
     id: string;
 
-    @Property({ required: true })
-    tokens: [string]
+    @Property({ type: String, default: [], required: false })
+    tokens: string[]
 
     @Property({ required: true })
     countLiquidated: Decimal;

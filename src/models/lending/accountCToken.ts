@@ -25,11 +25,11 @@ export class AccountCTokenDb {
     @Property({ default: "", required: true })
     account: string
 
-    @Property({ required: true })
-    transactionHashes: [string]
+    @Property({ type: String, default: [], required: true })
+    transactionHashes: string[]
 
-    @Property({ required: true })
-    transactionTimes: [Decimal]
+    @Property({ type: Decimal, default: [], required: false })
+    transactionTimes: Decimal[]
 
     @Property({ required: true })
     accrualBlockNumber: Decimal
