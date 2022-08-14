@@ -42,6 +42,7 @@ export const Config = {
 
   // CANTO NODE
   canto: {
+    BLOCK_TIME: 5, // in seconds
     rpcBlockRange: parseInt(process.env.MAX_BLOCK_RANGE || "5000"),
     websocketUrl: process.env.WEBSOCKET_URL || "",
     // stableswap dash needs all these
