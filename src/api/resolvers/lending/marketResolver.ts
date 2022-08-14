@@ -13,7 +13,11 @@ export class MarketResolver {
                 sortBy = "-" + sortBy.trim;
             }
             const val = await MarketModel.find({ id: input.id }).sort(sortBy).exec();
-            const result = val.map(market => { market.toGenerated() });
+            let result:Market[] = [];
+            for (var marketDb of val) {
+                let market = await marketDb.toGenerated();
+                result.push(market);
+              }
             return result;
         } else {
             let sortBy = input.orderBy;
@@ -25,7 +29,11 @@ export class MarketResolver {
                 limit = limit + input.skip;
             }
             const val = await MarketModel.find().sort(sortBy).limit(limit).exec();
-            const result = val.slice(input.skip).map(market => { market.toGenerated() });
+            let result:Market[] = [];
+            for (var marketDb of val) {
+                let market = await marketDb.toGenerated();
+                result.push(market);
+              }
             return result;
         }
     }
