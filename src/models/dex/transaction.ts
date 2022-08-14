@@ -44,7 +44,7 @@ export class TransactionDb {
 
   async toGenerated() {
     var t = new Transaction()
-    return await(t.fromDb(this));
+    return await (t.fromDb(this));
   }
 }
 
@@ -67,7 +67,7 @@ export class Transaction {
   blockNumber: Decimal;
 
   @Field((type) => [Mint])
-  mints: Mint[]; // todo: how to return Mint object
+  mints: Mint[];
 
   @Field((type) => [Burn])
   burns: Burn[];
@@ -119,18 +119,21 @@ export class Transaction {
     this.id = id;
   }
 
-  async getMint(id:string):Promise<Mint>{
-    const mintList = await MintModel.find({id:id});
-    return mintList[0].toGenerated();
+  async getMint(id: string): Promise<Mint> {
+    const mintDb = await MintModel.findOne({ id: id });
+    const mint = await mintDb?.toGenerated()
+    return mint as Mint;
   }
 
-  async getSwap(id:string):Promise<Swap>{
-    const swapList = await SwapModel.find({id:id});
-    return swapList[0].toGenerated();
+  async getSwap(id: string): Promise<Swap> {
+    const swapDb = await SwapModel.findOne({ id: id });
+    const swap = await swapDb?.toGenerated()
+    return swap as Swap;
   }
 
-  async getBurn(id:string):Promise<Burn>{
-    const burnList = await BurnModel.find({id:id});
-    return burnList[0].toGenerated();
+  async getBurn(id: string): Promise<Burn> {
+    const burnDb = await BurnModel.findOne({ id: id });
+    const burn = await burnDb?.toGenerated()
+    return burn as Burn;
   }
 }

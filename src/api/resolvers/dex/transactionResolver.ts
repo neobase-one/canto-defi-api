@@ -34,10 +34,10 @@ export class TransactionsResolver {
 
     async toGenerated(transactions: [TransactionDb]): Promise<Transaction[]> {
         var result: Transaction[]=[];
-        for (var i = 0; i < transactions.length; i++) {
-            var transaction = await transactions[i].toGenerated();
+        for (var transactionDb of transactions) {
+            let transaction = await transactionDb.toGenerated();
             result.push(transaction);
-        }
+          }
         return result;
     }
 }
