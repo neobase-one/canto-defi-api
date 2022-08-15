@@ -11,6 +11,13 @@ import Decimal from "decimal.js";
 7. NewPriceOracle(address,address)
 */
 
+export class MarketListedInput {
+  cToken: string;
+
+  constructor(eventObj: any) {
+    this.cToken = eventObj[0];
+  }
+}
 export class MarketEnteredInput {
   cToken: string;
   account: string;

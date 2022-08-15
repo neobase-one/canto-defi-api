@@ -4,6 +4,7 @@ import {
   ComptrollerABI,
   MarketEntered,
   MarketExited,
+  MarketListed,
   NewCloseFactor,
   NewCollateralFactor,
   NewLiquidationIncentive,
@@ -14,6 +15,7 @@ import { Contract, EventData } from "web3-eth-contract";
 import {
   handleMarketEnteredEvent,
   handleMarketExitedEvent,
+  handleMarketListedEvent,
   handleNewCloseFactorEvent,
   handleNewCollateralFactorEvent,
   handleNewLiquidationIncentiveEvent,
@@ -22,6 +24,7 @@ import {
 import {
   MarketEnteredInput,
   MarketExitedInput,
+  MarketListedInput,
   NewCloseFactorInput,
   NewCollateralFactorInput,
   NewLiquidationIncentiveInput,
@@ -65,7 +68,11 @@ async function processEvents(events: EventData[]) {
 
     //
     var eventName = event.event;
-    if (eventName === MarketEntered) {
+    if (eventName === MarketListed) {
+      // console.log(event.blockNumber, event.event, event.transactionHash)
+      let input = new MarketListedInput(event.returnValues);
+      handleMarketListedEvent(event, input);
+    } else if (eventName === MarketEntered) {
       // console.log(event.blockNumber, event.event, event.transactionHash)
       let input = new MarketEnteredInput(event.returnValues);
       handleMarketEnteredEvent(event, input);

@@ -2,13 +2,26 @@ import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { AccountCTokenModel } from "../../../models/lending/accountCToken";
 import { ComptrollerDb, ComptrollerModel } from "../../../models/lending/comptroller";
-import { MarketEnteredInput, MarketExitedInput, NewCloseFactorInput, NewCollateralFactorInput, NewLiquidationIncentiveInput, NewPriceOracleInput } from "../../../types/event/lending/comptroller";
+import { MarketEnteredInput, MarketExitedInput, MarketListedInput, NewCloseFactorInput, NewCollateralFactorInput, NewLiquidationIncentiveInput, NewPriceOracleInput } from "../../../types/event/lending/comptroller";
 import { getTimestamp } from "../../../utils/helper";
 import { ComptrollerService } from "../models/comptroller";
-import { updateCommonCTokenStats } from "../models/helper";
+import { createMarket, updateCommonCTokenStats } from "../models/helper";
 import { MarketService } from "../models/market";
 
 // todo: remove unused services
+export async function handleMarketListedEvent(
+  event: EventData,
+  input: MarketListedInput
+) {
+  // service
+  const marketService = Container.get(MarketService);
+
+  let market: any = await marketService.getByAddress(event.address);
+  if (market === null) {
+    let address = input.cToken;
+    await createMarket(address);
+  }
+}
 
 export async function handleMarketEnteredEvent(
     event: EventData,
