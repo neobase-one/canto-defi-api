@@ -19,6 +19,8 @@ import { ZERO_BD } from "../../../utils/constants";
 import { getTimestamp } from "../../../utils/helper";
 import { Index } from "@typegoose/typegoose";
 import { IndexDb, IndexModel } from "../../../models/dex";
+import { TokenDb, TokenModel } from "../../../models/dex/token";
+import { PairDb, PairModel } from "../../../models/dex/pair";
 
 // export async function initFactoryCollection() {
 //   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
@@ -54,10 +56,9 @@ export async function pairCreatedEventHandler(
   const pairService = Container.get(PairService);
 
   // update factory
-  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
+  let factory: StableswapFactoryDb = await factoryService.getByAddress(FACTORY_ADDRESS) as StableswapFactoryDb;
   if (factory === null) {
     factory = new StableswapFactoryDb(FACTORY_ADDRESS);
-    factory = new StableswapFactoryModel(factory);
 
     let bundle = new BundleDb("1");
     await new BundleModel(bundle).save();
@@ -68,20 +69,20 @@ export async function pairCreatedEventHandler(
   // console.log("PC", factory);
 
   // create tokens
-  let token0: any = await tokenService.getOrCreate(input.token0);
+  let token0: TokenDb = await tokenService.getOrCreate(input.token0) as TokenDb;
   token0.symbol = await fetchTokenSymbol(input.token0);
   token0.name = token0.symbol;
   token0.totalSupply = await fetchTokenTotalSupply(input.token0);
   token0.decimals = fetchTokenDecimals(input.token0);
 
-  let token1: any = await tokenService.getOrCreate(input.token1);
+  let token1: TokenDb = await tokenService.getOrCreate(input.token1) as TokenDb;
   token1.symbol = await fetchTokenSymbol(input.token1);
   token1.name = token1.symbol;
   token1.totalSupply = await fetchTokenTotalSupply(input.token1);
   token1.decimals = fetchTokenDecimals(input.token1);
 
   // create pair
-  let pair: any = await pairService.getOrCreate(input.pair);
+  let pair: PairDb = await pairService.getOrCreate(input.pair) as PairDb;
   // pair.token0 = input.token0;
   pair.token0 = token0.id;
   pair.token1 = token1.id;
@@ -89,8 +90,8 @@ export async function pairCreatedEventHandler(
   pair.createdAtBlockNumber = new Decimal(event.blockNumber);
 
   // save updated objects
-  await token0.save();
-  await token1.save();
-  await pair.save();
-  await factory.save();
+  await new TokenModel(token0).save();
+  await new TokenModel(token1).save();
+  await new PairModel(pair).save();
+  await new StableswapFactoryModel(factory).save();
 }

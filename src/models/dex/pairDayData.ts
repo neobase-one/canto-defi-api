@@ -7,6 +7,7 @@ import { Token } from "./token";
 import { Ref } from "../../types/ref";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
 import { ZERO_BD } from "../../utils/constants";
+import { Pair } from "./pair";
 
 // mongo database object
 export class PairDayDataDb {
@@ -16,8 +17,11 @@ export class PairDayDataDb {
   @Property({ default: "", required: false })
   id: string;
 
-  @Property({ default: new Date(), required: false })
-  date: Date;
+  @Property({ default: 0, required: false })
+  date: number;
+
+  @Property({ default: "", required: false })
+  pair: string;
 
   @Property({ default: "", required: false })
   token0: string; // todo: ref
@@ -52,7 +56,8 @@ export class PairDayDataDb {
   constructor (id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.date = new Date(0);
+    this.date = 0;
+    this.pair = "";
     this.token0 = "";
     this.token1 = "";
     this.reserve0 = ZERO_BD;
@@ -81,7 +86,10 @@ export class PairDayData {
   id: string;
 
   @Field()
-  date: Date;
+  date: number;
+
+  @Field((type) => Pair)
+  pair: Pair;
 
   @Field((type) => Token)
   token0: Token; // todo: ref
@@ -116,7 +124,8 @@ export class PairDayData {
   constructor () {
     this._id = new ObjectId();
     this.id = "";
-    this.date = new Date(0);
+    this.date = 0;
+    this.pair = new Pair();
     this.token0 = new Token();
     this.token1 = new Token();
     this.reserve0 = ZERO_BD;
@@ -133,6 +142,9 @@ export class PairDayData {
     this._id = pair._id;
     this.id = pair.id;
     this.date = pair.date;
+    var p = new Pair();
+    p.id = pair.pair;
+    this.pair = p;
     var tk1 = new Token();
     var tk2 = new Token();
     tk1.justId(pair.token0);

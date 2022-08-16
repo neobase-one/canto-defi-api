@@ -84,13 +84,26 @@ export async function indexFactoryEvents(start: number, end: number) {
 
   async function processorServiceFunction(events: EventData[]) {
     for (let event of events) {
-      const decodedLog = web3.eth.abi.decodeLog(
-        PairCreatedEventAbiInputs,
-        event.raw.data,
-        event.raw.topics.slice(1)
-      );
-      const input = new PairCreatedEventInput(event.returnValues);
-      await pairCreatedEventHandler(event, input);
+      let eventId = event.transactionHash.concat("-").concat(event.logIndex.toString());
+      // check if event already indexed before
+      var eventIndex = await EventModel.findOne({ id: eventId }).exec();
+      if (eventIndex != null) {
+        console.log("Skip Prev Indexed: ", eventId);
+        continue;
+      }
+
+      //
+      var eventName = event.event;
+      if (eventName === PairCreated) {
+        const input = new PairCreatedEventInput(event.returnValues);
+        await pairCreatedEventHandler(event, input);
+      } else {
+      }
+
+      // add event as indexed
+      var eventDb = new EventDb(eventId);
+      await new EventModel(eventDb).save();
+      console.log(`Factory `, event.event, event.blockNumber, event.transactionHash);
     }
   }
 

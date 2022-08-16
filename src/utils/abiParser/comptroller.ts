@@ -1,6 +1,7 @@
 import { AbiItem } from "web3-utils";
 
 // event name
+export const MarketListed = "MarketListed";
 export const MarketEntered = "MarketEntered";
 export const MarketExited = "MarketExited";
 export const NewCloseFactor = "NewCloseFactor";
@@ -10,6 +11,7 @@ export const NewLiquidationIncentive = "NewLiquidationIncentive";
 export const NewPriceOracle = "NewPriceOracle";
 
 // event signature
+export const MarketListedEventSignature = "MarketListed(address)";
 export const MarketEnteredEventSignature = "MarketEntered(address,address)";
 export const MarketExitedEventSignature = "MarketExited(address,address)";
 export const NewCloseFactorEventSignature = "NewCloseFactor(uint256,uint256)";
@@ -2181,6 +2183,15 @@ export const ComptrollerABI: AbiItem[] = [
 ]
 
 // event abi inputs
+export const MarketListedEventAbiInputs = [
+  {
+    "indexed": false,
+    "internalType": "contract CToken",
+    "name": "cToken",
+    "type": "address"
+  }
+]
+
 export const MarketEnteredEventAbiInputs = [
   {
     "indexed": false,

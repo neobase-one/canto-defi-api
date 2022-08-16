@@ -105,7 +105,7 @@ export class Market {
     @Field((type) => ID)
     id: string;
 
-    @Field((type) => DecimalScalar)
+    @Field((type) => String)
     symbol: string;
 
     @Field((type) => DecimalScalar)

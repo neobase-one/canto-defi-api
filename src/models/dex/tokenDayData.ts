@@ -14,8 +14,8 @@ export class TokenDayDataDb {
   @Property({ default: "", required: false })
   id: string;
 
-  @Property({ default: new Decimal("0"), required: false })
-  date: Decimal;
+  @Property({ default: 0, required: false })
+  date: number;
 
   @Property({ default: "", required: false })
   token: string;
@@ -24,7 +24,7 @@ export class TokenDayDataDb {
   dailyVolumeToken: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  dailyVolumeETH: Decimal;
+  dailyVolumeCANTO: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeUSD: Decimal;
@@ -36,7 +36,7 @@ export class TokenDayDataDb {
   totalLiquidityToken: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  totalLiquidityETH: Decimal;
+  totalLiquidityCANTO: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   totalLiquidityUSD: Decimal;
@@ -47,14 +47,14 @@ export class TokenDayDataDb {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.date = ZERO_BD;
+    this.date = 0;
     this.token = "";
     this.dailyVolumeToken = ZERO_BD;
-    this.dailyVolumeETH = ZERO_BD;
+    this.dailyVolumeCANTO = ZERO_BD;
     this.dailyVolumeUSD = ZERO_BD;
     this.dailyTxns = ZERO_BD;
     this.totalLiquidityToken = ZERO_BD;
-    this.totalLiquidityETH = ZERO_BD;
+    this.totalLiquidityCANTO = ZERO_BD;
     this.totalLiquidityUSD = ZERO_BD;
     this.priceUSD = ZERO_BD;
   }
@@ -79,7 +79,7 @@ export class TokenDayData {
 
   @Field()
   @Property({ default: 0, required: false })
-  date: Decimal;
+  date: number;
 
   @Field((type) => Token)
   token: Token; // todo: Ref
@@ -88,7 +88,7 @@ export class TokenDayData {
   dailyVolumeToken: Decimal;
 
   @Field((type) => DecimalScalar)
-  dailyVolumeETH: Decimal;
+  dailyVolumeCANTO: Decimal;
 
   @Field((type) => DecimalScalar)
   dailyVolumeUSD: Decimal;
@@ -100,7 +100,7 @@ export class TokenDayData {
   totalLiquidityToken: Decimal;
 
   @Field((type) => DecimalScalar)
-  totalLiquidityETH: Decimal;
+  totalLiquidityCANTO: Decimal;
 
   @Field((type) => DecimalScalar)
   totalLiquidityUSD: Decimal;
@@ -112,13 +112,15 @@ export class TokenDayData {
     this._id = tkn._id;
     this.id = tkn.id;
     this.date = tkn.date;
-    this.token = new Token();
+    var t = new Token();
+    t.id = tkn.token;
+    this.token = t;
     this.dailyVolumeToken = tkn.dailyVolumeToken;
-    this.dailyVolumeETH = tkn.dailyVolumeETH;
+    this.dailyVolumeCANTO = tkn.dailyVolumeCANTO;
     this.dailyVolumeUSD = tkn.dailyVolumeUSD;
     this.dailyTxns = tkn.dailyTxns;
     this.totalLiquidityToken = tkn.totalLiquidityToken;
-    this.totalLiquidityETH = tkn.totalLiquidityETH;
+    this.totalLiquidityCANTO = tkn.totalLiquidityCANTO;
     this.totalLiquidityUSD = tkn.totalLiquidityUSD;
     this.priceUSD = tkn.priceUSD;
     return this;
@@ -131,14 +133,14 @@ export class TokenDayData {
   constructor() {
     this._id = new ObjectId();
     this.id = "";
-    this.date = ZERO_BD;
+    this.date = 0;
     this.token = new Token();
     this.dailyVolumeToken = ZERO_BD;
-    this.dailyVolumeETH = ZERO_BD;
+    this.dailyVolumeCANTO = ZERO_BD;
     this.dailyVolumeUSD = ZERO_BD;
     this.dailyTxns = ZERO_BD;
     this.totalLiquidityToken = ZERO_BD;
-    this.totalLiquidityETH = ZERO_BD;
+    this.totalLiquidityCANTO = ZERO_BD;
     this.totalLiquidityUSD = ZERO_BD;
     this.priceUSD = ZERO_BD;
   }

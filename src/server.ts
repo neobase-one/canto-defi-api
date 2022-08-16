@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 import loaders from "./loaders";
 import { Config } from "./config";
-import { indexChain, indexHistoricalEvents, initSubscribers } from "./subscribers";
+import { indexChain, indexHistoricalEvents, initSubscribers } from "./indexers";
 
 async function bootsrap() {
   const app = express();

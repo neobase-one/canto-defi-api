@@ -1,6 +1,7 @@
 import Decimal from "decimal.js";
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
+import { BundleDb } from "../../../models/dex/bundle";
 import {
   LiquidityPosition,
   LiquidityPositionDb,
@@ -11,6 +12,8 @@ import {
   LiquidityPositionSnapshotDb,
   LiquidityPositionSnapshotModel,
 } from "../../../models/dex/liquidityPositionSnapshot";
+import { PairDb, PairModel } from "../../../models/dex/pair";
+import { TokenDb } from "../../../models/dex/token";
 import { User, UserDb, UserModel } from "../../../models/dex/user";
 import { ONE_BD, ZERO_BD } from "../../../utils/constants";
 import { getTimestamp } from "../../../utils/helper";
@@ -27,10 +30,10 @@ export async function createLiquidityPosition(exchange: string, user: string) {
   const liquidityPositionService = Container.get(LiquidityPositionService);
 
   let id = exchange.concat("-").concat(user);
-  let liquidityTokenBalance: any = await liquidityPositionService.getById(id);
+  let liquidityTokenBalance: LiquidityPositionDb = await liquidityPositionService.getById(id) as LiquidityPositionDb;
   if (liquidityTokenBalance === null) {
     // let pair = Pair.load(exchange.toHexString())
-    let pair: any = await pairService.getByAddress(exchange);
+    let pair: PairDb = await pairService.getByAddress(exchange) as PairDb;
     pair.liquidityProviderCount = new Decimal(
       pair.liquidityProviderCount.toString()
     ).plus(ONE_BD);
@@ -39,8 +42,8 @@ export async function createLiquidityPosition(exchange: string, user: string) {
     liquidityTokenBalance.pair = exchange;
     liquidityTokenBalance.user = user;
     liquidityTokenBalance = new LiquidityPositionModel(liquidityTokenBalance);
-    await liquidityTokenBalance.save();
-    await pair.save();
+    await new LiquidityPositionModel(liquidityTokenBalance).save();
+    await new PairModel(pair).save();
   }
   if (liquidityTokenBalance === null) {
     console.log("ERROR: LiquidityTokenBalance is null", [id]);
@@ -70,11 +73,11 @@ export async function createLiquiditySnapshot(
   const tokenService = Container.get(TokenService);
   const liquidityPositionService = Container.get(LiquidityPositionService);
 
-  let bundle: any = await bundleService.get();
-  let pair: any = await pairService.getByAddress(position.pair);
+  let bundle: BundleDb = await bundleService.get() as BundleDb;
+  let pair: PairDb = await pairService.getByAddress(position.pair) as PairDb;
   // let pair: any = await pairService.getByAddress("");
-  let token0: any = await tokenService.getByAddress(pair.token0);
-  let token1: any = await tokenService.getByAddress(pair.token0);
+  let token0: TokenDb = await tokenService.getByAddress(pair.token0) as TokenDb;
+  let token1: TokenDb = await tokenService.getByAddress(pair.token0) as TokenDb;
 
   // create new snapshot
   const snapshotId = position.id.concat(timestamp.toString());
@@ -84,9 +87,9 @@ export async function createLiquiditySnapshot(
   snapshot.blockNumber = new Decimal(event.blockNumber);
   snapshot.user = position.user;
   snapshot.pair = position.pair;
-  const ethPrice = new Decimal(bundle.ethPrice.toString());
-  snapshot.token0PriceUSD = new Decimal(token0.derivedETH.toString()).times(ethPrice);
-  snapshot.token1PriceUSD = new Decimal(token1.derivedETH.toString()).times(ethPrice);
+  const cantoPrice = new Decimal(bundle.cantoPrice.toString());
+  snapshot.token0PriceUSD = new Decimal(token0.derivedCANTO.toString()).times(cantoPrice);
+  snapshot.token1PriceUSD = new Decimal(token1.derivedCANTO.toString()).times(cantoPrice);
   snapshot.reserve0 = pair.reserve0;
   snapshot.reserve1 = pair.reserve1;
   snapshot.reserveUSD = pair.reserveUSD;

@@ -22,7 +22,7 @@ const NOTE_CANTO_PAIR = Config.canto.dexDashboard.NOTE_CANTO_PAIR;
 const CANTO_ETH_PAIR = Config.canto.dexDashboard.CANTO_ETH_PAIR;
 const CANTO_ATOM_PAIR = Config.canto.dexDashboard.CANTO_ATOM_PAIR;
 
-export async function getEthPriceInUSD() {
+export async function getCantoPriceInUSD() {
   const pairService = Container.get(PairService);
 
   let notePair: any = await pairService.getByAddress(NOTE_CANTO_PAIR); // token1 = wCANTO
@@ -44,7 +44,7 @@ export async function getEthPriceInUSD() {
       .plus(convertToDecimal(atomPair.token1Price).times(atomWeight));
 
     return price;
-    // ETH & NOTE created
+    // CANTO & NOTE created
   } else if (ethPair!==null && notePair!==null) {
     let totalLiquidityCANTO = convertToDecimal(notePair.reserve1)
       .plus(convertToDecimal(ethPair.reserve1));
@@ -75,12 +75,12 @@ export let UNTRACKED_PAIRS: string[] = Config.canto.dexDashboard.UNTRACKED_PAIRS
 let MINIMUM_USD_THRESHOLD_NEW_PAIRS = Config.canto.dexDashboard.MINIMUM_USD_THRESHOLD_NEW_PAIRS;
 
 // minimum liquidity for price to get tracked
-let MINIMUM_LIQUIDITY_THRESHOLD_ETH = Config.canto.dexDashboard.MINIMUM_LIQUIDITY_THRESHOLD_ETH;
+let MINIMUM_LIQUIDITY_THRESHOLD_CANTO = Config.canto.dexDashboard.MINIMUM_LIQUIDITY_THRESHOLD_CANTO;
 
 /**
  * Search through graph to find derived Eth per token.
  **/
-export async function findEthPerToken(token: TokenDb) {
+export async function findCantoPerToken(token: TokenDb) {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
 
   // services
@@ -94,22 +94,22 @@ export async function findEthPerToken(token: TokenDb) {
   let factoryContract: any = await new web3.eth.Contract(BaseV1FactoryABI, FACTORY_ADDRESS);
   for (let i = 0; i < WHITELIST.length; ++i) {
     let pairAddress = await getPairAddress(factoryContract, token.id, WHITELIST[i]);
-    // console.log("ETH PER TOKEN: ", token.id, WHITELIST[i], pairAddress);
+    // console.log("CANTO PER TOKEN: ", token.id, WHITELIST[i], pairAddress);
     if (pairAddress != ADDRESS_ZERO) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (
         pair.token0 == token.id 
-        // && convertToDecimal(pair.reserveETH).gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
+        // && convertToDecimal(pair.reserveCANTO).gt(MINIMUM_LIQUIDITY_THRESHOLD_CANTO)
       ) {
         let token1: any = await tokenService.getByAddress(pair.token1);
-        return convertToDecimal(pair.token1Price).times(convertToDecimal(token1.derivedETH)); // return token1 per our token * Eth per token 1
+        return convertToDecimal(pair.token1Price).times(convertToDecimal(token1.derivedCANTO)); // return token1 per our token * Eth per token 1
       }
       if (
         pair.token1 == token.id 
-        // && convertToDecimal(pair.reserveETH).gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
+        // && convertToDecimal(pair.reserveCANTO).gt(MINIMUM_LIQUIDITY_THRESHOLD_CANTO)
       ) {
         let token0: any = await tokenService.getByAddress(pair.token0);
-        return convertToDecimal(pair.token0Price).times(convertToDecimal(token0.derivedETH)); // return token0 per our token * ETH per token 0
+        return convertToDecimal(pair.token0Price).times(convertToDecimal(token0.derivedCANTO)); // return token0 per our token * CANTO per token 0
       }
     }
   }
@@ -148,10 +148,10 @@ export async function getTrackedVolumeUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: any = await bundleService.get();
-  // let price0 = convertToDecimal(token0.derivedETH).times(convertToDecimal(bundle.ethPrice));
-  let price0 = convertToDecimal(token0.derivedETH);
-  // let price1 = convertToDecimal(token1.derivedETH).times(convertToDecimal(bundle.ethPrice));
-  let price1 = convertToDecimal(token1.derivedETH);
+  // let price0 = convertToDecimal(token0.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
+  let price0 = convertToDecimal(token0.derivedCANTO);
+  // let price1 = convertToDecimal(token1.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
+  let price1 = convertToDecimal(token1.derivedCANTO);
 
   // dont count tracked volume on these pairs - usually rebass tokens
   if (UNTRACKED_PAIRS.includes(pair.id)) {
@@ -224,10 +224,10 @@ export async function getTrackedLiquidityUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: any = await bundleService.get();
-  // let price0 = convertToDecimal(token0.derivedETH).times(convertToDecimal(bundle.ethPrice));
-  let price0 = convertToDecimal(token0.derivedETH);
-  // let price1 = convertToDecimal(token1.derivedETH).times(convertToDecimal(bundle.ethPrice));
-  let price1 = convertToDecimal(token1.derivedETH);
+  // let price0 = convertToDecimal(token0.derivedCANTO).times(convertToDecimal(bundle.ethPrice));
+  let price0 = convertToDecimal(token0.derivedCANTO);
+  // let price1 = convertToDecimal(token1.derivedCANTO).times(convertToDecimal(bundle.ethPrice));
+  let price1 = convertToDecimal(token1.derivedCANTO);
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
