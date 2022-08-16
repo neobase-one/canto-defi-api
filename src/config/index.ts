@@ -65,7 +65,7 @@ export const Config = {
       // minimum liquidity required to count towards tracked volume for pairs with small # of Lps
       MINIMUM_USD_THRESHOLD_NEW_PAIRS: new Decimal("400"),
       // minimum liquidity for price to get tracked
-      MINIMUM_LIQUIDITY_THRESHOLD_ETH: new Decimal("2"),
+      MINIMUM_LIQUIDITY_THRESHOLD_CANTO: new Decimal("2"),
 
     },
     // lending dash needs all these

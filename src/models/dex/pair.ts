@@ -32,13 +32,13 @@ export class PairDb {
   totalSupply: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  reserveETH: Decimal;
+  reserveCANTO: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   reserveUSD: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  trackedReserveETH: Decimal;
+  trackedReserveCANTO: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   token0Price: Decimal;
@@ -78,9 +78,9 @@ export class PairDb {
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;
-    this.reserveETH = ZERO_BD;
+    this.reserveCANTO = ZERO_BD;
     this.reserveUSD = ZERO_BD;
-    this.trackedReserveETH = ZERO_BD;
+    this.trackedReserveCANTO = ZERO_BD;
     this.token0Price = ZERO_BD;
     this.token1Price = ZERO_BD;
     this.volumeToken0 = ZERO_BD;
@@ -124,13 +124,13 @@ export class Pair {
   totalSupply: Decimal;
 
   @Field((type) => DecimalScalar)
-  reserveETH: Decimal;
+  reserveCANTO: Decimal;
 
   @Field((type) => DecimalScalar)
   reserveUSD: Decimal;
 
   @Field((type) => DecimalScalar)
-  trackedReserveETH: Decimal;
+  trackedReserveCANTO: Decimal;
 
   @Field((type) => DecimalScalar)
   token0Price: Decimal;
@@ -170,9 +170,9 @@ export class Pair {
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;
-    this.reserveETH = ZERO_BD;
+    this.reserveCANTO = ZERO_BD;
     this.reserveUSD = ZERO_BD;
-    this.trackedReserveETH = ZERO_BD;
+    this.trackedReserveCANTO = ZERO_BD;
     this.token0Price = ZERO_BD;
     this.token1Price = ZERO_BD;
     this.volumeToken0 = ZERO_BD;
@@ -193,9 +193,9 @@ export class Pair {
     this.reserve0 = pair.reserve0;
     this.reserve1 = pair.reserve1;
     this.totalSupply = pair.totalSupply;
-    this.reserveETH = pair.reserveETH;
+    this.reserveCANTO = pair.reserveCANTO;
     this.reserveUSD = pair.reserveUSD;
-    this.trackedReserveETH = pair.trackedReserveETH;
+    this.trackedReserveCANTO = pair.trackedReserveCANTO;
     this.token0Price = pair.token0Price;
     this.token1Price = pair.token1Price;
     this.volumeToken0 = pair.volumeToken0;
