@@ -12,9 +12,10 @@ import {
 } from "../../../models/dex/liquidityPosition";
 import { Mint, MintDb, MintModel } from "../../../models/dex/mint";
 import { Pair, PairDb, PairModel } from "../../../models/dex/pair";
-import { PairDayData } from "../../../models/dex/pairDayData";
+import { PairDayData, PairDayDataDb, PairDayDataModel } from "../../../models/dex/pairDayData";
 import {
   StableswapFactory,
+  StableswapFactoryDb,
   StableswapFactoryModel,
 } from "../../../models/dex/stableswapFactory";
 import { Swap, SwapDb, SwapModel } from "../../../models/dex/swap";
@@ -54,6 +55,10 @@ import {
   getTrackedLiquidityUSD,
   getTrackedVolumeUSD,
 } from "./pricing";
+import { PairHourDataDb, PairHourDataModel } from "../../../models/dex/pairHourData";
+import { StableswapDayDataDb, StableswapDayDataModel } from "../../../models/dex/stableswapDayData";
+import { TokenDayDataDb, TokenDayDataModel } from "../../../models/dex/tokenDayData";
+import { BundleModel } from "../../../models/dex/bundle";
 
 // todo: remove unused services
 
@@ -74,18 +79,18 @@ export async function mintEventHandler(
   const mintService = Container.get(MintService);
 
   // load
-  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
-  let transaction: any = await transactionService.getByHash(txHash);
-  let pair: any = await pairService.getByAddress(event.address);
-  let token0: any = await tokenService.getByAddress(pair.token0);
-  let token1: any = await tokenService.getByAddress(pair.token1);
+  let factory: StableswapFactoryDb = await factoryService.getByAddress(FACTORY_ADDRESS) as StableswapFactoryDb;
+  let transaction: TransactionDb = await transactionService.getByHash(txHash) as TransactionDb;
+  let pair: PairDb = await pairService.getByAddress(event.address) as PairDb;
+  let token0: TokenDb = await tokenService.getByAddress(pair.token0) as TokenDb;
+  let token1: TokenDb = await tokenService.getByAddress(pair.token1) as TokenDb;
 
   let mints = transaction.mints;
-  let mint: any = await mintService.getById(mints[mints.length - 1]);
+  let mint: MintDb = await mintService.getById(mints[mints.length - 1]) as MintDb;
 
   // update exchange info (excpet balances, sync will cover that)
-  let token0Amount = convertTokenToDecimal(input.amount0, token0.decimal);
-  let token1Amount = convertTokenToDecimal(input.amount1, token1.decimal);
+  let token0Amount = convertTokenToDecimal(input.amount0, token0.decimals);
+  let token1Amount = convertTokenToDecimal(input.amount1, token1.decimals);
 
   // update txn counts
   // console.log(token0.txCount)
@@ -105,10 +110,10 @@ export async function mintEventHandler(
   factory.txCount = convertToDecimal(factory.txCount).plus(ONE_BD);
 
   // save entities
-  await token0.save();
-  await token1.save();
-  await pair.save();
-  await factory.save();
+  await new TokenModel(token0).save();
+  await new TokenModel(token1).save();
+  await new PairModel(pair).save();
+  await new StableswapFactoryModel(factory).save();
 
   // update mint
   mint.sender = input.sender;
@@ -116,7 +121,7 @@ export async function mintEventHandler(
   mint.amount1 = token1Amount;
   mint.logIndex = new Decimal(event.logIndex);
   mint.amountUSD = amountTotalUSD; // todo: add amountTotalCANTO
-  await mint.save();
+  await new MintModel(mint).save();
 
   // update LP position
   let liquidityPosition = await createLiquidityPosition(event.address, mint.to);
@@ -147,18 +152,18 @@ export async function burnEventHandler(
   const mintService = Container.get(MintService);
 
   // load
-  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
-  let transaction: any = await transactionService.getByHash(txHash);
+  let factory: StableswapFactoryDb = await factoryService.getByAddress(FACTORY_ADDRESS) as StableswapFactoryDb;
+  let transaction: TransactionDb = await transactionService.getByHash(txHash) as TransactionDb;
   if (transaction === null) {
     return;
   }
-  let pair: any = await pairService.getByAddress(event.address);
-  let token0: any = await tokenService.getByAddress(pair.token0);
-  let token1: any = await tokenService.getByAddress(pair.token1);
+  let pair: PairDb = await pairService.getByAddress(event.address) as PairDb;
+  let token0: TokenDb = await tokenService.getByAddress(pair.token0) as TokenDb;
+  let token1: TokenDb = await tokenService.getByAddress(pair.token1) as TokenDb;
 
   // burns
   let burns = transaction.burns;
-  let burn: any = await burnService.getById(burns[burns.length - 1]);
+  let burn: BurnDb = await burnService.getById(burns[burns.length - 1]) as BurnDb;
 
   // update token info
   let token0Amount = convertTokenToDecimal(input.amount0, token0.decimals);
@@ -181,17 +186,17 @@ export async function burnEventHandler(
   factory.txCount = convertToDecimal(factory.txCount).plus(ONE_BD);
 
   // save entities
-  await token0.save();
-  await token1.save();
-  await pair.save();
-  await factory.save();
+  await new TokenModel(token0).save();
+  await new TokenModel(token1).save();
+  await new PairModel(pair).save();
+  await new StableswapFactoryModel(factory).save();
 
   // update burn
   burn.amount0 = token0Amount;
   burn.amount1 = token1Amount;
   burn.logIndex = new Decimal(event.logIndex);
   burn.amountUSD = amountTotalUSD; // todo: add amountTotalCANTO field
-  await burn.save();
+  await new BurnModel(burn).save();
 
   // update LP position
   let liquidityPosition = await createLiquidityPosition(
@@ -226,10 +231,10 @@ export async function swapEventHandler(
   const mintService = Container.get(MintService);
 
   // load
-  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
-  let pair: any = await pairService.getByAddress(event.address);
-  let token0: any = await tokenService.getByAddress(pair.token0);
-  let token1: any = await tokenService.getByAddress(pair.token1);
+  let factory: StableswapFactoryDb = await factoryService.getByAddress(FACTORY_ADDRESS) as StableswapFactoryDb;
+  let pair: PairDb = await pairService.getByAddress(event.address) as PairDb;
+  let token0: TokenDb = await tokenService.getByAddress(pair.token0) as TokenDb;
+  let token1: TokenDb = await tokenService.getByAddress(pair.token1) as TokenDb;
 
   //
   let amount0In = convertTokenToDecimal(input.amount0In, token0.decimals);
@@ -288,7 +293,7 @@ export async function swapEventHandler(
   pair.volumeToken1 = convertToDecimal(pair.volumeToken1).plus(amount1Total);
   pair.untrackedVolumeUSD = convertToDecimal(pair.untrackedVolumeUSD).plus(derivedAmountUSD);
   pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
-  await pair.save();
+  await new PairModel(pair).save();
 
   // update global values, only used tracked amounts for volume
   factory.totalVolumeUSD = convertToDecimal(factory.totalVolumeUSD).plus(trackedAmountUSD);
@@ -298,13 +303,13 @@ export async function swapEventHandler(
   factory.txCount = convertToDecimal(factory.txCount).plus(ONE_BD);
 
   // save entities
-  await pair.save();
-  await token0.save();
-  await token1.save();
-  await factory.save();
+  await new PairModel(pair).save();
+  await new TokenModel(token0).save();
+  await new TokenModel(token1).save();
+  await new StableswapFactoryModel(factory).save();
 
   // update transaction
-  let transaction: any = await transactionService.getByHash(txHash);
+  let transaction: TransactionDb = await transactionService.getByHash(txHash) as TransactionDb;
   if (transaction === null) {
     transaction = new TransactionDb(txHash);
     transaction.blockNumber = new Decimal(event.blockNumber);
@@ -312,7 +317,6 @@ export async function swapEventHandler(
     transaction.mints = [];
     transaction.swaps = [];
     transaction.burns = [];
-    transaction = new TransactionModel(transaction);
   }
 
   // swaps
@@ -345,14 +349,14 @@ export async function swapEventHandler(
   // update transaction
   swaps.push(swap.id);
   transaction.swaps = swaps;
-  await transaction.save();
+  await new TransactionModel(transaction).save();
 
   // update day entities
-  let pairDayData: any = await updatePairDayData(event);
-  let pairHourData: any = await updatePairHourData(event);
-  let stableswapDayData: any = await updateFactoryDayData(event);
-  let token0DayData: any = await updateTokenDayData(token0, event);
-  let token1DayData: any = await updateTokenDayData(token1, event);
+  let pairDayData: PairDayDataDb = await updatePairDayData(event) as PairDayDataDb;
+  let pairHourData: PairHourDataDb = await updatePairHourData(event) as PairHourDataDb;
+  let stableswapDayData: StableswapDayDataDb = await updateFactoryDayData(event) as StableswapDayDataDb;
+  let token0DayData: TokenDayDataDb = await updateTokenDayData(token0, event) as TokenDayDataDb;
+  let token1DayData: TokenDayDataDb = await updateTokenDayData(token1, event) as TokenDayDataDb;
 
   // swap specific updating
   // console.log(stableswapDayData)
@@ -362,7 +366,7 @@ export async function swapEventHandler(
     convertToDecimal(stableswapDayData.dailyVolumeCANTO).plus(trackedAmountCANTO);
   stableswapDayData.dailyVolumeUntracked =
     convertToDecimal(stableswapDayData.dailyVolumeUntracked).plus(derivedAmountUSD);
-  await stableswapDayData.save();
+  await new StableswapDayDataModel(stableswapDayData).save();
 
   // swap specific updating for pair
   pairDayData.dailyVolumeToken0 =
@@ -371,7 +375,7 @@ export async function swapEventHandler(
     convertToDecimal(pairDayData.dailyVolumeToken1).plus(amount1Total);
   pairDayData.dailyVolumeUSD =
     convertToDecimal(pairDayData.dailyVolumeUSD).plus(trackedAmountUSD);
-  await pairDayData.save();
+  await new PairDayDataModel(pairDayData).save();
 
   // update hourly pair data
   pairHourData.hourlyVolumeToken0 =
@@ -380,7 +384,7 @@ export async function swapEventHandler(
     convertToDecimal(pairHourData.hourlyVolumeToken1).plus(amount1Total);
   pairHourData.hourlyVolumeUSD =
     convertToDecimal(pairHourData.hourlyVolumeUSD).plus(trackedAmountUSD);
-  await pairHourData.save();
+  await new PairHourDataModel(pairHourData).save();
 
   // swap specific updating for token0
   token0DayData.dailyVolumeToken =
@@ -392,7 +396,7 @@ export async function swapEventHandler(
     // amount0Total.times(convertToDecimal(token0.derivedCANTO)).times(convertToDecimal(bundle.cantoPrice))
     amount0Total.times(convertToDecimal(token0.derivedCANTO))
   );
-  await token0DayData.save();
+  await new TokenDayDataModel(token0DayData).save();
 
   // swap specific updating
   token1DayData.dailyVolumeToken =
@@ -404,7 +408,7 @@ export async function swapEventHandler(
     // amount1Total.times(convertToDecimal(token1.derivedCANTO)).times(convertToDecimal(bundle.cantoPrice))
     amount1Total.times(convertToDecimal(token1.derivedCANTO))
   );
-  await token1DayData.save();
+  await new TokenDayDataModel(token1DayData).save();
 }
 
 export async function transferEventHandler(
@@ -430,7 +434,7 @@ export async function transferEventHandler(
   const mintService = Container.get(MintService);
 
   // load
-  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
+  let factory: StableswapFactoryDb = await factoryService.getByAddress(FACTORY_ADDRESS) as StableswapFactoryDb;
 
   // user stats
   const from = input.from;
@@ -439,20 +443,19 @@ export async function transferEventHandler(
   await createUser(input.to);
 
   // get pair and load
-  let pair: any = await pairService.getByAddress(event.address);
+  let pair: PairDb = await pairService.getByAddress(event.address) as PairDb;
   let pairContract: any = await new web3.eth.Contract(BaseV1PairABI, event.address);
 
   // liquidity token amount being transferred
   let value: Decimal = convertTokenToDecimal(input.amount, BI_18);
 
   // load transaction
-  let transaction: any = await transactionService.getByHash(txHash);
+  let transaction: TransactionDb = await transactionService.getByHash(txHash) as TransactionDb;
   if (transaction === null) {
     transaction = new TransactionDb(txHash);
     transaction.blockNumber = new Decimal(event.blockNumber);
     transaction.timestamp = timestamp;
-    transaction = new TransactionModel(transaction);
-    await transaction.save();
+    await new TransactionModel(transaction).save();
   }
 
   // mints
@@ -460,7 +463,7 @@ export async function transferEventHandler(
   if (from == ADDRESS_ZERO) {
     // update total supply
     pair.totalSupply = value.plus(new Decimal(pair.totalSupply.toString()));
-    await pair.save();
+    await new PairModel(pair).save();
 
     // create new mint if no mints so far OR if last one completed
     if (mints.length === 0 || (await isCompleteMint(mints[mints.length - 1]))) {
@@ -481,8 +484,8 @@ export async function transferEventHandler(
       transaction.mints = mints.concat([mint.id]);
 
       // save entities
-      await transaction.save();
-      await factory.save();
+      await new TransactionModel(transaction).save();
+      await new StableswapFactoryModel(factory).save();
     }
   }
 
@@ -506,14 +509,14 @@ export async function transferEventHandler(
     await new BurnModel(burn).save();
 
     transaction.burns = burns.concat([burn.id]);
-    await transaction.save();
+    await new TransactionModel(transaction).save();
   }
 
   // burn
   if (to == ADDRESS_ZERO && from == pair.id) {
     // update pair total supply
     pair.totalSupply = new Decimal(pair.totalSupply.toString()).minus(value);
-    await pair.save();
+    await new PairModel(pair).save();
 
     // new instance of logical burn
     let burns = transaction.burns;
@@ -562,7 +565,7 @@ export async function transferEventHandler(
 
       mints.pop();
       transaction.mints = mints;
-      await transaction.save();
+      await new TransactionModel(transaction).save();
     }
     await new BurnModel(burn).save();
 
@@ -573,7 +576,7 @@ export async function transferEventHandler(
       burns.push(burn.id);
     }
     transaction.burns = burns;
-    await transaction.save();
+    await new TransactionModel(transaction).save();
   }
 
   if (from != ADDRESS_ZERO && from != pair.id) {
@@ -602,7 +605,7 @@ export async function transferEventHandler(
     await createLiquiditySnapshot(toUserLiquidityPosition, event);
   }
 
-  await transaction.save();
+  await new TransactionModel(transaction).save();
 }
 
 export async function syncEventHandler(
@@ -617,10 +620,10 @@ export async function syncEventHandler(
 
   // service functions
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
-  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
-  let pair: any = await pairService.getByAddress(event.address);
-  let token0: any = await tokenService.getByAddress(pair.token0);
-  let token1: any = await tokenService.getByAddress(pair.token1);
+  let factory: StableswapFactoryDb = await factoryService.getByAddress(FACTORY_ADDRESS) as StableswapFactoryDb;
+  let pair: PairDb = await pairService.getByAddress(event.address) as PairDb;
+  let token0: TokenDb = await tokenService.getByAddress(pair.token0) as TokenDb;
+  let token1: TokenDb = await tokenService.getByAddress(pair.token1) as TokenDb;
 
   // reset factory liquiuty by subtracting only tracked liquidity
   factory.totalLiquidityCANTO = convertToDecimal(factory.totalLiquidityCANTO).minus(
@@ -645,7 +648,7 @@ export async function syncEventHandler(
   } else {
     pair.token1Price = ZERO_BD;
   }
-  await pair.save();
+  await new PairModel(pair).save();
 
   // update CANTO price now that reserves could have changed
   let bundle: any = await bundleService.get();
@@ -655,8 +658,8 @@ export async function syncEventHandler(
   // update derived CANTO values
   token0.derivedCANTO = await findCantoPerToken(token0);
   token1.derivedCANTO = await findCantoPerToken(token1);
-  await token0.save();
-  await token1.save();
+  await new TokenModel(token0).save();
+  await new TokenModel(token1).save();
 
   // get tracked liquidity - will be 0 if neither in whitelist
   let trackedLiquidityCANTO: Decimal;
@@ -693,11 +696,11 @@ export async function syncEventHandler(
   token1.totalLiquidity = convertToDecimal(token1.totalLiquidity).plus(convertToDecimal(pair.reserve1));
 
   // save
-  await bundle.save();
-  await pair.save();
-  await factory.save();
-  await token0.save();
-  await token1.save();
+  await new BundleModel(bundle).save();
+  await new PairModel(pair).save();
+  await new StableswapFactoryModel(factory).save();
+  await new TokenModel(token0).save();
+  await new TokenModel(token1).save();
 }
 
 async function isCompleteMint(mintId: string): Promise<boolean> {

@@ -2,10 +2,11 @@ import Decimal from "decimal.js";
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../../config";
+import { PairDb } from "../../../models/dex/pair";
 import { PairDayData, PairDayDataDb, PairDayDataModel } from "../../../models/dex/pairDayData";
 import { PairHourData, PairHourDataDb, PairHourDataModel } from "../../../models/dex/pairHourData";
 import { StableswapDayData, StableswapDayDataDb, StableswapDayDataModel } from "../../../models/dex/stableswapDayData";
-import { StableswapFactory } from "../../../models/dex/stableswapFactory";
+import { StableswapFactory, StableswapFactoryDb } from "../../../models/dex/stableswapFactory";
 import { Token, TokenDb } from "../../../models/dex/token";
 import { TokenDayData, TokenDayDataDb, TokenDayDataModel } from "../../../models/dex/tokenDayData";
 import { ONE_BD, ZERO_BD } from "../../../utils/constants";
@@ -35,11 +36,11 @@ export async function updateFactoryDayData(event: EventData) {
   let dayStartTimestamp = dayId * 86400;
 
   // load
-  let factory: any = await factoryService.getByAddress(FACTORY_ADDRESS);
+  let factory: StableswapFactoryDb = await factoryService.getByAddress(FACTORY_ADDRESS) as StableswapFactoryDb;
 
-  let factoryDayData: any = await factoryDayDataService.getById(
+  let factoryDayData: StableswapDayDataDb = await factoryDayDataService.getById(
     dayId.toString()
-  );
+  ) as StableswapDayDataDb;
   if (factoryDayData === null) {
     factoryDayData = new StableswapDayDataDb(dayId.toString());
     factoryDayData.date = dayStartTimestamp;
@@ -51,7 +52,7 @@ export async function updateFactoryDayData(event: EventData) {
   factoryDayData.totalLiquidityUSD = factory.totalLiquidityCANTO;
   factoryDayData.txCount = factory.txCount;
 
-  await factoryDayData.save();
+  await new StableswapDayDataModel(factoryDayData).save();
 
   return factoryDayData;
 }
@@ -70,15 +71,14 @@ export async function updatePairDayData(event: EventData) {
     .concat(new Decimal(dayId).toString());
 
   // load
-  let pair: any = await pairService.getByAddress(event.address);
-  let pairDayData: any = await pairDayDataService.getById(dayPairId);
+  let pair: PairDb = await pairService.getByAddress(event.address) as PairDb;
+  let pairDayData: PairDayDataDb = await pairDayDataService.getById(dayPairId) as PairDayDataDb;
   if (pairDayData === null) {
     pairDayData = new PairDayDataDb(dayPairId);
     pairDayData.date = dayStartTimestamp;
     pairDayData.token0 = pair.token0;
     pairDayData.token1 = pair.token1;
-    pairDayData.pairAddress = event.address;
-    pairDayData = new PairDayDataModel(pairDayData);
+    pairDayData.pair = event.address;
   }
 
   pairDayData.totalSupply = pair.totalSupply;
@@ -86,7 +86,7 @@ export async function updatePairDayData(event: EventData) {
   pairDayData.reserve1 = pair.reserve1;
   pairDayData.reserveUSD = pair.reserveUSD;
   pairDayData.dailyTxns = convertToDecimal(pairDayData.dailyTxns).plus(ONE_BD);
-  await pairDayData.save();
+  await new PairDayDataModel(pairDayData).save();
 
   return pairDayData as PairDayDataDb;
 }
@@ -105,13 +105,12 @@ export async function updatePairHourData(event: EventData) {
     .concat(new Decimal(hourIndex).toString());
 
   // load
-  let pair: any = await pairService.getByAddress(event.address);
-  let pairHourData: any = await pairHourDataService.getById(hourPairId);
+  let pair: PairDb = await pairService.getByAddress(event.address) as PairDb;
+  let pairHourData: PairHourDataDb = await pairHourDataService.getById(hourPairId) as PairHourDataDb;
   if (pairHourData === null) {
     pairHourData = new PairHourDataDb(hourPairId);
     pairHourData.hourStartUnix = new Decimal(hourStartUnix);
     pairHourData.pair = event.address;
-    pairHourData = new PairHourDataModel(pairHourData);
   }
 
   pairHourData.totalSupply = pair.totalSupply;
@@ -119,7 +118,7 @@ export async function updatePairHourData(event: EventData) {
   pairHourData.reserve1 = pair.reserve1;
   pairHourData.reserveUSD = pair.reserveUSD;
   pairHourData.hourlyTxns = convertToDecimal(pairHourData.hourlyTxns).plus(ONE_BD);
-  await pairHourData.save();
+  await new PairHourDataModel(pairHourData).save();
 
   return pairHourData;
 }
@@ -135,23 +134,23 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
   let dayStartTimestamp = dayId * 86400;
   let tokenDayId = token.id.concat("-").concat(new Decimal(dayId).toString());
 
-  let tokenDayData: any = await tokenDayDataService.getById(tokenDayId);
+  let tokenDayData: TokenDayDataDb = await tokenDayDataService.getById(tokenDayId) as TokenDayDataDb;
   if (tokenDayData === null) {
     tokenDayData = new TokenDayDataDb(tokenDayId);
     tokenDayData.date = dayStartTimestamp;
     tokenDayData.token = token.id;
-    // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.CANTOPrice));
+    // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
     tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO);
     tokenDayData = new TokenDayDataModel(tokenDayData);
   }
-  // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.CANTOPrice));
+  // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
   tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO);
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
   tokenDayData.totalLiquidityCANTO = convertToDecimal(token.totalLiquidity).times(convertToDecimal(token.derivedCANTO));
-  // tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityETH).times(convertToDecimal(bundle.ethPrice));
-  tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityETH);
+  // tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityCANTO).times(convertToDecimal(bundle.cantoPrice));
+  tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityCANTO);
   tokenDayData.dailyTxns = convertToDecimal(tokenDayData.dailyTxns).plus(ONE_BD);
-  await tokenDayData.save();
+  await new TokenDayDataModel(tokenDayData).save();
 
   return tokenDayData;
 }

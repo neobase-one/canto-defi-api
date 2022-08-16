@@ -14,8 +14,8 @@ export class TokenDayDataDb {
   @Property({ default: "", required: false })
   id: string;
 
-  @Property({ default: new Decimal("0"), required: false })
-  date: Decimal;
+  @Property({ default: 0, required: false })
+  date: number;
 
   @Property({ default: "", required: false })
   token: string;
@@ -47,7 +47,7 @@ export class TokenDayDataDb {
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.date = ZERO_BD;
+    this.date = 0;
     this.token = "";
     this.dailyVolumeToken = ZERO_BD;
     this.dailyVolumeCANTO = ZERO_BD;
@@ -79,7 +79,7 @@ export class TokenDayData {
 
   @Field()
   @Property({ default: 0, required: false })
-  date: Decimal;
+  date: number;
 
   @Field((type) => Token)
   token: Token; // todo: Ref
@@ -112,7 +112,9 @@ export class TokenDayData {
     this._id = tkn._id;
     this.id = tkn.id;
     this.date = tkn.date;
-    this.token = new Token();
+    var t = new Token();
+    t.id = tkn.token;
+    this.token = t;
     this.dailyVolumeToken = tkn.dailyVolumeToken;
     this.dailyVolumeCANTO = tkn.dailyVolumeCANTO;
     this.dailyVolumeUSD = tkn.dailyVolumeUSD;
@@ -131,7 +133,7 @@ export class TokenDayData {
   constructor() {
     this._id = new ObjectId();
     this.id = "";
-    this.date = ZERO_BD;
+    this.date = 0;
     this.token = new Token();
     this.dailyVolumeToken = ZERO_BD;
     this.dailyVolumeCANTO = ZERO_BD;
