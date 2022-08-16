@@ -1,9 +1,9 @@
 import { Config } from "../config";
 import { web3 } from "../loaders/web3";
 import { IndexDb, IndexModel } from "../models/dex";
-import { baseV1FactoryIndexHistoricalEvents, indexFactoryEvents } from "./dex/baseV1FactorySubscribers";
-import { baseV1PairIndexHistoricalEvents, indexPairEvents } from "./dex/baseV1PairSubscribers";
-import { blockIndexHistorical, indexBlocks } from "./dex/blockSubscribers";
+import { baseV1FactoryIndexHistoricalEvents, indexFactoryEvents } from "./dex/factoryIndexer";
+import { baseV1PairIndexHistoricalEvents, indexPairEvents } from "./dex/pairIndexer";
+import { blockIndexHistorical, indexBlocks } from "./dex/blockIndexer";
 import { indexComptollerEvents } from "./lending/comptollerIndexer";
 import { indexcTokenEvents } from "./lending/ctokenIndexer";
 
@@ -49,8 +49,11 @@ export async function indexChain() {
     // index
     indexBlocks(start, end);
 
+    // DEX
+    // BaseV1Factory
     await indexFactoryEvents(start, end);
 
+    // BaseV1Pair
     await indexPairEvents(start, end);
 
     // Lending
