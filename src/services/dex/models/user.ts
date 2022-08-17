@@ -15,4 +15,10 @@ export class UserService {
   async getById(id: string) {
     return await UserModel.findOne({ id: id }).exec();
   }
+
+  async save(obj: UserDb) {
+    let model = new UserModel(obj);
+    model.isNew = false;
+    await model.save();
+  }
 }

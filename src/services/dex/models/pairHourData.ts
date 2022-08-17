@@ -15,4 +15,10 @@ export class PairHourDataService {
   async getById(id: string) {
     return await PairHourDataModel.findOne({ id: id }).exec();
   }
+
+  async save(obj: PairHourDataDb) {
+    let model = new PairHourDataModel(obj);
+    model.isNew = false;
+    await model.save();
+  }
 }

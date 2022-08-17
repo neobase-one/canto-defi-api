@@ -15,4 +15,10 @@ export class TokenService {
   async getByAddress(address: string) {
     return await TokenModel.findOne({ id: address }).exec();
   }
+
+  async save(obj: TokenDb) {
+    let model = new TokenModel(obj);
+    model.isNew = false;
+    await model.save();
+  }
 }

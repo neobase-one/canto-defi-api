@@ -15,4 +15,10 @@ export class TransactionService {
   async getByHash(hash: string) {
     return await TransactionModel.findOne({ id: hash }).exec();
   }
+
+  async save(obj: TransactionDb) {
+    let model = new TransactionModel(obj);
+    model.isNew = false;
+    await model.save();
+  }
 }

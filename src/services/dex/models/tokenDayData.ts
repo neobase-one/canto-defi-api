@@ -15,4 +15,10 @@ export class TokenDayDataService {
   async getById(id: string) {
     return await TokenDayDataModel.findOne({ id: id }).exec();
   }
+
+  async save(obj: TokenDayDataDb) {
+    let model = new TokenDayDataModel(obj);
+    model.isNew = false;
+    await model.save();
+  }
 }
