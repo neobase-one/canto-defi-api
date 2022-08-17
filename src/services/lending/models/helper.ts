@@ -18,6 +18,7 @@ import { fetchTokenDecimals, fetchTokenSymbol, fetchTokenName } from '../../../u
 import { ComptrollerService } from './comptroller';
 import { Config } from '../../../config';
 import { isNullOrUndefined } from '@typegoose/typegoose/lib/internal/utils';
+import { BaseV1RouterABI } from '../../../utils/abiParser/baseV1Router';
 
 
 export function createAccountCToken(
@@ -271,20 +272,19 @@ async function getTokenPrice(
 
   // 
   let comptroller = await comptrollerService.getById('1');
-  let oracleAddress = "";
+  let oracleAddress = Config.contracts.baseV1Router.addresses[0];
   if (comptroller !== null) {
     oracleAddress = comptroller.priceOracle;
   }
-  let priceOracle1Address = "" // todo: move to config
 
+  let mantissaDecimalFactor = 18 - underlyingDecimals + 18
+  let bdFactor = exponentToBigDecimal(mantissaDecimalFactor)
+  let contract = await new web3.eth.Contract(BaseV1RouterABI, oracleAddress);
+  let price = await contract.methods.getUnderlyingPrice(eventAddress).call();
+  let underlyingPrice = convertToDecimal(price).div(bdFactor);
+  return underlyingPrice
 
-  let contract = await new web3.eth.Contract(cTokenABI, oracleAddress); // todo: update abi
-  // let underlyingPrice = await contract.methods.oracle().call();
-  // let price = await contract.methods.getUnderlyingPrice(underlyingAddress).call();
-  // let underlyingPrice = convertToDecimal(price).div(mantissaFactorBD);
-  // return underlyingPrice
-
-  return ONE_BD;
+  // return ONE_BD;
 
 }
 
@@ -294,19 +294,18 @@ async function getUSDCPriceETH(blockNumber: number) {
 
   // 
   let comptroller = await comptrollerService.getById('1');
-  let oracleAddress = "";
+  let oracleAddress = Config.contracts.baseV1Router.addresses[0];
   if (comptroller !== null) {
     oracleAddress = comptroller.priceOracle;
   }
   let priceOracle1Address = "" // todo: move to config
-  let USDCAddress = "" // todo: move to config
+  let USDCAddress = Config.canto.lendingDashboard.USDC_ADDRESS;
 
 
-  let contract = await new web3.eth.Contract(cTokenABI, oracleAddress); // todo: update abi
-  // let underlyingPrice = await contract.methods.oracle().call();
-  // let price = await contract.methods.getUnderlyingPrice(underlyingAddress).call();
-  // let underlyingPrice = convertToDecimal(price).div(mantissaFactorBD);
-  // return underlyingPrice
+  let contract = await new web3.eth.Contract(BaseV1RouterABI, oracleAddress);
+  let price = await contract.methods.getUnderlyingPrice(USDCAddress).call();
+  let underlyingPrice = convertToDecimal(price);
+  return underlyingPrice
 
-  return ONE_BD;
+  // return ONE_BD;
 }

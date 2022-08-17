@@ -76,6 +76,7 @@ export const Config = {
       // "0x732Dcd6021fE992a935a26A6C5861312f0cBE5B2", // cAtomDelegator
       // "0x830b9849E7D79B92408a86A557e7baAACBeC6030", // cEthDelegator
       // "0xB65Ec550ff356EcA6150F733bA9B954b2e0Ca488", // cCanto
+      USDC_ADDRESS: "0x80b5a32E4F032B2a058b4F29EC95EEfEEB87aDcd",
       cUSDC_ADDRESS: "0x0dD6241bFE519fB1c1B654877b66311c355804c5",
       cETH_ADDRESS: "0x830b9849E7D79B92408a86A557e7baAACBeC6030",
       MANTISSA_FACTOR: 18,
@@ -209,6 +210,9 @@ export const Config = {
           ]
         }
       }
+    },
+    baseV1Router: {
+      addresses: ["0x8fa61F21Fb514d2914a48B29810900Da876E295b"]
     }
   },
 };
