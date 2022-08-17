@@ -50,13 +50,13 @@ export class NewCloseFactorInput {
 
 export class NewCollateralFactorInput {
   cToken: string;
-  oldCloseFactorMantissa: Decimal;
-  newCloseFactorMantissa: Decimal;
+  oldCollateralFactorMantissa: Decimal;
+  newCollateralFactorMantissa: Decimal;
 
   constructor(eventObj: any) {
     this.cToken = eventObj[0];
-    this.oldCloseFactorMantissa = new Decimal(eventObj[1]);
-    this.newCloseFactorMantissa = new Decimal(eventObj[2]);
+    this.oldCollateralFactorMantissa = new Decimal(eventObj[1]);
+    this.newCollateralFactorMantissa = new Decimal(eventObj[2]);
   }
 }
 

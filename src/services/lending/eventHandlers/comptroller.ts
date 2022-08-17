@@ -93,7 +93,7 @@ export async function handleNewCollateralFactorEvent(
 
     let market = await marketService.getByAddress(event.address);
     if (market !== null) {
-        market.collateralFactor = input.newCloseFactorMantissa;
+        market.collateralFactor = input.newCollateralFactorMantissa;
         await market.save();
     }
 }
