@@ -25,4 +25,10 @@ export class PairService {
   async getByAddress(address: string) {
     return await PairModel.findOne({ id: address }).exec();
   }
+
+  async save(data: PairDb) {
+    let model = new PairModel(data);
+    model.isNew = false;
+    await model.save();
+  }
 }

@@ -15,4 +15,10 @@ export class FactoryDayDataService {
   async getById(id: string) {
     return await StableswapDayDataModel.findOne({ id: id }).exec();
   }
+
+  async save(data: StableswapDayDataDb) {
+    let model = new StableswapDayDataModel(data);
+    model.isNew = false;
+    await model.save();
+  }
 }

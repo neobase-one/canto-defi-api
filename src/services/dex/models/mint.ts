@@ -19,4 +19,10 @@ export class MintService {
   async deleteById(id: string) {
     return await MintModel.findOneAndDelete({ id: id }).exec();
   }
+
+  async save(data: MintDb) {
+    let model = new MintModel(data);
+    model.isNew = false;
+    await model.save();
+  }
 }

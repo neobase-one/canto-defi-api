@@ -15,4 +15,10 @@ export class BurnService {
   async getById(id: string) {
     return await BurnModel.findOne({ id: id }).exec();
   }
+
+  async save(burn: BurnDb) {
+    let model = new BurnModel(burn);
+    model.isNew = false;
+    await model.save();
+  }
 }

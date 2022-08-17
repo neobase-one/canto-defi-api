@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { LiquidityPositionDb, LiquidityPositionModel } from '../../../models/dex/liquidityPosition';
-import { LiquidityPositionSnapshot, LiquidityPositionSnapshotModel } from '../../../models/dex/liquidityPositionSnapshot';
+import { LiquidityPositionSnapshot, LiquidityPositionSnapshotDb, LiquidityPositionSnapshotModel } from '../../../models/dex/liquidityPositionSnapshot';
 
 @Service()
 export class LiquidityPositionService {
@@ -15,6 +15,12 @@ export class LiquidityPositionService {
 
   async getById(id: string) {
     return await LiquidityPositionModel.findOne({ id: id }).exec();
+  }
+
+  async save(data: LiquidityPositionDb) {
+    let model = new LiquidityPositionModel(data);
+    model.isNew = false;
+    await model.save();
   }
 }
 
@@ -33,5 +39,11 @@ export class LiquidityPositionSnapshotService {
 
   async getById(id: string) {
     return await LiquidityPositionSnapshotModel.findOne({ id: id }).exec();
+  }
+
+  async save(data: LiquidityPositionSnapshotDb) {
+    let model = new LiquidityPositionSnapshotModel(data);
+    model.isNew = false;
+    await model.save();
   }
 }
