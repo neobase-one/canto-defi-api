@@ -42,6 +42,7 @@ export async function handleBorrowEvent(
       input.borrowAmount
     );
     const cToken = new AccountCTokenModel(cTokenStats);
+    cToken.isNew = false;
     await cToken.save();
 
     let accountDb: any = await accountService.getById(accountID);
@@ -50,6 +51,7 @@ export async function handleBorrowEvent(
     }
     accountDb.hasBorrowed = true;
     const account = new AccountModel(accountDb as AccountDb);
+    account.isNew = false;
     await account.save();
 
     if (
@@ -57,6 +59,7 @@ export async function handleBorrowEvent(
       !input.accountBorrows.equals(ZERO_BD) // checking edge case for borrwing 0
     ) {
       market.numberOfBorrowers = convertToDecimal(market.numberOfBorrowers).add(1);
+      market.isNew = false;
       await market.save();
     }
   }
@@ -94,6 +97,7 @@ export async function handleRepayBorrowEvent(
       repayAmountBD
     )
     const cToken = new AccountCTokenModel(cTokenStats);
+    cToken.isNew = false;
     await cToken.save();
 
     let account: any = await accountService.getById(accountID);
@@ -103,6 +107,7 @@ export async function handleRepayBorrowEvent(
 
     if (cTokenStats.storedBorrowBalance.equals(ZERO_BD)) {
       market.numberOfBorrowers = convertToDecimal(market.numberOfBorrowers).minus(1);
+      market.isNew = false;
       await market.save();
     }
   }
@@ -121,6 +126,7 @@ export async function handleLiquidateBorrowEvent(
   }
   liquidatorDb.countLiquidator = liquidatorDb.countLiquidator + 1;
   const liquidator = new AccountModel(liquidatorDb as AccountDb);
+  liquidator.isNew = false;
   await liquidator.save();
 
   let borrowerID = input.borrower;
@@ -130,6 +136,7 @@ export async function handleLiquidateBorrowEvent(
   }
   borrowerDb.countLiquidated = borrowerDb.countLiquidated + 1;
   const borrower = new AccountModel(borrowerDb as AccountDb);
+  borrower.isNew = false;
   await borrower.save();
 }
 
@@ -150,6 +157,7 @@ export async function handleNewReserveFactorEvent(
   let market = await marketService.getByAddress(event.address);
   if (market !== null) {
     market.reserveFactor = input.newReserveFactorMantissa;
+    market.isNew = false;
     await market.save()
   }
 }
@@ -211,11 +219,14 @@ export async function handleTransferEvent(
       amountUnderylingTruncated,
     )
     const cTokenStats = new AccountCTokenModel(cTokenStatsFrom);
+    cTokenStats.isNew = false;
     await cTokenStats.save();
 
     if (cTokenStatsFrom.cTokenBalance.equals(ZERO_BD)) {
       market.numberOfSuppliers = convertToDecimal(market.numberOfSuppliers).minus(1);
-      await new MarketModel(market).save();
+      let model = new MarketModel(market);
+      model.isNew = false;
+      await model.save();
     }
   }
 
@@ -249,14 +260,18 @@ export async function handleTransferEvent(
     cTokenStatsTo.totalUnderlyingSupplied = convertToDecimal(cTokenStatsTo.totalUnderlyingSupplied).plus(
       amountUnderylingTruncated,
     )
-    await new AccountCTokenModel(cTokenStatsTo).save();
+    let model = new AccountCTokenModel(cTokenStatsTo);
+    model.isNew = false;
+    await model.save();
 
     if (
       previousCTokenBalanceTo.equals(ZERO_BD) &&
       !input.amount.equals(ZERO_BD) // checking edge case for transfers of 0
     ) {
       market.numberOfSuppliers = convertToDecimal(market.numberOfSuppliers).plus(1);
-      await new MarketModel(market).save();
+      let marketModel = new MarketModel(market);
+      marketModel.isNew = false;
+      await marketModel.save();
     }
   }
 }
@@ -273,5 +288,7 @@ export async function handleNewMarketInterestRateModelEvent(
     market = await createMarket(marketID);
   }
   market.interestRateModelAddress = input.newInterestRateModel;
-  await new MarketModel(market as MarketDb).save();
+  let model = new MarketModel(market as MarketDb);
+  model.isNew = false;
+  await model.save();
 }

@@ -1,7 +1,7 @@
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { AccountCTokenModel } from "../../../models/lending/accountCToken";
-import { ComptrollerDb, ComptrollerModel } from "../../../models/lending/comptroller";
+import { ComptrollerDb } from "../../../models/lending/comptroller";
 import { MarketEnteredInput, MarketExitedInput, MarketListedInput, NewCloseFactorInput, NewCollateralFactorInput, NewLiquidationIncentiveInput, NewPriceOracleInput } from "../../../types/event/lending/comptroller";
 import { getTimestamp } from "../../../utils/helper";
 import { ComptrollerService } from "../models/comptroller";
@@ -43,6 +43,7 @@ export async function handleMarketEnteredEvent(
         )
         cTokenStats.enteredMarket = true
         const cToken = new AccountCTokenModel(cTokenStats);
+        cToken.isNew = false;
         await cToken.save();
     }
 }
@@ -67,6 +68,7 @@ export async function handleMarketExitedEvent(
         )
         cTokenStats.enteredMarket = false
         const cToken = new AccountCTokenModel(cTokenStats);
+        cToken.isNew = false;
         await cToken.save();
     }
 }
@@ -81,6 +83,7 @@ export async function handleNewCloseFactorEvent(
     let comptroller = await comptrollerService.getById('1');
     if (comptroller !== null) {
         comptroller.closeFactor = input.newCloseFactorMantissa
+        comptroller.isNew = false;
         await comptroller.save();
     }
 }
@@ -94,6 +97,7 @@ export async function handleNewCollateralFactorEvent(
     let market = await marketService.getByAddress(event.address);
     if (market !== null) {
         market.collateralFactor = input.newCollateralFactorMantissa;
+        market.isNew = false;
         await market.save();
     }
 }
@@ -108,6 +112,7 @@ export async function handleNewLiquidationIncentiveEvent(
     let comptroller = await comptrollerService.getById('1');
     if (comptroller !== null) {
         comptroller.liquidationIncentive = input.newLiquidationIncentiveMantissa;
+        comptroller.isNew = false;
         await comptroller.save();
     }
 }
@@ -122,6 +127,8 @@ export async function handleNewPriceOracleEvent(
     let comptroller: any = await comptrollerService.getById('1');
     if (comptroller === null) {
         comptroller = new ComptrollerDb('1');
+    } else {
+        comptroller.isNew = false;
     }
     comptroller.priceOracle = input.newPriceOracle;
     await comptroller.save();

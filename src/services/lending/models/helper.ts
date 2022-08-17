@@ -8,8 +8,8 @@ import Container from 'typedi';
 import { Config } from '../../../config';
 import { web3 } from '../../../loaders/web3';
 import { AccountDb, AccountModel } from '../../../models/lending/account';
-import { AccountCTokenDb } from '../../../models/lending/accountCToken';
-import { Market, MarketDb } from '../../../models/lending/market';
+import { AccountCTokenDb, AccountCTokenModel } from '../../../models/lending/accountCToken';
+import { Market, MarketDb, MarketModel } from '../../../models/lending/market';
 import { BaseV1RouterABI } from '../../../utils/abiParser/baseV1Router';
 import { cTokenABI } from '../../../utils/abiParser/ctoken';
 import { ADDRESS_ZERO, ZERO_BD } from '../../../utils/constants';
@@ -39,6 +39,8 @@ export function createAccountCToken(
   cTokenStats.totalUnderlyingRepaid = ZERO_BD
   cTokenStats.storedBorrowBalance = ZERO_BD
   cTokenStats.enteredMarket = false
+  const cToken = new AccountCTokenModel(cTokenStats);
+  cToken.save();
   return cTokenStats
 }
 
@@ -79,6 +81,7 @@ export async function updateCommonCTokenStats(
   txTimes.push(timestamp)
   cTokenStats.transactionTimes = txTimes
   cTokenStats.accrualBlockNumber = blockNumber
+  cTokenStats.isNew = false;
   return cTokenStats as AccountCTokenDb
 }
 
@@ -133,6 +136,8 @@ export async function createMarket(marketAddress: string): Promise<MarketDb> {
   market.reserveFactor = ZERO_BD;
   market.underlyingPriceUSD = ZERO_BD;
 
+  let m = new MarketModel(market);
+  m.save();
   return market
 }
 
@@ -253,6 +258,7 @@ export async function updateMarket(
       console.log("cToken ", blockNumber, market.id, " supplyRatePerBlock() failed")
     }
 
+    market.isNew = false;
     await market.save();
   }
 
