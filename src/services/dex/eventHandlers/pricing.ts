@@ -15,13 +15,8 @@ import { TokenService } from "../models/token";
 
 // todo: fix types + imports
 
-const wCANTO_ADDRESS = Config.canto.dexDashboard.wCANTO_ADDRESS;
-
-const NOTE_CANTO_PAIR = Config.canto.dexDashboard.NOTE_CANTO_PAIR;
-const CANTO_ETH_PAIR = Config.canto.dexDashboard.CANTO_ETH_PAIR;
-const CANTO_ATOM_PAIR = Config.canto.dexDashboard.CANTO_ATOM_PAIR;
-
 export async function getCantoPriceInUSD() {
+  const NOTE_CANTO_PAIR = Config.canto.dexDashboard.NOTE_CANTO_PAIR;
   const pairService = Container.get(PairService);
 
   let notePair: any = await pairService.getByAddress(NOTE_CANTO_PAIR); // token1 = wCANTO
@@ -60,22 +55,15 @@ async function getNotePriceInUSD() {
   }
 }
 
-// token where amounts should contribute to tracked volume and liquidity
-let WHITELIST: string[] = Config.canto.dexDashboard.WHITELIST;
-
-export let UNTRACKED_PAIRS: string[] = Config.canto.dexDashboard.UNTRACKED_PAIRS;
-
-// minimum liquidity required to count towards tracked volume for pairs with small # of Lps
-let MINIMUM_USD_THRESHOLD_NEW_PAIRS = Config.canto.dexDashboard.MINIMUM_USD_THRESHOLD_NEW_PAIRS;
-
-// minimum liquidity for price to get tracked
-let MINIMUM_LIQUIDITY_THRESHOLD_CANTO = Config.canto.dexDashboard.MINIMUM_LIQUIDITY_THRESHOLD_CANTO;
 
 /**
- * Search through graph to find derived Eth per token.
+ * Search through graph to find derived Canto per token.
  **/
 export async function findCantoPerToken(token: TokenDb) {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
+  const wCANTO_ADDRESS = Config.canto.dexDashboard.wCANTO_ADDRESS;
+  let WHITELIST: string[] = Config.canto.dexDashboard.WHITELIST;
+  let MINIMUM_LIQUIDITY_THRESHOLD_CANTO = Config.canto.dexDashboard.MINIMUM_LIQUIDITY_THRESHOLD_CANTO;
 
   // services
   const pairService = Container.get(PairService);
@@ -136,6 +124,10 @@ export async function getTrackedVolumeUSD(
   token1: TokenDb,
   pair: PairDb
 ) {
+  let WHITELIST: string[] = Config.canto.dexDashboard.WHITELIST;
+  let UNTRACKED_PAIRS: string[] = Config.canto.dexDashboard.UNTRACKED_PAIRS;
+  let MINIMUM_USD_THRESHOLD_NEW_PAIRS = Config.canto.dexDashboard.MINIMUM_USD_THRESHOLD_NEW_PAIRS;
+
   tokenAmount0 = new Decimal(tokenAmount0.toString())
   tokenAmount1 = new Decimal(tokenAmount0.toString())
   // services
@@ -211,6 +203,8 @@ export async function getTrackedLiquidityUSD(
   tokenAmount1: Decimal,
   token1: TokenDb
 ) {
+  let WHITELIST: string[] = Config.canto.dexDashboard.WHITELIST;
+
   tokenAmount0 = new Decimal(tokenAmount0.toString())
   tokenAmount1 = new Decimal(tokenAmount0.toString())
 
