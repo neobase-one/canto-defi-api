@@ -649,7 +649,7 @@ export async function syncEventHandler(
   // update CANTO price now that reserves could have changed
   let bundle: BundleDb = await bundleService.get() as BundleDb;
   bundle.cantoPrice = await getCantoPriceInUSD();
-  await new BundleModel(bundle).save();
+  await bundleService.save(bundle);
 
   // update derived CANTO values
   token0.derivedCANTO = await findCantoPerToken(token0);

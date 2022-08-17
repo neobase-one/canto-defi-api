@@ -55,6 +55,8 @@ export async function pairCreatedEventHandler(
     factory = new StableswapFactoryDb(FACTORY_ADDRESS);
 
     let bundle = new BundleDb("1");
+    // first instance in db so isNew should be true
+    // new BundleModel by default sets isNew to true
     await new BundleModel(bundle).save();
   }
   factory.pairCount = factory.pairCount + 1;
