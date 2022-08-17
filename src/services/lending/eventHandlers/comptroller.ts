@@ -124,6 +124,5 @@ export async function handleNewPriceOracleEvent(
         comptroller = new ComptrollerDb('1');
     }
     comptroller.priceOracle = input.newPriceOracle;
-    const comp = new ComptrollerModel(comptroller as ComptrollerDb);
     await comptroller.save();
 }

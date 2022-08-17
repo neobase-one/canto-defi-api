@@ -2,23 +2,22 @@
 
 // For each division by 10, add one to exponent to truncate one significant figure
 
+import { isNullOrUndefined } from '@typegoose/typegoose/lib/internal/utils';
+import Decimal from 'decimal.js';
 import Container from 'typedi';
+import { Config } from '../../../config';
 import { web3 } from '../../../loaders/web3';
 import { AccountDb, AccountModel } from '../../../models/lending/account';
 import { AccountCTokenDb } from '../../../models/lending/accountCToken';
 import { Market, MarketDb } from '../../../models/lending/market';
-import { cTokenABI } from '../../../utils/abiParser/ctoken';
-import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from '../../../utils/constants';
-import { bigDecimalExp18, convertToDecimal, exponentToBigDecimal } from '../../../utils/helper';
-import { AccountService } from './account';
-import { MarketService } from './market';
-import Decimal from 'decimal.js';
-import { Erc20ABI } from '../../../utils/abiParser/erc20';
-import { fetchTokenDecimals, fetchTokenSymbol, fetchTokenName } from '../../../utils/dex/token';
-import { ComptrollerService } from './comptroller';
-import { Config } from '../../../config';
-import { isNullOrUndefined } from '@typegoose/typegoose/lib/internal/utils';
 import { BaseV1RouterABI } from '../../../utils/abiParser/baseV1Router';
+import { cTokenABI } from '../../../utils/abiParser/ctoken';
+import { ADDRESS_ZERO, ZERO_BD } from '../../../utils/constants';
+import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from '../../../utils/dex/token';
+import { convertToDecimal, exponentToBigDecimal } from '../../../utils/helper';
+import { AccountService } from './account';
+import { ComptrollerService } from './comptroller';
+import { MarketService } from './market';
 
 
 export function createAccountCToken(
@@ -137,7 +136,6 @@ export async function createMarket(marketAddress: string): Promise<MarketDb> {
   return market
 }
 
-
 export async function updateMarket(
   marketAddress: string,
   blockNumber: number,
@@ -166,13 +164,13 @@ export async function updateMarket(
   if (!convertToDecimal(market.accrualBlockNumber).equals(convertToDecimal(blockNumber))) {
     let contractAddress = market.id;
     let contract = await new web3.eth.Contract(cTokenABI, contractAddress);
-    let usdPriceInEth = await getUSDCPriceETH(blockNumber);
+    let usdPrice = await getUSDCPrice(blockNumber);
     let underlyingDecimals = convertToDecimal(market.underlyingDecimals).toNumber();
 
     // if cETH, only update USD price
     if (market.id == cETHAddress) {
       market.underlyingPriceUSD = convertToDecimal(market.underlyingPrice)
-        .div(usdPriceInEth)
+        .div(usdPrice)
         .toDecimalPlaces(convertToDecimal(underlyingDecimals).toNumber());
     } else {
       let tokenPriceEth = await getTokenPrice(
@@ -188,7 +186,7 @@ export async function updateMarket(
       // if USDC, only update ETH price
       if (market.id != cUSDCAddress) {
         market.underlyingPriceUSD = convertToDecimal(market.underlyingPrice)
-          .div(usdPriceInEth)
+          .div(usdPrice)
           .toDecimalPlaces(convertToDecimal(underlyingDecimals).toNumber());
       }
     }
@@ -288,7 +286,7 @@ async function getTokenPrice(
 
 }
 
-async function getUSDCPriceETH(blockNumber: number) {
+async function getUSDCPrice(blockNumber: number) {
   // services
   let comptrollerService = Container.get(ComptrollerService);
 
@@ -303,8 +301,11 @@ async function getUSDCPriceETH(blockNumber: number) {
 
 
   let contract = await new web3.eth.Contract(BaseV1RouterABI, oracleAddress);
+  let underlyingDecimals = 6;
+  let mantissaDecimalFactor = 18 - underlyingDecimals + 18
+  let bdFactor = exponentToBigDecimal(mantissaDecimalFactor)
   let price = await contract.methods.getUnderlyingPrice(USDCAddress).call();
-  let underlyingPrice = convertToDecimal(price);
+  let underlyingPrice = convertToDecimal(price).div(bdFactor);
   return underlyingPrice
 
   // return ONE_BD;
