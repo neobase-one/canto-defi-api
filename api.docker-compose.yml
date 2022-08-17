@@ -10,5 +10,6 @@ services:
       - PORT=$PORT
       - MONGODB_URI=$MONGODB_URI
       - LOG_LEVEL=$LOG_LEVEL
+      - WEBSOCKET_URL=$WEBSOCKET_URL
     ports:
       - 4000:4000
