@@ -40,7 +40,12 @@ async function getNotePriceInUSD() {
   if (usdtPair !== null && usdcPair !== null) {
     let totalLiquidityNOTE = convertToDecimal(usdtPair.reserve0)
       .plus(convertToDecimal(usdcPair.reserve0));
-      let usdtWeight = convertToDecimal(usdtPair.reserve0).div(totalLiquidityNOTE);
+
+    if (totalLiquidityNOTE.equals(ZERO_BD)) {
+      return ZERO_BD;
+    }
+    
+    let usdtWeight = convertToDecimal(usdtPair.reserve0).div(totalLiquidityNOTE);
     let usdcWeight = convertToDecimal(usdcPair.reserve0).div(totalLiquidityNOTE);
 
     let price = convertToDecimal(usdtPair.token0Price).times(usdtWeight)
