@@ -68,13 +68,13 @@ export async function updateCommonCTokenStats(
     cTokenStats = createAccountCToken(cTokenStatsID, marketSymbol, accountID, marketID)
   }
   let txHashes = cTokenStats.transactionHashes as string[];
-  if(isNullOrUndefined(txHashes)){
+  if (isNullOrUndefined(txHashes)) {
     txHashes = [];
   }
   txHashes.push(txHash)
   cTokenStats.transactionHashes = txHashes
   let txTimes = cTokenStats.transactionTimes as number[];
-  if(isNullOrUndefined(txTimes)){
+  if (isNullOrUndefined(txTimes)) {
     txTimes = [];
   }
   txTimes.push(timestamp)
@@ -196,7 +196,7 @@ export async function updateMarket(
     let accrualBlockNumber = await contract.methods.accrualBlockNumber().call();
     market.accrualBlockNumber = convertToDecimal(accrualBlockNumber);
     market.blockTimestamp = blockTimestamp;
-    let totalSupply =  await contract.methods.totalSupply().call();
+    let totalSupply = await contract.methods.totalSupply().call();
     market.totalSupply = convertToDecimal(totalSupply).div(cTokenDecimalsBD);
 
     /* Exchange rate explanation
@@ -225,17 +225,17 @@ export async function updateMarket(
     market.reserves = convertToDecimal(reserves)
       .div(exponentToBigDecimal(underlyingDecimals))
       .toDecimalPlaces(underlyingDecimals)
-    
+
     let totalBorrows = await contract.methods.totalBorrows().call();
     market.totalBorrows = convertToDecimal(totalBorrows)
       .div(exponentToBigDecimal(underlyingDecimals))
       .toDecimalPlaces(underlyingDecimals);
-    
+
     let cash = await contract.methods.getCash().call();
     market.cash = convertToDecimal(cash)
       .div(exponentToBigDecimal(underlyingDecimals))
       .toDecimalPlaces(underlyingDecimals);
-    
+
     // must convert to Decimal and remove 10^18 used in Exp in Compound Solidity
     let borrowRatePerBlock = await contract.methods.borrowRatePerBlock().call();
     market.supplyRate = convertToDecimal(borrowRatePerBlock)
@@ -264,9 +264,9 @@ export async function updateMarket(
 async function getTokenPrice(
   blockNumber: number,
   eventAddress: string,
-  underlyingAddress: string, 
+  underlyingAddress: string,
   underlyingDecimals: number) {
-    
+
   // services
   let comptrollerService = Container.get(ComptrollerService);
 

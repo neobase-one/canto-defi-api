@@ -1,13 +1,11 @@
 import { Service } from 'typedi';
-import { EventData } from 'web3-eth-contract';
 import { LiquidityPositionDb, LiquidityPositionModel } from '../../../models/dex/liquidityPosition';
 import { LiquidityPositionSnapshot, LiquidityPositionSnapshotModel } from '../../../models/dex/liquidityPositionSnapshot';
-import { StableswapDayData, StableswapDayDataModel } from '../../../models/dex/stableswapDayData';
 
 @Service()
 export class LiquidityPositionService {
   async getOrCreate(id: string) {
-    let doc = await LiquidityPositionModel.findOne({id: id}).exec();
+    let doc = await LiquidityPositionModel.findOne({ id: id }).exec();
     if (doc === null) {
       let liquidityPosition = new LiquidityPositionDb(id);
       doc = new LiquidityPositionModel(liquidityPosition);
@@ -16,7 +14,7 @@ export class LiquidityPositionService {
   }
 
   async getById(id: string) {
-    return await LiquidityPositionModel.findOne({id: id}).exec();
+    return await LiquidityPositionModel.findOne({ id: id }).exec();
   }
 }
 
@@ -24,7 +22,7 @@ export class LiquidityPositionService {
 @Service()
 export class LiquidityPositionSnapshotService {
   async getOrCreate(id: string) {
-    let doc = await LiquidityPositionSnapshotModel.findOne({id: id}).exec();
+    let doc = await LiquidityPositionSnapshotModel.findOne({ id: id }).exec();
     if (doc === null) {
       let liquidityPositionSnapshot = new LiquidityPositionSnapshot();
       liquidityPositionSnapshot.justId(id);
@@ -34,6 +32,6 @@ export class LiquidityPositionSnapshotService {
   }
 
   async getById(id: string) {
-    return await LiquidityPositionSnapshotModel.findOne({id: id}).exec();
+    return await LiquidityPositionSnapshotModel.findOne({ id: id }).exec();
   }
 }

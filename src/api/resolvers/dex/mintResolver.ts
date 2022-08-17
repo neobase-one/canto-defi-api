@@ -15,7 +15,7 @@ export class MintResolver {
             const val = await MintModel.find({ pair: input.pair_in }).sort(sortBy).limit(input.first).exec();
             const result = await this.toGenerated(val as unknown as [MintDb]);
             return result;
-        } else if (!isNullOrUndefined(input.pair) && !isNullOrUndefined(input.to)){
+        } else if (!isNullOrUndefined(input.pair) && !isNullOrUndefined(input.to)) {
             const val = await MintModel.find({ to: input.to, pair: input.pair }).exec();
             const result = await this.toGenerated(val as unknown as [MintDb]);
             return result;
@@ -31,7 +31,7 @@ export class MintResolver {
     }
 
     async toGenerated(mints: [MintDb]): Promise<Mint[]> {
-        var result: Mint[]=[];
+        var result: Mint[] = [];
         for (var i = 0; i < mints.length; i++) {
             var mint = await mints[i].toGenerated();
             result.push(mint);

@@ -5,6 +5,6 @@ import { BundleModel } from '../../../models/dex/bundle';
 export class BundleService {
 
   async get() {
-    return await BundleModel.findOne({id: 1}).exec();
+    return await BundleModel.findOne({ id: 1 }).exec();
   }
 }

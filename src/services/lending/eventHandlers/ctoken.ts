@@ -8,7 +8,7 @@ import { AccrueInterestInput, BorrowInput, LiquidateBorrowInput, NewMarketIntere
 import { ZERO_BD } from "../../../utils/constants";
 import { convertToDecimal, getTimestamp } from "../../../utils/helper";
 import { AccountService } from "../models/account";
-import { createAccount, updateCommonCTokenStats, updateMarket, createMarket } from "../models/helper";
+import { createAccount, createMarket, updateCommonCTokenStats, updateMarket } from "../models/helper";
 import { MarketService } from "../models/market";
 
 // todo: remove unused services

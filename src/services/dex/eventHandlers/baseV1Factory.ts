@@ -1,26 +1,20 @@
 import Decimal from "decimal.js";
 import Container from "typedi";
-import { Log } from "web3-core";
-import { Contract, EventData } from "web3-eth-contract";
+import { EventData } from "web3-eth-contract";
 import { Config } from "../../../config";
-import { Bundle, BundleDb, BundleModel } from "../../../models/dex/bundle";
-import {
-  StableswapFactory,
-  StableswapFactoryDb,
-  StableswapFactoryModel,
-} from "../../../models/dex/stableswapFactory";
-import { PairCreatedEventInput } from "../../../types/event/dex/baseV1Factory";
-import { StableswapFactoryService } from "../models/stableswapFactory";
-import { setTimeout } from "timers/promises";
-import { TokenService } from "../models/token";
-import { PairService } from "../models/pair";
-import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, fetchTokenTotalSupply } from "../../../utils/dex/token";
-import { ZERO_BD } from "../../../utils/constants";
-import { getTimestamp } from "../../../utils/helper";
-import { Index } from "@typegoose/typegoose";
-import { IndexDb, IndexModel } from "../../../models/dex";
-import { TokenDb, TokenModel } from "../../../models/dex/token";
+import { BundleDb, BundleModel } from "../../../models/dex/bundle";
 import { PairDb, PairModel } from "../../../models/dex/pair";
+import {
+  StableswapFactoryDb,
+  StableswapFactoryModel
+} from "../../../models/dex/stableswapFactory";
+import { TokenDb, TokenModel } from "../../../models/dex/token";
+import { PairCreatedEventInput } from "../../../types/event/dex/baseV1Factory";
+import { fetchTokenDecimals, fetchTokenSymbol, fetchTokenTotalSupply } from "../../../utils/dex/token";
+import { getTimestamp } from "../../../utils/helper";
+import { PairService } from "../models/pair";
+import { StableswapFactoryService } from "../models/stableswapFactory";
+import { TokenService } from "../models/token";
 
 // export async function initFactoryCollection() {
 //   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];

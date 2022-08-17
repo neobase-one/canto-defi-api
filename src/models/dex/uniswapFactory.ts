@@ -1,10 +1,10 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID, Float, Int } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
-import { ZERO_BD } from "../../utils/constants";
+import { ObjectId } from "mongodb";
+import { Field, ID, Int, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
+import { ZERO_BD } from "../../utils/constants";
 
 @ObjectType()
 export class UniswapFactory {
@@ -12,35 +12,35 @@ export class UniswapFactory {
   @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
-  @Field((type) => ID, {name: "id", nullable: true})
-  @Property({default: "", required: false })
+  @Field((type) => ID, { name: "id", nullable: true })
+  @Property({ default: "", required: false })
   address: string;
 
-  @Field((type) => Int, {nullable: true})
+  @Field((type) => Int, { nullable: true })
   @Property({ default: 0, required: false })
   pairCount: number;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   @Property({ default: new Decimal("0"), required: false })
   totalVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   @Property({ default: new Decimal("0"), required: false })
   totalVolumeETH: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   @Property({ default: new Decimal("0"), required: false })
   untrackedVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   @Property({ default: new Decimal("0"), required: false })
   totalLiquidityUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   @Property({ default: new Decimal("0"), required: false })
   totalLiquidityETH: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   @Property({ default: new Decimal("0"), required: false })
   txCount: Decimal;
 
@@ -48,7 +48,7 @@ export class UniswapFactory {
   block: Decimal;
 
 
-  constructor (address: string) {
+  constructor(address: string) {
     this._id = new ObjectId();
     this.address = address;
     this.pairCount = 0;

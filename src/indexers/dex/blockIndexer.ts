@@ -1,4 +1,3 @@
-import { EnumTypeDefinitionNode } from "graphql";
 import { Config } from "../../config";
 import { web3 } from "../../loaders/web3";
 import { BlockDb, BlockModel } from "../../models/dex/block";
@@ -49,7 +48,7 @@ async function blockEventHandler(iter: number) {
 // UPGRADE
 export async function indexBlocks(start: number, end: number) {
   console.log("Block", start, end);
-  
+
   // async
   for (var i = start; i < end; i++) {
     web3.eth.getBlock(i, false)
@@ -61,7 +60,7 @@ export async function indexBlocks(start: number, end: number) {
     blockDb.number = block.number;
     blockDb.timestamp = block.timestamp as number;
 
-    let updateDoc: any = {id: block.hash, number: block.number, timestamp: block.timestamp}
-    BlockModel.updateOne({number: block.number}, updateDoc, {upsert: true}).exec();
+    let updateDoc: any = { id: block.hash, number: block.number, timestamp: block.timestamp }
+    BlockModel.updateOne({ number: block.number }, updateDoc, { upsert: true }).exec();
   }
 }

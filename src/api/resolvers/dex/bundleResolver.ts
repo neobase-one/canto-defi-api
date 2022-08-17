@@ -1,6 +1,6 @@
 import { Arg, Query, Resolver } from "type-graphql";
 import { Bundle, BundleModel } from "../../../models/dex/bundle";
-import { BundlesInput} from "../inputs/queryInputs";
+import { BundlesInput } from "../inputs/queryInputs";
 
 @Resolver()
 export class BundlesResolver {

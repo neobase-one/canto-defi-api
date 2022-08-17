@@ -1,13 +1,12 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID, Float, Int } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
-import { Transaction } from "./transaction";
-import {Ref} from '../../types/ref';
-import { Pair, PairModel } from "./pair";
+import { ObjectId } from "mongodb";
+import { Field, ID, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
 import { ZERO_BD } from "../../utils/constants";
+import { Pair, PairModel } from "./pair";
+import { Transaction } from "./transaction";
 
 // mongo database object
 export class BurnDb {
@@ -16,13 +15,13 @@ export class BurnDb {
   @Property({ default: "", required: false })
   id: string;
 
-  @Property({ref: Transaction, required: false})
+  @Property({ ref: Transaction, required: false })
   transaction: string; // todo: Ref
 
   @Property({ default: new Decimal("0"), required: false })
   timestamp: Decimal;
 
-  @Property({ default: "", required: false})
+  @Property({ default: "", required: false })
   pair: string; // todo: Ref
 
   @Property({ default: new Decimal("0"), required: false })
@@ -56,7 +55,7 @@ export class BurnDb {
   @Property({ default: "", required: false })
   feeTo: string;
 
-  constructor (id: string) {
+  constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
     this.transaction = "";
@@ -147,7 +146,7 @@ export class Burn {
     this.to = "";
     this.feeTo = "";
   }
-  
+
   async fromDb(burn: BurnDb) {
     this._id = burn._id;
     this.id = burn.id;
@@ -167,8 +166,8 @@ export class Burn {
     return this;
   }
 
-  async getPair(id:string):Promise<Pair>{
-    const pair = await PairModel.find({id:id});
+  async getPair(id: string): Promise<Pair> {
+    const pair = await PairModel.find({ id: id });
     return pair[0].toGenerated();
   }
 

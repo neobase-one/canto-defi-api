@@ -1,10 +1,10 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { Field, ObjectType, ID } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
-import { ZERO_BD } from "../../utils/constants";
+import { ObjectId } from "mongodb";
+import { Field, ID, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
+import { ZERO_BD } from "../../utils/constants";
 
 // mongo database object
 export class BundleDb {
@@ -17,7 +17,7 @@ export class BundleDb {
   @Property({ name: "cantoPrice", default: new Decimal("0"), required: false })
   cantoPrice: Decimal;
 
-  constructor (id: string) {
+  constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
     this.cantoPrice = ZERO_BD;
@@ -55,8 +55,8 @@ export class Bundle {
     return this;
   }
 
-  justId(id:string) {
-    this.id=id;
+  justId(id: string) {
+    this.id = id;
   }
 }
 

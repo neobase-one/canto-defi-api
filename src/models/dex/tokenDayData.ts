@@ -1,11 +1,11 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID, Float, Int } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
-import { Token } from "./token";
+import { ObjectId } from "mongodb";
+import { Field, ID, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
 import { ZERO_BD } from "../../utils/constants";
+import { Token } from "./token";
 
 // mongo database object
 export class TokenDayDataDb {

@@ -3,18 +3,16 @@ import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { BundleDb } from "../../../models/dex/bundle";
 import {
-  LiquidityPosition,
   LiquidityPositionDb,
-  LiquidityPositionModel,
+  LiquidityPositionModel
 } from "../../../models/dex/liquidityPosition";
 import {
-  LiquidityPositionSnapshot,
   LiquidityPositionSnapshotDb,
-  LiquidityPositionSnapshotModel,
+  LiquidityPositionSnapshotModel
 } from "../../../models/dex/liquidityPositionSnapshot";
 import { PairDb, PairModel } from "../../../models/dex/pair";
 import { TokenDb } from "../../../models/dex/token";
-import { User, UserDb, UserModel } from "../../../models/dex/user";
+import { UserDb, UserModel } from "../../../models/dex/user";
 import { ONE_BD, ZERO_BD } from "../../../utils/constants";
 import { getTimestamp } from "../../../utils/helper";
 import { BundleService } from "../../dex/models/bundle";

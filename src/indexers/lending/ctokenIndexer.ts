@@ -1,15 +1,9 @@
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../config";
 import { web3 } from "../../loaders/web3";
-import { EventModel, EventDb } from "../../models/dex/event";
+import { EventDb, EventModel } from "../../models/dex/event";
 import {
-  handleBorrowEvent,
-  handleRepayBorrowEvent,
-  handleLiquidateBorrowEvent,
-  handleAccrueInterestEvent,
-  handleNewReserveFactorEvent,
-  handleTransferEvent,
-  handleNewMarketInterestRateModelEvent,
+  handleAccrueInterestEvent, handleBorrowEvent, handleLiquidateBorrowEvent, handleNewMarketInterestRateModelEvent, handleNewReserveFactorEvent, handleRepayBorrowEvent, handleTransferEvent
 } from "../../services/lending/eventHandlers/ctoken";
 import {
   AccrueInterestInput,
@@ -18,7 +12,7 @@ import {
   NewMarketInterestRateModelInput,
   NewReserveFactorInput,
   RepayBorrowInput,
-  TransferInput,
+  TransferInput
 } from "../../types/event/lending/ctoken";
 import {
   AccrueInterest,
@@ -28,7 +22,7 @@ import {
   NewMarketInterestRateModel,
   NewReserveFactor,
   RepayBorrow,
-  Transfer,
+  Transfer
 } from "../../utils/abiParser/ctoken";
 import { ALL_EVENTS } from "../../utils/constants";
 

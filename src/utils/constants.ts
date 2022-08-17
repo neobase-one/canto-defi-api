@@ -1,9 +1,4 @@
 import Decimal from "decimal.js";
-import { LiquidityPosition } from "../models/dex/liquidityPosition";
-import { Pair } from "../models/dex/pair";
-import { Token } from "../models/dex/token";
-import { Transaction } from "../models/dex/transaction";
-import { User } from "../models/dex/user";
 
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 

@@ -7,7 +7,7 @@ import {
   MintEventSignature,
   SwapEventSignature,
   SyncEventSignature,
-  TransferEventSignature,
+  TransferEventSignature
 } from "../utils/abiParser/baseV1Pair";
 import { MarketEnteredEventSignature, MarketExitedEventSignature, NewCloseFactorEventSignature, NewCollateralFactorEventSignature, NewLiquidationIncentiveEventSignature, NewPriceOracleEventSignature } from "../utils/abiParser/comptroller";
 import { AccrueInterestEventSignature, BorrowEventSignature, LiquidateBorrowEventSignature, NewMarketInterestRateModelEventSignature, NewReserveFactorEventSignature, RepayBorrowEventSignature } from "../utils/abiParser/ctoken";

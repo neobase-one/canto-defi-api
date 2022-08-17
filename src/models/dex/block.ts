@@ -15,10 +15,10 @@ export class BlockDb {
   @Property({ name: "number", default: 0, required: false })
   number: number;
 
-  @Property({default: 0, required: false})
+  @Property({ default: 0, required: false })
   timestamp: number
 
-  constructor (id: string) {
+  constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
     this.number = 0;

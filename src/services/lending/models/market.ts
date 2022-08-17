@@ -1,16 +1,15 @@
-import Decimal from 'decimal.js';
 import { Service } from 'typedi';
 import { Config } from '../../../config';
 import { web3 } from '../../../loaders/web3';
 import { MarketModel } from '../../../models/lending/market';
 import { cTokenABI } from '../../../utils/abiParser/ctoken';
-import { DAYS_IN_YEAR, DAYS_IN_YEAR_DB, HUNDRED_DB, NEG_ONE_DB, ONE_BD, SECONDS_IN_DAY, SECONDS_IN_DAY_BD } from '../../../utils/constants';
+import { DAYS_IN_YEAR_DB, HUNDRED_DB, NEG_ONE_DB, ONE_BD, SECONDS_IN_DAY_BD } from '../../../utils/constants';
 import { convertToDecimal, exponentToBigDecimal } from '../../../utils/helper';
 
 @Service()
 export class MarketService {
   async getByAddress(address: string) {
-    return await MarketModel.findOne({address: address}).exec();
+    return await MarketModel.findOne({ address: address }).exec();
   }
 
   async getSupplyAPY(marketId: string) {

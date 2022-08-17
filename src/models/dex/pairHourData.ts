@@ -1,12 +1,11 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID, Float, Int } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
-import { Pair } from "./pair";
-import { Ref } from "../../types/ref";
+import { ObjectId } from "mongodb";
+import { Field, ID, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
 import { ZERO_BD } from "../../utils/constants";
+import { Pair } from "./pair";
 
 // mongo database object
 export class PairHourDataDb {
@@ -46,19 +45,19 @@ export class PairHourDataDb {
   @Property({ default: new Decimal("0"), required: false })
   hourlyTxns: Decimal;
 
-  constructor (id: string) {
-      this._id = new ObjectId();
-      this.id = id;
-      this.hourStartUnix = ZERO_BD;
-      this.pair = "";
-      this.reserve0 = ZERO_BD;
-      this.reserve1 = ZERO_BD;
-      this.totalSupply = ZERO_BD;
-      this.reserveUSD = ZERO_BD;
-      this.hourlyVolumeToken0 = ZERO_BD;
-      this.hourlyVolumeToken1 = ZERO_BD;
-      this.hourlyVolumeUSD = ZERO_BD;
-      this.hourlyTxns = ZERO_BD;
+  constructor(id: string) {
+    this._id = new ObjectId();
+    this.id = id;
+    this.hourStartUnix = ZERO_BD;
+    this.pair = "";
+    this.reserve0 = ZERO_BD;
+    this.reserve1 = ZERO_BD;
+    this.totalSupply = ZERO_BD;
+    this.reserveUSD = ZERO_BD;
+    this.hourlyVolumeToken0 = ZERO_BD;
+    this.hourlyVolumeToken1 = ZERO_BD;
+    this.hourlyVolumeUSD = ZERO_BD;
+    this.hourlyTxns = ZERO_BD;
   }
 
   toGenerated() {
@@ -121,7 +120,7 @@ export class PairHourData {
     this.hourlyTxns = ZERO_BD;
   }
 
-  fromDb (pairDb: PairHourDataDb) {
+  fromDb(pairDb: PairHourDataDb) {
     this._id = pairDb._id;
     this.id = pairDb.id;
     this.hourStartUnix = pairDb.hourStartUnix;

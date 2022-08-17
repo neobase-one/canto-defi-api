@@ -1,47 +1,36 @@
-import { time } from "console";
 import Decimal from "decimal.js";
 import Container from "typedi";
-import { Log } from "web3-core";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../../config";
 import { web3 } from "../../../loaders/web3";
-import { Burn, BurnDb, BurnModel } from "../../../models/dex/burn";
+import { BundleModel } from "../../../models/dex/bundle";
+import { BurnDb, BurnModel } from "../../../models/dex/burn";
 import {
-  LiquidityPosition,
-  LiquidityPositionModel,
+  LiquidityPositionModel
 } from "../../../models/dex/liquidityPosition";
-import { Mint, MintDb, MintModel } from "../../../models/dex/mint";
-import { Pair, PairDb, PairModel } from "../../../models/dex/pair";
-import { PairDayData, PairDayDataDb, PairDayDataModel } from "../../../models/dex/pairDayData";
+import { MintDb, MintModel } from "../../../models/dex/mint";
+import { PairDb, PairModel } from "../../../models/dex/pair";
+import { PairDayDataDb, PairDayDataModel } from "../../../models/dex/pairDayData";
+import { PairHourDataDb, PairHourDataModel } from "../../../models/dex/pairHourData";
+import { StableswapDayDataDb, StableswapDayDataModel } from "../../../models/dex/stableswapDayData";
 import {
-  StableswapFactory,
   StableswapFactoryDb,
-  StableswapFactoryModel,
+  StableswapFactoryModel
 } from "../../../models/dex/stableswapFactory";
-import { Swap, SwapDb, SwapModel } from "../../../models/dex/swap";
-import { Token, TokenDb, TokenModel } from "../../../models/dex/token";
-import { Transaction, TransactionDb, TransactionModel } from "../../../models/dex/transaction";
+import { SwapDb, SwapModel } from "../../../models/dex/swap";
+import { TokenDb, TokenModel } from "../../../models/dex/token";
+import { TokenDayDataDb, TokenDayDataModel } from "../../../models/dex/tokenDayData";
+import { TransactionDb, TransactionModel } from "../../../models/dex/transaction";
 import {
   BurnEventInput,
   MintEventInput,
   SwapEventInput,
   SyncEventInput,
-  TransferEventInput,
+  TransferEventInput
 } from "../../../types/event/dex/baseV1Pair";
-import { BaseV1PairABI, MintEventSignature } from "../../../utils/abiParser/baseV1Pair";
+import { BaseV1PairABI } from "../../../utils/abiParser/baseV1Pair";
 import { ADDRESS_ZERO, BI_18, ONE_BD, ZERO_BD } from "../../../utils/constants";
 import { convertToDecimal, convertTokenToDecimal, getTimestamp } from "../../../utils/helper";
-import {
-  createLiquidityPosition,
-  createLiquiditySnapshot,
-  createUser,
-} from "./liquidity";
-import {
-  updatePairDayData,
-  updatePairHourData,
-  updateFactoryDayData,
-  updateTokenDayData,
-} from "./metrics";
 import { BundleService } from "../models/bundle";
 import { BurnService } from "../models/burn";
 import { MintService } from "../models/mint";
@@ -50,15 +39,20 @@ import { StableswapFactoryService } from "../models/stableswapFactory";
 import { TokenService } from "../models/token";
 import { TransactionService } from "../models/transaction";
 import {
+  createLiquidityPosition,
+  createLiquiditySnapshot,
+  createUser
+} from "./liquidity";
+import {
+  updateFactoryDayData, updatePairDayData,
+  updatePairHourData, updateTokenDayData
+} from "./metrics";
+import {
   findCantoPerToken,
   getCantoPriceInUSD,
   getTrackedLiquidityUSD,
-  getTrackedVolumeUSD,
+  getTrackedVolumeUSD
 } from "./pricing";
-import { PairHourDataDb, PairHourDataModel } from "../../../models/dex/pairHourData";
-import { StableswapDayDataDb, StableswapDayDataModel } from "../../../models/dex/stableswapDayData";
-import { TokenDayDataDb, TokenDayDataModel } from "../../../models/dex/tokenDayData";
-import { BundleModel } from "../../../models/dex/bundle";
 
 // todo: remove unused services
 
@@ -664,16 +658,16 @@ export async function syncEventHandler(
   // get tracked liquidity - will be 0 if neither in whitelist
   let trackedLiquidityCANTO: Decimal;
   // if (!convertToDecimal(bundle.cantoPrice).equals(ZERO_BD)) {
-    let trackedLiquidityUSD = await getTrackedLiquidityUSD(
-      pair.reserve0,
-      token0,
-      pair.reserve1,
-      token1
-    );
-    // trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.cantoPrice));
-    trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD);
+  let trackedLiquidityUSD = await getTrackedLiquidityUSD(
+    pair.reserve0,
+    token0,
+    pair.reserve1,
+    token1
+  );
+  // trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.cantoPrice));
+  trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD);
   // } else {
-    // trackedLiquidityCANTO = ZERO_BD;
+  // trackedLiquidityCANTO = ZERO_BD;
   // }
 
   // use derived amounts within pair

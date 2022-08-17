@@ -6,7 +6,7 @@ import { TokenDefinition } from "./tokenDefinition"
 export async function fetchTokenSymbol(tokenAddress: string) {
   // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
-  if(staticDefinition != null) {
+  if (staticDefinition != null) {
     return (staticDefinition as TokenDefinition).symbol
   }
 
@@ -15,14 +15,14 @@ export async function fetchTokenSymbol(tokenAddress: string) {
   if (symbol == null) {
     symbol = ""
   }
-  
+
   return symbol;
 }
 
 export async function fetchTokenName(tokenAddress: string) {
   // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
-  if(staticDefinition != null) {
+  if (staticDefinition != null) {
     return (staticDefinition as TokenDefinition).name
   }
 
@@ -38,7 +38,7 @@ export async function fetchTokenName(tokenAddress: string) {
 export async function fetchTokenTotalSupply(tokenAddress: string) {
   // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
-  if(staticDefinition != null) {
+  if (staticDefinition != null) {
     return (staticDefinition as TokenDefinition).totalSupply
   }
 
@@ -54,7 +54,7 @@ export async function fetchTokenTotalSupply(tokenAddress: string) {
 export function fetchTokenDecimals(tokenAddress: string): number {
   // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
-  if(staticDefinition != null) {
+  if (staticDefinition != null) {
     return (staticDefinition as TokenDefinition).decimals
   }
 

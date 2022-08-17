@@ -1,17 +1,17 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID, Float, Int } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
-import { ZERO_BD } from "../../utils/constants";
+import { ObjectId } from "mongodb";
+import { Field, ID, Int, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
+import { ZERO_BD } from "../../utils/constants";
 
 // mongo database object
 export class StableswapFactoryDb {
   @Property({ default: "", required: false })
   readonly _id: ObjectId;
 
-  @Property({default: "", required: false })
+  @Property({ default: "", required: false })
   address: string;
 
   @Property({ default: 0, required: false })
@@ -39,7 +39,7 @@ export class StableswapFactoryDb {
   block: Decimal;
 
 
-  constructor (address: string) {
+  constructor(address: string) {
     this._id = new ObjectId();
     this.address = address;
     this.pairCount = 0;
@@ -63,28 +63,28 @@ export class StableswapFactory {
   @Field((type) => ObjectIdScalar)
   _id: ObjectId;
 
-  @Field((type) => ID, {name: "id", nullable: true})
+  @Field((type) => ID, { name: "id", nullable: true })
   address: string;
 
-  @Field((type) => Int, {nullable: true})
+  @Field((type) => Int, { nullable: true })
   pairCount: number;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalVolumeCANTO: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   untrackedVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalLiquidityUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalLiquidityCANTO: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   txCount: Decimal;
 
   block: Decimal;
@@ -101,7 +101,7 @@ export class StableswapFactory {
     this.txCount = ZERO_BD;
   }
 
-  fromDb (swap: StableswapFactoryDb) {
+  fromDb(swap: StableswapFactoryDb) {
     this._id = swap._id;
     this.address = swap.address;
     this.pairCount = swap.pairCount;
@@ -114,7 +114,7 @@ export class StableswapFactory {
     return this;
   }
 
-  justId(address:string){
+  justId(address: string) {
     this.address = address;
   }
 }

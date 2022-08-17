@@ -10,17 +10,17 @@ import { MarketService } from "../models/market";
 
 // todo: remove unused services
 export async function handleMarketListedEvent(
-  event: EventData,
-  input: MarketListedInput
+    event: EventData,
+    input: MarketListedInput
 ) {
-  // service
-  const marketService = Container.get(MarketService);
+    // service
+    const marketService = Container.get(MarketService);
 
-  let market: any = await marketService.getByAddress(event.address);
-  if (market === null) {
-    let address = input.cToken;
-    await createMarket(address);
-  }
+    let market: any = await marketService.getByAddress(event.address);
+    if (market === null) {
+        let address = input.cToken;
+        await createMarket(address);
+    }
 }
 
 export async function handleMarketEnteredEvent(
@@ -119,9 +119,9 @@ export async function handleNewPriceOracleEvent(
     // service
     const comptrollerService = Container.get(ComptrollerService);
 
-    let comptroller:any = await comptrollerService.getById('1');
+    let comptroller: any = await comptrollerService.getById('1');
     if (comptroller === null) {
-        comptroller = new ComptrollerDb('1');  
+        comptroller = new ComptrollerDb('1');
     }
     comptroller.priceOracle = input.newPriceOracle;
     const comp = new ComptrollerModel(comptroller as ComptrollerDb);

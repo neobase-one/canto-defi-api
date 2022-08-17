@@ -1,8 +1,8 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID,Int } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
+import { ObjectId } from "mongodb";
+import { Field, ID, Int, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
 import { ZERO_BD } from "../../utils/constants";
 
@@ -69,40 +69,40 @@ export const TokenModel = getModelForClass(TokenDb);
 // decorator docs: https://typegraphql.com/docs/types-and-fields.html 
 @ObjectType()
 export class Token {
-  @Field((type) => ObjectIdScalar, {nullable: true})
+  @Field((type) => ObjectIdScalar, { nullable: true })
   _id: ObjectId;
 
   @Field((type) => ID)
   id: string;
 
-  @Field((type) => String, {nullable: true})
+  @Field((type) => String, { nullable: true })
   name: string;
 
-  @Field((type) => String, {nullable: true})
+  @Field((type) => String, { nullable: true })
   symbol: string;
 
-  @Field((type) => Int, {nullable: true})
+  @Field((type) => Int, { nullable: true })
   decimals: number;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalSupply: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   tradeVolume: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   tradeVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   untrackedVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   txCount: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalLiquidity: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   derivedCANTO: Decimal;
 
   fromDb(token: TokenDb) {

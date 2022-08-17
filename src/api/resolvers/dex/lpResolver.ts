@@ -1,6 +1,6 @@
 import { Arg, Query, Resolver } from "type-graphql";
 import { LiquidityPosition, LiquidityPositionModel } from "../../../models/dex/liquidityPosition";
-import { LiquidityPositionsInput} from "../inputs/queryInputs";
+import { LiquidityPositionsInput } from "../inputs/queryInputs";
 
 @Resolver()
 export class LiquidityPositionsResolver {

@@ -1,9 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
 
-import loaders from "./loaders";
 import { Config } from "./config";
-import { indexChain, indexHistoricalEvents, initSubscribers } from "./indexers";
+import { indexChain } from "./indexers";
+import loaders from "./loaders";
 
 async function bootsrap() {
   const app = express();
@@ -11,7 +11,7 @@ async function bootsrap() {
   const server = await loaders(app);
 
   await server.start();
-  
+
   server.applyMiddleware({
     app,
     path: Config.api.prefix,

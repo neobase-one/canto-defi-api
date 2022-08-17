@@ -4,7 +4,6 @@ import { BurnResolver } from "./dex/burnResolver";
 import { StableswapFactoryResovler } from "./dex/factoryResolver";
 import { HealthResolver } from "./dex/healthResolver";
 import { LiquidityPositionsResolver } from "./dex/lpResolver";
-import { MarketResolver } from "./lending/marketResolver";
 import { MintResolver } from "./dex/mintResolver";
 import { PairsResolver } from "./dex/pairResolver";
 import { LiquidityPositionSnapshotsResolver } from "./dex/snapshotResolver";
@@ -14,6 +13,7 @@ import { TokensResolver } from "./dex/tokenResolver";
 import { TransactionsResolver } from "./dex/transactionResolver";
 import { UniswapDayDatasResolver } from "./dex/uddResolver";
 import { UniswapFactoriesResolver } from "./dex/uniswapFactoriesResolver";
+import { MarketResolver } from "./lending/marketResolver";
 
 export const resolvers: [Function, ...Function[]] = [
   HealthResolver,

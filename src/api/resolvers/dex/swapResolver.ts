@@ -15,11 +15,11 @@ export class SwapResolver {
             const val = await SwapModel.find({ pair: input.pair_in }).sort(sortBy).limit(input.first).exec();
             const result = await this.toGenerated(val as unknown as [SwapDb]);
             return result;
-        } else if (!isNullOrUndefined(input.pair)){
+        } else if (!isNullOrUndefined(input.pair)) {
             const val = await SwapModel.find({ pair: input.pair }).exec();
             const result = await this.toGenerated(val as unknown as [SwapDb]);
             return result;
-        } else  {
+        } else {
             const val = await SwapModel.find().exec();
             const result = await this.toGenerated(val as unknown as [SwapDb]);
             return result;

@@ -1,12 +1,10 @@
-import { Log } from "web3-core";
-import { Contract, EventData } from "web3-eth-contract";
+import { EventData } from "web3-eth-contract";
 import { Config } from "../../config";
 import { web3 } from "../../loaders/web3";
-import { BaseV1PairABI, Burn, BurnEventAbiInputs, Mint, MintEventAbiInputs, Swap, SwapEventAbiInputs, Sync, SyncEventAbiInputs, Transfer, TransferEventAbiInputs } from "../../utils/abiParser/baseV1Pair";
-import { BurnEventInput, MintEventInput, SwapEventInput, SyncEventInput, TransferEventInput } from "../../types/event/dex/baseV1Pair";
-import { burnEventHandler, mintEventHandler, swapEventHandler, syncEventHandler, transferEventHandler } from "../../services/dex/eventHandlers/baseV1Pair";
 import { EventDb, EventModel } from "../../models/dex/event";
-import { PairModel } from "../../models/dex/pair";
+import { burnEventHandler, mintEventHandler, swapEventHandler, syncEventHandler, transferEventHandler } from "../../services/dex/eventHandlers/baseV1Pair";
+import { BurnEventInput, MintEventInput, SwapEventInput, SyncEventInput, TransferEventInput } from "../../types/event/dex/baseV1Pair";
+import { BaseV1PairABI, Burn, Mint, Swap, Sync, Transfer } from "../../utils/abiParser/baseV1Pair";
 import { ALL_EVENTS } from "../../utils/constants";
 
 

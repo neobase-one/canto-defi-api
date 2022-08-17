@@ -111,7 +111,7 @@ export class Account {
 }
 function getTokens(tokens: [AccountCToken]): [AccountCToken] {
     //ToDo : field resolvers
-    
+
     throw new Error("Function not implemented.");
 }
 

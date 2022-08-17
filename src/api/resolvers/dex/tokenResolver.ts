@@ -10,14 +10,14 @@ export class TokensResolver {
         let inputId: string | [string];
         let limit: number;
         if (!isNullOrUndefined(input.id_in)) {
-            if(!isNullOrUndefined(input.block)){
-            const val = await TokenModel.find({ id: input.id_in, block: input.block }).exec();
-            console.log(val);
-            return val;
+            if (!isNullOrUndefined(input.block)) {
+                const val = await TokenModel.find({ id: input.id_in, block: input.block }).exec();
+                console.log(val);
+                return val;
             } else {
                 const val = await TokenModel.find({ id: input.id_in }).exec();
-            console.log(val);
-            return val;
+                console.log(val);
+                return val;
             }
         } else {
             let limit = input.first;
@@ -25,7 +25,7 @@ export class TokensResolver {
                 limit = limit + input.skip;
             }
             let val = await TokenModel.find().limit(limit).exec();
-            val=val.slice(input.skip);
+            val = val.slice(input.skip);
             console.log(val);
             return val;
         }

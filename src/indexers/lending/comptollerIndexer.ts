@@ -1,17 +1,7 @@
-import { startTimer } from "winston";
+import { EventData } from "web3-eth-contract";
+import { Config } from "../../config";
 import { web3 } from "../../loaders/web3";
-import {
-  ComptrollerABI,
-  MarketEntered,
-  MarketExited,
-  MarketListed,
-  NewCloseFactor,
-  NewCollateralFactor,
-  NewLiquidationIncentive,
-  NewPriceOracle,
-} from "../../utils/abiParser/comptroller";
-import { ALL_EVENTS } from "../../utils/constants";
-import { Contract, EventData } from "web3-eth-contract";
+import { EventDb, EventModel } from "../../models/dex/event";
 import {
   handleMarketEnteredEvent,
   handleMarketExitedEvent,
@@ -19,7 +9,7 @@ import {
   handleNewCloseFactorEvent,
   handleNewCollateralFactorEvent,
   handleNewLiquidationIncentiveEvent,
-  handleNewPriceOracleEvent,
+  handleNewPriceOracleEvent
 } from "../../services/lending/eventHandlers/comptroller";
 import {
   MarketEnteredInput,
@@ -28,10 +18,19 @@ import {
   NewCloseFactorInput,
   NewCollateralFactorInput,
   NewLiquidationIncentiveInput,
-  NewPriceOracleInput,
+  NewPriceOracleInput
 } from "../../types/event/lending/comptroller";
-import { EventDb, EventModel } from "../../models/dex/event";
-import { Config } from "../../config";
+import {
+  ComptrollerABI,
+  MarketEntered,
+  MarketExited,
+  MarketListed,
+  NewCloseFactor,
+  NewCollateralFactor,
+  NewLiquidationIncentive,
+  NewPriceOracle
+} from "../../utils/abiParser/comptroller";
+import { ALL_EVENTS } from "../../utils/constants";
 
 export async function indexComptollerEvents(start: number, end: number) {
   console.log("Comptroller", start, end);

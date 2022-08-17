@@ -23,16 +23,16 @@ export class PairsResolver {
             filter.id = inputId;
         }
         if (input.block) {
-            filter.createdAtBlockNumber = {$lte: input.block}
+            filter.createdAtBlockNumber = { $lte: input.block }
         }
         val = await PairModel.find(filter).sort(sortBy)
-          .skip(input.skip).limit(input.first).exec();
-        
-        val = val.map(pair=>pair.toGenerated());
+            .skip(input.skip).limit(input.first).exec();
+
+        val = val.map(pair => pair.toGenerated());
         return val;
     }
     async toGenerated(pairs: [PairDb]): Promise<Pair[]> {
-        var result: Pair[]=[];
+        var result: Pair[] = [];
         for (var i = 0; i < pairs.length; i++) {
             var pair = await pairs[i].toGenerated();
             result.push(pair);

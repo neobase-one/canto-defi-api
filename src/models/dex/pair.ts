@@ -1,12 +1,11 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID, Float, Int } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
-import { Token, TokenDb, TokenModel } from "./token";
-import { Ref } from "../../types/ref";
+import { ObjectId } from "mongodb";
+import { Field, ID, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
 import { ZERO_BD } from "../../utils/constants";
+import { Token, TokenModel } from "./token";
 
 // mongo database object
 export class PairDb {
@@ -213,8 +212,8 @@ export class Pair {
     this.id = id;
   }
 
-  async getToken(id:string):Promise<Token>{
-    const token = await TokenModel.find({id:id});
+  async getToken(id: string): Promise<Token> {
+    const token = await TokenModel.find({ id: id });
     return token[0].toGenerated();
   }
 }

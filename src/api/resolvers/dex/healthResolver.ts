@@ -40,18 +40,18 @@ export class HealthResolver {
 
 @ObjectType()
 export class Health {
-  @Field((type) => Boolean, {nullable: true})
+  @Field((type) => Boolean, { nullable: true })
   synced: boolean
 
-  @Field((type) => Int, {nullable: true})
+  @Field((type) => Int, { nullable: true })
   chainHeadBlockNumber: number
 
-  @Field((type) => Int, {nullable: true})
+  @Field((type) => Int, { nullable: true })
   chainHeadTimestamp: number
 
-  @Field((type) => Int, {nullable: true})
+  @Field((type) => Int, { nullable: true })
   latestIndexedBlockNumber: number
 
-  @Field((type) => Int, {nullable: true})
+  @Field((type) => Int, { nullable: true })
   latestIndexedBlockTimestamp: number
 }

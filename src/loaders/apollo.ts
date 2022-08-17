@@ -1,15 +1,13 @@
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
-import { buildSchema, Int } from "type-graphql";
 import Decimal from "decimal.js";
+import { ObjectId } from "mongodb";
+import { buildSchema } from "type-graphql";
+import { TypegooseMiddleware } from "../api/middlewares/typegoose";
+import { resolvers } from "../api/resolvers";
+import { typeDefs } from "../schema";
 import { DecimalScalar } from "../types/decimalScalar";
 import { ObjectIdScalar } from "../types/objectIdScalar";
-import { ObjectId } from "mongodb";
-import { TypegooseMiddleware } from "../api/middlewares/typegoose";
-import * as path from "path";
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
-import { TextEncoder, TextDecoder } from "util";
-import { typeDefs } from "../schema";
-import { resolvers } from "../api/resolvers";
 
 export default async () => {
   const schema = await buildSchema({

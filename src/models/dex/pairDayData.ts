@@ -1,13 +1,12 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID, Float, Int } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
-import { Token } from "./token";
-import { Ref } from "../../types/ref";
+import { ObjectId } from "mongodb";
+import { Field, ID, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
 import { ZERO_BD } from "../../utils/constants";
 import { Pair } from "./pair";
+import { Token } from "./token";
 
 // mongo database object
 export class PairDayDataDb {
@@ -53,7 +52,7 @@ export class PairDayDataDb {
   @Property({ default: new Decimal("0"), required: false })
   dailyTxns: Decimal;
 
-  constructor (id: string) {
+  constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
     this.date = 0;
@@ -121,7 +120,7 @@ export class PairDayData {
   @Field((type) => DecimalScalar)
   dailyTxns: Decimal;
 
-  constructor () {
+  constructor() {
     this._id = new ObjectId();
     this.id = "";
     this.date = 0;
@@ -138,7 +137,7 @@ export class PairDayData {
     this.dailyTxns = ZERO_BD;
   }
 
-  fromDb (pair: PairDayDataDb) {
+  fromDb(pair: PairDayDataDb) {
     this._id = pair._id;
     this.id = pair.id;
     this.date = pair.date;

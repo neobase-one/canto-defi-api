@@ -2,17 +2,16 @@
 
 import Decimal from "decimal.js";
 import Container from "typedi";
+import { Config } from "../../../config/index.js";
 import { web3 } from "../../../loaders/web3";
-import { Pair, PairDb } from "../../../models/dex/pair";
-import { StableswapFactory } from "../../../models/dex/stableswapFactory";
-import { Token, TokenDb } from "../../../models/dex/token";
+import { PairDb } from "../../../models/dex/pair";
+import { TokenDb } from "../../../models/dex/token";
 import { BaseV1FactoryABI } from "../../../utils/abiParser/baseV1factory";
 import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from "../../../utils/constants";
+import { convertToDecimal } from "../../../utils/helper";
 import { BundleService } from "../models/bundle";
 import { PairService } from "../models/pair";
 import { TokenService } from "../models/token";
-import { Config } from "../../../config/index.js";
-import { convertToDecimal } from "../../../utils/helper";
 
 // todo: fix types + imports
 
@@ -30,7 +29,7 @@ export async function getCantoPriceInUSD() {
   let atomPair: any = await pairService.getByAddress(CANTO_ATOM_PAIR); // token0 = wCANTO
 
   // all 3 created
-  if (notePair!==null && ethPair!==null && atomPair!==null) {
+  if (notePair !== null && ethPair !== null && atomPair !== null) {
     let totalLiquidityCANTO = convertToDecimal(notePair.reserve1)
       .plus(convertToDecimal(ethPair.reserve1))
       .plus(convertToDecimal(atomPair.reserve0));
@@ -45,7 +44,7 @@ export async function getCantoPriceInUSD() {
 
     return price;
     // CANTO & NOTE created
-  } else if (ethPair!==null && notePair!==null) {
+  } else if (ethPair !== null && notePair !== null) {
     let totalLiquidityCANTO = convertToDecimal(notePair.reserve1)
       .plus(convertToDecimal(ethPair.reserve1));
 
@@ -57,7 +56,7 @@ export async function getCantoPriceInUSD() {
 
     return price;
     // NOTE created
-  } else if (notePair!==null) {
+  } else if (notePair !== null) {
     return convertToDecimal(notePair.token0Price);
   } else {
     return ZERO_BD;
@@ -98,14 +97,14 @@ export async function findCantoPerToken(token: TokenDb) {
     if (pairAddress != ADDRESS_ZERO) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (
-        pair.token0 == token.id 
+        pair.token0 == token.id
         // && convertToDecimal(pair.reserveCANTO).gt(MINIMUM_LIQUIDITY_THRESHOLD_CANTO)
       ) {
         let token1: any = await tokenService.getByAddress(pair.token1);
         return convertToDecimal(pair.token1Price).times(convertToDecimal(token1.derivedCANTO)); // return token1 per our token * Eth per token 1
       }
       if (
-        pair.token1 == token.id 
+        pair.token1 == token.id
         // && convertToDecimal(pair.reserveCANTO).gt(MINIMUM_LIQUIDITY_THRESHOLD_CANTO)
       ) {
         let token0: any = await tokenService.getByAddress(pair.token0);
@@ -219,7 +218,7 @@ export async function getTrackedLiquidityUSD(
 ) {
   tokenAmount0 = new Decimal(tokenAmount0.toString())
   tokenAmount1 = new Decimal(tokenAmount0.toString())
-  
+
   // services
   const bundleService = Container.get(BundleService);
 

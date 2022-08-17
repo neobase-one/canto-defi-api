@@ -1,16 +1,12 @@
-import { collectFields } from "graphql/execution/execute";
-import { Log } from "web3-core";
-import { Contract, EventData } from "web3-eth-contract";
+import { EventData } from "web3-eth-contract";
 import { Config } from "../../config";
 import { web3 } from "../../loaders/web3";
-import { EventDb, EventModel } from "../../models/dex/event"
-import { StableswapDayData } from "../../models/dex/stableswapDayData";
+import { EventDb, EventModel } from "../../models/dex/event";
 import { pairCreatedEventHandler } from "../../services/dex/eventHandlers/baseV1Factory";
 import { PairCreatedEventInput } from "../../types/event/dex/baseV1Factory";
 import {
   BaseV1FactoryABI,
-  PairCreated,
-  PairCreatedEventAbiInputs,
+  PairCreated
 } from "../../utils/abiParser/baseV1factory";
 
 

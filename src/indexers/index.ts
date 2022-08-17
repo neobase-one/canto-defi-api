@@ -1,21 +1,15 @@
 import { Config } from "../config";
 import { web3 } from "../loaders/web3";
 import { IndexDb, IndexModel } from "../models/dex";
-import { baseV1FactoryIndexHistoricalEvents, indexFactoryEvents } from "./dex/factoryIndexer";
-import { baseV1PairIndexHistoricalEvents, indexPairEvents } from "./dex/pairIndexer";
 import { blockIndexHistorical, indexBlocks } from "./dex/blockIndexer";
+import { indexFactoryEvents } from "./dex/factoryIndexer";
+import { indexPairEvents } from "./dex/pairIndexer";
 import { indexComptollerEvents } from "./lending/comptollerIndexer";
 import { indexcTokenEvents } from "./lending/ctokenIndexer";
 
 export async function indexHistoricalEvents(latestBlockNumber: number) {
   // Block
   blockIndexHistorical(latestBlockNumber);
-
-  // BaseV1Factory
-  await baseV1FactoryIndexHistoricalEvents(latestBlockNumber);
-
-  // BaseV1Pair
-  await baseV1PairIndexHistoricalEvents(latestBlockNumber);
 }
 
 export async function initSubscribers() { };

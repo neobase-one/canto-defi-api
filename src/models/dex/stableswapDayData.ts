@@ -1,8 +1,8 @@
 import { getModelForClass, Prop as Property } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
-import { ObjectType, Field, ID, Float, Int } from "type-graphql";
-import { DecimalScalar } from "../../types/decimalScalar";
 import Decimal from "decimal.js";
+import { ObjectId } from "mongodb";
+import { Field, ID, ObjectType } from "type-graphql";
+import { DecimalScalar } from "../../types/decimalScalar";
 import { ObjectIdScalar } from "../../types/objectIdScalar";
 import { ZERO_BD } from "../../utils/constants";
 
@@ -41,7 +41,7 @@ export class StableswapDayDataDb {
   @Property({ default: new Decimal("0"), required: false })
   txCount: Decimal;
 
-  constructor (id: string) {
+  constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
     this.date = 0;
@@ -64,37 +64,37 @@ export class StableswapDayDataDb {
 // graphql return object
 @ObjectType()
 export class StableswapDayData {
-  @Field((type) => ObjectIdScalar, {nullable: true})
+  @Field((type) => ObjectIdScalar, { nullable: true })
   _id: ObjectId;
 
   @Field((type) => ID)
   id: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   date: number;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   dailyVolumeCANTO: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   dailyVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   dailyVolumeUntracked: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalVolumeCANTO: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalLiquidityCANTO: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalVolumeUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   totalLiquidityUSD: Decimal;
 
-  @Field((type) => DecimalScalar, {nullable: true})
+  @Field((type) => DecimalScalar, { nullable: true })
   txCount: Decimal;
 
   constructor() {
@@ -111,7 +111,7 @@ export class StableswapDayData {
     this.txCount = ZERO_BD;
   }
 
-  fromDb (swap: StableswapDayDataDb) {
+  fromDb(swap: StableswapDayDataDb) {
     this._id = swap._id;
     this.id = swap.id;
     this.date = swap.date;
@@ -126,7 +126,7 @@ export class StableswapDayData {
     return this;
   }
 
-  justId(id:string){
+  justId(id: string) {
     this.id = id;
   }
 }

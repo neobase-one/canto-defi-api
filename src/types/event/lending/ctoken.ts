@@ -96,7 +96,7 @@ export class TransferInput {
 export class NewMarketInterestRateModelInput {
   oldInterestRateModel: string;
   newInterestRateModel: string;
-  
+
   constructor(eventObj: any) {
     this.oldInterestRateModel = eventObj[0];
     this.newInterestRateModel = eventObj[1];
