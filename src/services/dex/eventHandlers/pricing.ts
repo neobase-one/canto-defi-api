@@ -4,7 +4,7 @@ import Decimal from "decimal.js";
 import Container from "typedi";
 import { Config } from "../../../config/index.js";
 import { web3 } from "../../../loaders/web3";
-import { PairDb } from "../../../models/dex/pair";
+import { Pair, PairDb } from "../../../models/dex/pair";
 import { TokenDb } from "../../../models/dex/token";
 import { BaseV1FactoryABI } from "../../../utils/abiParser/baseV1factory";
 import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from "../../../utils/constants";
@@ -25,44 +25,39 @@ export async function getCantoPriceInUSD() {
   const pairService = Container.get(PairService);
 
   let notePair: any = await pairService.getByAddress(NOTE_CANTO_PAIR); // token1 = wCANTO
-  let ethPair: any = await pairService.getByAddress(CANTO_ETH_PAIR); // token1 = wCANTO
-  let atomPair: any = await pairService.getByAddress(CANTO_ATOM_PAIR); // token0 = wCANTO
+  
+  let notePerCanto = convertToDecimal(notePair.token0Price)
+  let usdPerNote = await getNotePriceInUSD();
+  let usdPerCanto = notePerCanto.times(usdPerNote);
 
-  // all 3 created
-  if (notePair !== null && ethPair !== null && atomPair !== null) {
-    let totalLiquidityCANTO = convertToDecimal(notePair.reserve1)
-      .plus(convertToDecimal(ethPair.reserve1))
-      .plus(convertToDecimal(atomPair.reserve0));
+  return usdPerCanto;
+}
 
-    let noteWeight = convertToDecimal(notePair.reserve1).div(totalLiquidityCANTO);
-    let ethWeight = convertToDecimal(ethPair.reserve1).div(totalLiquidityCANTO);
-    let atomWeight = convertToDecimal(atomPair.reserve0).div(totalLiquidityCANTO);
+async function getNotePriceInUSD() {
+  const pairService = Container.get(PairService);
+  const NOTE_USDT_PAIR = Config.canto.dexDashboard.NOTE_USDT_PAIR; // token1 = usdt
+  const NOTE_USDC_PAIR = Config.canto.dexDashboard.NOTE_USDC_PAIR; // token1 = usdc
 
-    let price = convertToDecimal(notePair.token0Price).times(noteWeight)
-      .plus(convertToDecimal(ethPair.token0Price).times(ethWeight))
-      .plus(convertToDecimal(atomPair.token1Price).times(atomWeight));
+  let usdtPair: PairDb = await pairService.getByAddress(NOTE_USDT_PAIR) as PairDb;
+  let usdcPair: PairDb = await pairService.getByAddress(NOTE_USDC_PAIR) as PairDb;
 
-    return price;
-    // CANTO & NOTE created
-  } else if (ethPair !== null && notePair !== null) {
-    let totalLiquidityCANTO = convertToDecimal(notePair.reserve1)
-      .plus(convertToDecimal(ethPair.reserve1));
+  if (usdtPair !== null && usdcPair !== null) {
+    let totalLiquidityNOTE = convertToDecimal(usdtPair.reserve0)
+      .plus(convertToDecimal(usdcPair.reserve0));
+      let usdtWeight = convertToDecimal(usdtPair.reserve0).div(totalLiquidityNOTE);
+    let usdcWeight = convertToDecimal(usdcPair.reserve0).div(totalLiquidityNOTE);
 
-    let noteWeight = convertToDecimal(notePair.reserve1).div(totalLiquidityCANTO);
-    let ethWeight = convertToDecimal(ethPair.reserve1).div(totalLiquidityCANTO);
+    let price = convertToDecimal(usdtPair.token0Price).times(usdtWeight)
+      .plus(convertToDecimal(usdcPair.token0Price).times(usdcWeight));
 
-    let price = convertToDecimal(notePair.token0Price).times(noteWeight)
-      .plus(convertToDecimal(ethPair.token0Price).times(ethWeight));
-
-    return price;
-    // NOTE created
-  } else if (notePair !== null) {
-    return convertToDecimal(notePair.token0Price);
+      return price;
+  } else if (usdtPair !== null) {
+    return usdtPair.token0Price;
+  } else if (usdcPair !== null) {
+    return usdcPair.token0Price;
   } else {
     return ZERO_BD;
   }
-
-  return ONE_BD; // todo: verify calc
 }
 
 // token where amounts should contribute to tracked volume and liquidity
