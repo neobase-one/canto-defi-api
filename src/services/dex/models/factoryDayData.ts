@@ -8,8 +8,9 @@ export class FactoryDayDataService {
     if (doc === null) {
       let stableswapDayData = new StableswapDayDataDb(id);
       doc = new StableswapDayDataModel(stableswapDayData);
+      await doc.save();
     }
-    return doc;
+    return doc as StableswapDayDataDb;
   }
 
   async getById(id: string) {

@@ -8,8 +8,9 @@ export class TokenDayDataService {
     if (doc === null) {
       let tokenDayData = new TokenDayDataDb(id);
       doc = new TokenDayDataModel(tokenDayData);
+      await doc.save();
     }
-    return doc;
+    return doc as TokenDayDataDb;
   }
 
   async getById(id: string) {

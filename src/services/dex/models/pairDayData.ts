@@ -8,8 +8,9 @@ export class PairDayDataService {
     if (doc === null) {
       let pairDayData = new PairDayDataDb(id);
       doc = new PairDayDataModel(pairDayData);
+      await doc.save();
     }
-    return doc;
+    return doc as PairDayDataDb;
   }
 
   async getById(id: string) {

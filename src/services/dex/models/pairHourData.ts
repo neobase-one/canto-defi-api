@@ -8,8 +8,9 @@ export class PairHourDataService {
     if (doc === null) {
       let pairHourData = new PairHourDataDb(id);
       doc = new PairHourDataModel(pairHourData);
+      await doc.save();
     }
-    return doc;
+    return doc as PairHourDataDb;
   }
 
   async getById(id: string) {

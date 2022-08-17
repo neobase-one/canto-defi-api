@@ -8,8 +8,9 @@ export class TokenService {
     if (doc === null) {
       let token = new TokenDb(address);
       doc = new TokenModel(token);
+      await doc.save();
     }
-    return doc;
+    return doc as TokenDb;
   }
 
   async getByAddress(address: string) {

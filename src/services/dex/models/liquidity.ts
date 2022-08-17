@@ -9,8 +9,9 @@ export class LiquidityPositionService {
     if (doc === null) {
       let liquidityPosition = new LiquidityPositionDb(id);
       doc = new LiquidityPositionModel(liquidityPosition);
+      await doc.save();
     }
-    return doc;
+    return doc as LiquidityPositionDb;
   }
 
   async getById(id: string) {
@@ -33,8 +34,9 @@ export class LiquidityPositionSnapshotService {
       let liquidityPositionSnapshot = new LiquidityPositionSnapshot();
       liquidityPositionSnapshot.justId(id);
       doc = new LiquidityPositionSnapshotModel(liquidityPositionSnapshot);
+      await doc.save();
     }
-    return doc;
+    return doc as LiquidityPositionSnapshotDb;
   }
 
   async getById(id: string) {

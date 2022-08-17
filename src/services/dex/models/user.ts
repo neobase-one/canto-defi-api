@@ -8,8 +8,9 @@ export class UserService {
     if (doc === null) {
       let user = new UserDb(id);
       doc = new UserModel(user);
+      await doc.save();
     }
-    return doc;
+    return doc as UserDb;
   }
 
   async getById(id: string) {

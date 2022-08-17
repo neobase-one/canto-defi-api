@@ -8,8 +8,9 @@ export class TransactionService {
     if (doc === null) {
       let transaction = new TransactionDb(hash);
       doc = new TransactionModel(transaction);
+      await doc.save();
     }
-    return doc;
+    return doc as TransactionDb;
   }
 
   async getByHash(hash: string) {

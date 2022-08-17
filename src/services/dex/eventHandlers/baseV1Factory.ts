@@ -53,6 +53,7 @@ export async function pairCreatedEventHandler(
   let factory: StableswapFactoryDb = await factoryService.getByAddress(FACTORY_ADDRESS) as StableswapFactoryDb;
   if (factory === null) {
     factory = new StableswapFactoryDb(FACTORY_ADDRESS);
+    await new StableswapFactoryModel(factory).save();
 
     let bundle = new BundleDb("1");
     // first instance in db so isNew should be true

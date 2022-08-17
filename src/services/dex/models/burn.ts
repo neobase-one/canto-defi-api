@@ -8,8 +8,9 @@ export class BurnService {
     if (doc === null) {
       let burn = new BurnDb(id);
       doc = new BurnModel(burn);
+      await doc.save();
     }
-    return doc;
+    return doc as BurnDb;
   }
 
   async getById(id: string) {

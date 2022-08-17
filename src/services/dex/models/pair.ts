@@ -8,8 +8,9 @@ export class PairService {
     if (doc === null) {
       let obj = new PairDb(address);
       doc = new PairModel(obj);
+      await doc.save();
     }
-    return doc;
+    return doc as PairDb;
   }
 
   async getPair(token0: string, token1: string) {

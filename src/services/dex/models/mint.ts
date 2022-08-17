@@ -8,8 +8,9 @@ export class MintService {
     if (doc === null) {
       let mint = new MintDb(id);
       doc = new MintModel(mint);
+      await doc.save();
     }
-    return doc;
+    return doc as MintDb;
   }
 
   async getById(id: string) {
