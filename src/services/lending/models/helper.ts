@@ -137,7 +137,7 @@ export async function createMarket(marketAddress: string): Promise<MarketDb> {
   market.underlyingPriceUSD = ZERO_BD;
 
   let m = new MarketModel(market);
-  m.save();
+  await m.save();
   return market
 }
 
@@ -159,10 +159,9 @@ export async function updateMarket(
   const accountService = Container.get(AccountService);
 
   let market: any = await marketService.getByAddress(marketAddress);
-  if (market == null) {
+  if (market === null) {
     market = await createMarket(marketAddress);
   }
-  console.log("boo1")
 
   // market = market as MarketDb;
   // Only updateMarket if it has not been updated this block
@@ -303,14 +302,14 @@ async function getUSDCPrice(blockNumber: number) {
     oracleAddress = comptroller.priceOracle;
   }
   let priceOracle1Address = "" // todo: move to config
-  let USDCAddress = Config.canto.lendingDashboard.USDC_ADDRESS;
+  let cUSDC_ADDRESS = Config.canto.lendingDashboard.cUSDC_ADDRESS;
 
 
   let contract = await new web3.eth.Contract(BaseV1RouterABI, oracleAddress);
   let underlyingDecimals = 6;
   let mantissaDecimalFactor = 18 - underlyingDecimals + 18
   let bdFactor = exponentToBigDecimal(mantissaDecimalFactor)
-  let price = await contract.methods.getUnderlyingPrice(USDCAddress).call();
+  let price = await contract.methods.getUnderlyingPrice(cUSDC_ADDRESS).call();
   let underlyingPrice = convertToDecimal(price).div(bdFactor);
   return underlyingPrice
 
