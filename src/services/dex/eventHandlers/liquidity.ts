@@ -39,9 +39,8 @@ export async function createLiquidityPosition(exchange: string, user: string) {
     liquidityTokenBalance.liquidityTokenBalance = ZERO_BD;
     liquidityTokenBalance.pair = exchange;
     liquidityTokenBalance.user = user;
-    liquidityTokenBalance = new LiquidityPositionModel(liquidityTokenBalance);
     await new LiquidityPositionModel(liquidityTokenBalance).save();
-    await new PairModel(pair).save();
+    await pairService.save(pair);
   }
   if (liquidityTokenBalance === null) {
     console.log("ERROR: LiquidityTokenBalance is null", [id]);
@@ -96,5 +95,5 @@ export async function createLiquiditySnapshot(
   snapshot.liquidityPosition = position.id;
 
   await new LiquidityPositionSnapshotModel(snapshot).save();
-  await new LiquidityPositionModel(position).save();
+  await liquidityPositionService.save(position);
 }

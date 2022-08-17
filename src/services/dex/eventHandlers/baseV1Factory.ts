@@ -86,8 +86,8 @@ export async function pairCreatedEventHandler(
   pair.createdAtBlockNumber = new Decimal(event.blockNumber);
 
   // save updated objects
-  await new TokenModel(token0).save();
-  await new TokenModel(token1).save();
-  await new PairModel(pair).save();
-  await new StableswapFactoryModel(factory).save();
+  await tokenService.save(token0);
+  await tokenService.save(token1);
+  await pairService.save(pair);
+  await factoryService.save(factory);
 }

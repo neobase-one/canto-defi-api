@@ -41,7 +41,7 @@ export async function updateFactoryDayData(event: EventData) {
   if (factoryDayData === null) {
     factoryDayData = new StableswapDayDataDb(dayId.toString());
     factoryDayData.date = dayStartTimestamp;
-    factoryDayData = new StableswapDayDataModel(factoryDayData);
+    await new StableswapDayDataModel(factoryDayData).save();
   }
 
   // update day data values
@@ -49,7 +49,7 @@ export async function updateFactoryDayData(event: EventData) {
   factoryDayData.totalLiquidityUSD = factory.totalLiquidityCANTO;
   factoryDayData.txCount = factory.txCount;
 
-  await new StableswapDayDataModel(factoryDayData).save();
+  await factoryDayDataService.save(factoryDayData);
 
   return factoryDayData;
 }
@@ -76,6 +76,7 @@ export async function updatePairDayData(event: EventData) {
     pairDayData.token0 = pair.token0;
     pairDayData.token1 = pair.token1;
     pairDayData.pair = event.address;
+    await new PairDayDataModel(pairDayData).save();
   }
 
   pairDayData.totalSupply = pair.totalSupply;
@@ -83,7 +84,7 @@ export async function updatePairDayData(event: EventData) {
   pairDayData.reserve1 = pair.reserve1;
   pairDayData.reserveUSD = pair.reserveUSD;
   pairDayData.dailyTxns = convertToDecimal(pairDayData.dailyTxns).plus(ONE_BD);
-  await new PairDayDataModel(pairDayData).save();
+  await pairDayDataService.save(pairDayData);
 
   return pairDayData as PairDayDataDb;
 }
@@ -108,6 +109,7 @@ export async function updatePairHourData(event: EventData) {
     pairHourData = new PairHourDataDb(hourPairId);
     pairHourData.hourStartUnix = new Decimal(hourStartUnix);
     pairHourData.pair = event.address;
+    await new PairHourDataModel(pairHourData).save();
   }
 
   pairHourData.totalSupply = pair.totalSupply;
@@ -115,7 +117,7 @@ export async function updatePairHourData(event: EventData) {
   pairHourData.reserve1 = pair.reserve1;
   pairHourData.reserveUSD = pair.reserveUSD;
   pairHourData.hourlyTxns = convertToDecimal(pairHourData.hourlyTxns).plus(ONE_BD);
-  await new PairHourDataModel(pairHourData).save();
+  await pairHourDataService.save(pairHourData);
 
   return pairHourData;
 }
@@ -138,7 +140,7 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
     tokenDayData.token = token.id;
     tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
     // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO);
-    tokenDayData = new TokenDayDataModel(tokenDayData);
+    await new TokenDayDataModel(tokenDayData).save();
   }
   tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
   // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO);
@@ -147,7 +149,7 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
   tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityCANTO).times(convertToDecimal(bundle.cantoPrice));
   // tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityCANTO);
   tokenDayData.dailyTxns = convertToDecimal(tokenDayData.dailyTxns).plus(ONE_BD);
-  await new TokenDayDataModel(tokenDayData).save();
+  await tokenDayDataService.save(tokenDayData);
 
   return tokenDayData;
 }
