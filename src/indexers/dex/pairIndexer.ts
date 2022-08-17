@@ -62,6 +62,7 @@ async function processEvents(events: EventData[]) {
       const input = new SyncEventInput(event.returnValues);
       await syncEventHandler(event, input);
     } else {
+      continue;
     }
 
     // add event as indexed

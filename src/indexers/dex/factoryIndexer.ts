@@ -34,6 +34,7 @@ export async function indexFactoryEvents(start: number, end: number) {
         const input = new PairCreatedEventInput(event.returnValues);
         await pairCreatedEventHandler(event, input);
       } else {
+        continue;
       }
 
       // add event as indexed

@@ -88,6 +88,7 @@ async function processEvents(events: EventData[]) {
       let input = new NewMarketInterestRateModelInput(event.returnValues);
       handleNewMarketInterestRateModelEvent(event, input);
     } else {
+      continue;
     }
 
     // add event as indexed

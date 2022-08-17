@@ -96,6 +96,7 @@ async function processEvents(events: EventData[]) {
       let input = new NewPriceOracleInput(event.returnValues);
       handleNewPriceOracleEvent(event, input);
     } else {
+      continue;
     }
 
     // add event as indexed
