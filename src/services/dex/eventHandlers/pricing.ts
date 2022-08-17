@@ -4,6 +4,7 @@ import Decimal from "decimal.js";
 import Container from "typedi";
 import { Config } from "../../../config/index.js";
 import { web3 } from "../../../loaders/web3";
+import { Bundle, BundleDb } from "../../../models/dex/bundle.js";
 import { Pair, PairDb } from "../../../models/dex/pair";
 import { TokenDb } from "../../../models/dex/token";
 import { BaseV1FactoryABI } from "../../../utils/abiParser/baseV1factory";
@@ -133,11 +134,11 @@ export async function getTrackedVolumeUSD(
   // services
   const bundleService = Container.get(BundleService);
 
-  let bundle: any = await bundleService.get();
-  // let price0 = convertToDecimal(token0.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
-  let price0 = convertToDecimal(token0.derivedCANTO);
-  // let price1 = convertToDecimal(token1.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
-  let price1 = convertToDecimal(token1.derivedCANTO);
+  let bundle: BundleDb = await bundleService.get() as BundleDb;
+  let price0 = convertToDecimal(token0.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
+  // let price0 = convertToDecimal(token0.derivedCANTO);
+  let price1 = convertToDecimal(token1.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
+  // let price1 = convertToDecimal(token1.derivedCANTO);
 
   // dont count tracked volume on these pairs - usually rebass tokens
   if (UNTRACKED_PAIRS.includes(pair.id)) {
@@ -211,11 +212,11 @@ export async function getTrackedLiquidityUSD(
   // services
   const bundleService = Container.get(BundleService);
 
-  let bundle: any = await bundleService.get();
-  // let price0 = convertToDecimal(token0.derivedCANTO).times(convertToDecimal(bundle.ethPrice));
-  let price0 = convertToDecimal(token0.derivedCANTO);
-  // let price1 = convertToDecimal(token1.derivedCANTO).times(convertToDecimal(bundle.ethPrice));
-  let price1 = convertToDecimal(token1.derivedCANTO);
+  let bundle: BundleDb = await bundleService.get() as BundleDb;
+  let price0 = convertToDecimal(token0.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
+  // let price0 = convertToDecimal(token0.derivedCANTO);
+  let price1 = convertToDecimal(token1.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
+  // let price1 = convertToDecimal(token1.derivedCANTO);
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {

@@ -2,6 +2,7 @@ import Decimal from "decimal.js";
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../../config";
+import { BundleDb } from "../../../models/dex/bundle";
 import { PairDb } from "../../../models/dex/pair";
 import { PairDayDataDb, PairDayDataModel } from "../../../models/dex/pairDayData";
 import { PairHourDataDb, PairHourDataModel } from "../../../models/dex/pairHourData";
@@ -124,7 +125,7 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
   const bundleService = Container.get(BundleService);
   const tokenDayDataService = Container.get(TokenDayDataService);
 
-  let bundle: any = await bundleService.get();
+  let bundle: BundleDb = await bundleService.get() as BundleDb;
   const timestamp: any = await getTimestamp(event.blockNumber) as number;
   let dayId = timestamp / 86400;
   let dayStartTimestamp = dayId * 86400;
@@ -135,16 +136,16 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
     tokenDayData = new TokenDayDataDb(tokenDayId);
     tokenDayData.date = dayStartTimestamp;
     tokenDayData.token = token.id;
-    // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
-    tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO);
+    tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
+    // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO);
     tokenDayData = new TokenDayDataModel(tokenDayData);
   }
-  // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
-  tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO);
+  tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
+  // tokenDayData.priceUSD = convertToDecimal(token.derivedCANTO);
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
   tokenDayData.totalLiquidityCANTO = convertToDecimal(token.totalLiquidity).times(convertToDecimal(token.derivedCANTO));
-  // tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityCANTO).times(convertToDecimal(bundle.cantoPrice));
-  tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityCANTO);
+  tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityCANTO).times(convertToDecimal(bundle.cantoPrice));
+  // tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityCANTO);
   tokenDayData.dailyTxns = convertToDecimal(tokenDayData.dailyTxns).plus(ONE_BD);
   await new TokenDayDataModel(tokenDayData).save();
 

@@ -1,9 +1,11 @@
+import { getModelForClass } from "@typegoose/typegoose";
 import Decimal from "decimal.js";
+import { Document } from "mongodb";
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { Config } from "../../../config";
 import { web3 } from "../../../loaders/web3";
-import { BundleModel } from "../../../models/dex/bundle";
+import { Bundle, BundleDb, BundleModel } from "../../../models/dex/bundle";
 import { BurnDb, BurnModel } from "../../../models/dex/burn";
 import {
   LiquidityPositionModel
@@ -92,12 +94,12 @@ export async function mintEventHandler(
   token1.txCount = convertToDecimal(token1.txCount).plus(ONE_BD);
 
   // get new amount of USD and CANTO for tracking
-  let bundle: any = await bundleService.get();
+  let bundle: BundleDb = await bundleService.get() as BundleDb;
   let amountTotalCANTO = convertToDecimal(token1.derivedCANTO)
     .times(token1Amount)
     .plus(convertToDecimal(token0.derivedCANTO).times(token0Amount));
-  // let amountTotalUSD = amountTotalCANTO.times(convertToDecimal(bundle.cantoPrice));
-  let amountTotalUSD = amountTotalCANTO;
+  let amountTotalUSD = amountTotalCANTO.times(convertToDecimal(bundle.cantoPrice));
+  // let amountTotalUSD = amountTotalCANTO;
 
   // update txn counts
   pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
@@ -168,12 +170,12 @@ export async function burnEventHandler(
   token1.txCount = convertToDecimal(token1.txCount).plus(ONE_BD);
 
   // get new amount of USD and CANTO for tracking
-  let bundle: any = await bundleService.get();
+  let bundle: BundleDb = await bundleService.get() as BundleDb;
   let amountTotalCANTO = convertToDecimal(token1.derivedCANTO)
     .times(token1Amount)
     .plus(convertToDecimal(token0.derivedCANTO).times(token0Amount));
-  // let amountTotalUSD = amountTotalCANTO.times(convertToDecimal(bundle.cantoPrice));
-  let amountTotalUSD = amountTotalCANTO;
+  let amountTotalUSD = amountTotalCANTO.times(convertToDecimal(bundle.cantoPrice));
+  // let amountTotalUSD = amountTotalCANTO;
 
   // update txn counts
   pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
@@ -241,15 +243,15 @@ export async function swapEventHandler(
   let amount1Total = amount1Out.plus(amount1In);
 
   // get new amount of USD and CANTO for tracking
-  let bundle: any = await bundleService.get();
+  let bundle: BundleDb = await bundleService.get() as BundleDb;
 
   // get total amounts of derived USD and CANTO for tracking
   let derivedAmountCANTO = convertToDecimal(token1.derivedCANTO)
     .times(amount1Total)
     .plus(convertToDecimal(token0.derivedCANTO).times(amount0Total))
     .div(new Decimal("2"));
-  // let derivedAmountUSD = derivedAmountCANTO.times(convertToDecimal(bundle.cantoPrice));
-  let derivedAmountUSD = derivedAmountCANTO;
+  let derivedAmountUSD = derivedAmountCANTO.times(convertToDecimal(bundle.cantoPrice));
+  // let derivedAmountUSD = derivedAmountCANTO;
 
   // only accounts for volume through white listed tokens
   let trackedAmountUSD = await getTrackedVolumeUSD(
@@ -261,11 +263,11 @@ export async function swapEventHandler(
   );
 
   let trackedAmountCANTO: Decimal = trackedAmountUSD;
-  // if (convertToDecimal(bundle.cantoPrice).equals(ZERO_BD)) {
-  //   trackedAmountCANTO = ZERO_BD;
-  // } else {
-  //   trackedAmountCANTO = trackedAmountUSD.div(convertToDecimal(bundle.cantoPrice));
-  // }
+  if (convertToDecimal(bundle.cantoPrice).equals(ZERO_BD)) {
+    trackedAmountCANTO = ZERO_BD;
+  } else {
+    trackedAmountCANTO = trackedAmountUSD.div(convertToDecimal(bundle.cantoPrice));
+  }
 
   // update token0 global volume and token liquidity stats
   token0.tradeVolume = convertToDecimal(token0.tradeVolume).plus(amount0In.plus(amount0Out));
@@ -387,8 +389,8 @@ export async function swapEventHandler(
     amount0Total.times(convertToDecimal(token0.derivedCANTO))
   );
   token0DayData.dailyVolumeUSD = convertToDecimal(token0DayData.dailyVolumeUSD).plus(
-    // amount0Total.times(convertToDecimal(token0.derivedCANTO)).times(convertToDecimal(bundle.cantoPrice))
-    amount0Total.times(convertToDecimal(token0.derivedCANTO))
+    amount0Total.times(convertToDecimal(token0.derivedCANTO)).times(convertToDecimal(bundle.cantoPrice))
+    // amount0Total.times(convertToDecimal(token0.derivedCANTO))
   );
   await new TokenDayDataModel(token0DayData).save();
 
@@ -399,8 +401,8 @@ export async function swapEventHandler(
     amount1Total.times(convertToDecimal(token1.derivedCANTO))
   );
   token1DayData.dailyVolumeUSD = convertToDecimal(token1DayData.dailyVolumeUSD).plus(
-    // amount1Total.times(convertToDecimal(token1.derivedCANTO)).times(convertToDecimal(bundle.cantoPrice))
-    amount1Total.times(convertToDecimal(token1.derivedCANTO))
+    amount1Total.times(convertToDecimal(token1.derivedCANTO)).times(convertToDecimal(bundle.cantoPrice))
+    // amount1Total.times(convertToDecimal(token1.derivedCANTO))
   );
   await new TokenDayDataModel(token1DayData).save();
 }
@@ -645,9 +647,9 @@ export async function syncEventHandler(
   await new PairModel(pair).save();
 
   // update CANTO price now that reserves could have changed
-  let bundle: any = await bundleService.get();
+  let bundle: BundleDb = await bundleService.get() as BundleDb;
   bundle.cantoPrice = await getCantoPriceInUSD();
-  await bundle.save();
+  await new BundleModel(bundle).save();
 
   // update derived CANTO values
   token0.derivedCANTO = await findCantoPerToken(token0);
@@ -657,32 +659,32 @@ export async function syncEventHandler(
 
   // get tracked liquidity - will be 0 if neither in whitelist
   let trackedLiquidityCANTO: Decimal;
-  // if (!convertToDecimal(bundle.cantoPrice).equals(ZERO_BD)) {
-  let trackedLiquidityUSD = await getTrackedLiquidityUSD(
-    pair.reserve0,
-    token0,
-    pair.reserve1,
-    token1
-  );
-  // trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.cantoPrice));
-  trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD);
-  // } else {
-  // trackedLiquidityCANTO = ZERO_BD;
-  // }
+  if (!convertToDecimal(bundle.cantoPrice).equals(ZERO_BD)) {
+    let trackedLiquidityUSD = await getTrackedLiquidityUSD(
+      pair.reserve0,
+      token0,
+      pair.reserve1,
+      token1
+    );
+    trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.cantoPrice));
+    // trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD);
+  } else {
+    trackedLiquidityCANTO = ZERO_BD;
+  }
 
   // use derived amounts within pair
   pair.trackedReserveCANTO = trackedLiquidityCANTO;
   pair.reserveCANTO = convertToDecimal(pair.reserve0)
     .times(convertToDecimal(token0.derivedCANTO))
     .plus(convertToDecimal(convertToDecimal(pair.reserve1).times(convertToDecimal(token1.derivedCANTO))));
-  // pair.reserveUSD = convertToDecimal(pair.reserveCANTO).times(convertToDecimal(bundle.cantoPrice));
-  pair.reserveUSD = convertToDecimal(pair.reserveCANTO);
+  pair.reserveUSD = convertToDecimal(pair.reserveCANTO).times(convertToDecimal(bundle.cantoPrice));
+  // pair.reserveUSD = convertToDecimal(pair.reserveCANTO);
 
   // use tracked amounts globally
   factory.totalLiquidityCANTO =
     convertToDecimal(factory.totalLiquidityCANTO).plus(convertToDecimal(trackedLiquidityCANTO));
-  // factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityCANTO).times(convertToDecimal(bundle.cantoPrice));
-  factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityCANTO);
+  factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityCANTO).times(convertToDecimal(bundle.cantoPrice));
+  // factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityCANTO);
   // todo: since just multiplication can try to not use USD if all calc based on CANTO
 
   // correctly set liquidity amounts for each token
