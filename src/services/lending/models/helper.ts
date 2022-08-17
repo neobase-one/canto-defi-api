@@ -20,12 +20,12 @@ import { ComptrollerService } from './comptroller';
 import { MarketService } from './market';
 
 
-export function createAccountCToken(
+export async function createAccountCToken(
   cTokenStatsID: string,
   symbol: string,
   account: string,
   marketID: string,
-): AccountCTokenDb {
+): Promise<AccountCTokenDb> {
   let cTokenStats = new AccountCTokenDb(cTokenStatsID);
   cTokenStats.symbol = symbol
   cTokenStats.market = marketID
@@ -40,7 +40,7 @@ export function createAccountCToken(
   cTokenStats.storedBorrowBalance = ZERO_BD
   cTokenStats.enteredMarket = false
   const cToken = new AccountCTokenModel(cTokenStats);
-  cToken.save();
+  await cToken.save();
   return cTokenStats
 }
 
@@ -66,7 +66,7 @@ export async function updateCommonCTokenStats(
   const accountService = Container.get(AccountService);
   let cTokenStats: any = await accountService.getById(cTokenStatsID);
   if (cTokenStats == null) {
-    cTokenStats = createAccountCToken(cTokenStatsID, marketSymbol, accountID, marketID)
+    cTokenStats = await createAccountCToken(cTokenStatsID, marketSymbol, accountID, marketID)
   }
   let txHashes = cTokenStats.transactionHashes as string[];
   if (isNullOrUndefined(txHashes)) {
