@@ -24,7 +24,7 @@ export class TokenDayDataDb {
   dailyVolumeToken: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  dailyVolumeCANTO: Decimal;
+  dailyVolumeNOTE: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeUSD: Decimal;
@@ -36,7 +36,7 @@ export class TokenDayDataDb {
   totalLiquidityToken: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  totalLiquidityCANTO: Decimal;
+  totalLiquidityNOTE: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   totalLiquidityUSD: Decimal;
@@ -50,11 +50,11 @@ export class TokenDayDataDb {
     this.date = 0;
     this.token = "";
     this.dailyVolumeToken = ZERO_BD;
-    this.dailyVolumeCANTO = ZERO_BD;
+    this.dailyVolumeNOTE = ZERO_BD;
     this.dailyVolumeUSD = ZERO_BD;
     this.dailyTxns = ZERO_BD;
     this.totalLiquidityToken = ZERO_BD;
-    this.totalLiquidityCANTO = ZERO_BD;
+    this.totalLiquidityNOTE = ZERO_BD;
     this.totalLiquidityUSD = ZERO_BD;
     this.priceUSD = ZERO_BD;
   }
@@ -88,7 +88,7 @@ export class TokenDayData {
   dailyVolumeToken: Decimal;
 
   @Field((type) => DecimalScalar)
-  dailyVolumeCANTO: Decimal;
+  dailyVolumeNOTE: Decimal;
 
   @Field((type) => DecimalScalar)
   dailyVolumeUSD: Decimal;
@@ -100,7 +100,7 @@ export class TokenDayData {
   totalLiquidityToken: Decimal;
 
   @Field((type) => DecimalScalar)
-  totalLiquidityCANTO: Decimal;
+  totalLiquidityNOTE: Decimal;
 
   @Field((type) => DecimalScalar)
   totalLiquidityUSD: Decimal;
@@ -116,11 +116,11 @@ export class TokenDayData {
     t.id = tkn.token;
     this.token = t;
     this.dailyVolumeToken = tkn.dailyVolumeToken;
-    this.dailyVolumeCANTO = tkn.dailyVolumeCANTO;
+    this.dailyVolumeNOTE = tkn.dailyVolumeNOTE;
     this.dailyVolumeUSD = tkn.dailyVolumeUSD;
     this.dailyTxns = tkn.dailyTxns;
     this.totalLiquidityToken = tkn.totalLiquidityToken;
-    this.totalLiquidityCANTO = tkn.totalLiquidityCANTO;
+    this.totalLiquidityNOTE = tkn.totalLiquidityNOTE;
     this.totalLiquidityUSD = tkn.totalLiquidityUSD;
     this.priceUSD = tkn.priceUSD;
     return this;
@@ -136,11 +136,11 @@ export class TokenDayData {
     this.date = 0;
     this.token = new Token();
     this.dailyVolumeToken = ZERO_BD;
-    this.dailyVolumeCANTO = ZERO_BD;
+    this.dailyVolumeNOTE = ZERO_BD;
     this.dailyVolumeUSD = ZERO_BD;
     this.dailyTxns = ZERO_BD;
     this.totalLiquidityToken = ZERO_BD;
-    this.totalLiquidityCANTO = ZERO_BD;
+    this.totalLiquidityNOTE = ZERO_BD;
     this.totalLiquidityUSD = ZERO_BD;
     this.priceUSD = ZERO_BD;
   }

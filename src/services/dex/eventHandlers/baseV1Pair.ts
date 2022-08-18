@@ -55,8 +55,8 @@ import {
   updatePairHourData, updateTokenDayData
 } from "./metrics";
 import {
-  findCantoPerToken,
-  getCantoPriceInUSD,
+  findNotePerToken,
+  getNotePriceInUSD,
   getTrackedLiquidityUSD,
   getTrackedVolumeUSD
 } from "./pricing";
@@ -98,13 +98,13 @@ export async function mintEventHandler(
   token0.txCount = convertToDecimal(token0.txCount).plus(ONE_BD);
   token1.txCount = convertToDecimal(token1.txCount).plus(ONE_BD);
 
-  // get new amount of USD and CANTO for tracking
+  // get new amount of USD and NOTE for tracking
   let bundle: BundleDb = await bundleService.get() as BundleDb;
-  let amountTotalCANTO = convertToDecimal(token1.derivedCANTO)
+  let amountTotalNOTE = convertToDecimal(token1.derivedNOTE)
     .times(token1Amount)
-    .plus(convertToDecimal(token0.derivedCANTO).times(token0Amount));
-  let amountTotalUSD = amountTotalCANTO.times(convertToDecimal(bundle.cantoPrice));
-  // let amountTotalUSD = amountTotalCANTO;
+    .plus(convertToDecimal(token0.derivedNOTE).times(token0Amount));
+  let amountTotalUSD = amountTotalNOTE.times(convertToDecimal(bundle.notePrice));
+  // let amountTotalUSD = amountTotalNOTE;
 
   // update txn counts
   pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
@@ -121,7 +121,7 @@ export async function mintEventHandler(
   mint.amount0 = token0Amount;
   mint.amount1 = token1Amount;
   mint.logIndex = new Decimal(event.logIndex);
-  mint.amountUSD = amountTotalUSD; // todo: add amountTotalCANTO
+  mint.amountUSD = amountTotalUSD; // todo: add amountTotalNOTE
   await mintService.save(mint);
 
   // update LP position
@@ -174,13 +174,13 @@ export async function burnEventHandler(
   token0.txCount = convertToDecimal(token0.txCount).plus(ONE_BD);
   token1.txCount = convertToDecimal(token1.txCount).plus(ONE_BD);
 
-  // get new amount of USD and CANTO for tracking
+  // get new amount of USD and NOTE for tracking
   let bundle: BundleDb = await bundleService.get() as BundleDb;
-  let amountTotalCANTO = convertToDecimal(token1.derivedCANTO)
+  let amountTotalNOTE = convertToDecimal(token1.derivedNOTE)
     .times(token1Amount)
-    .plus(convertToDecimal(token0.derivedCANTO).times(token0Amount));
-  let amountTotalUSD = amountTotalCANTO.times(convertToDecimal(bundle.cantoPrice));
-  // let amountTotalUSD = amountTotalCANTO;
+    .plus(convertToDecimal(token0.derivedNOTE).times(token0Amount));
+  let amountTotalUSD = amountTotalNOTE.times(convertToDecimal(bundle.notePrice));
+  // let amountTotalUSD = amountTotalNOTE;
 
   // update txn counts
   pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
@@ -196,7 +196,7 @@ export async function burnEventHandler(
   burn.amount0 = token0Amount;
   burn.amount1 = token1Amount;
   burn.logIndex = new Decimal(event.logIndex);
-  burn.amountUSD = amountTotalUSD; // todo: add amountTotalCANTO field
+  burn.amountUSD = amountTotalUSD; // todo: add amountTotalNOTE field
   await burnService.save(burn);
 
   // update LP position
@@ -251,16 +251,16 @@ export async function swapEventHandler(
   let amount0Total = amount0Out.plus(amount0In);
   let amount1Total = amount1Out.plus(amount1In);
 
-  // get new amount of USD and CANTO for tracking
+  // get new amount of USD and NOTE for tracking
   let bundle: BundleDb = await bundleService.get() as BundleDb;
 
-  // get total amounts of derived USD and CANTO for tracking
-  let derivedAmountCANTO = convertToDecimal(token1.derivedCANTO)
+  // get total amounts of derived USD and NOTE for tracking
+  let derivedAmountNOTE = convertToDecimal(token1.derivedNOTE)
     .times(amount1Total)
-    .plus(convertToDecimal(token0.derivedCANTO).times(amount0Total))
+    .plus(convertToDecimal(token0.derivedNOTE).times(amount0Total))
     .div(new Decimal("2"));
-  let derivedAmountUSD = derivedAmountCANTO.times(convertToDecimal(bundle.cantoPrice));
-  // let derivedAmountUSD = derivedAmountCANTO;
+  let derivedAmountUSD = derivedAmountNOTE.times(convertToDecimal(bundle.notePrice));
+  // let derivedAmountUSD = derivedAmountNOTE;
 
   // only accounts for volume through white listed tokens
   let trackedAmountUSD = await getTrackedVolumeUSD(
@@ -271,11 +271,11 @@ export async function swapEventHandler(
     pair
   );
 
-  let trackedAmountCANTO: Decimal = trackedAmountUSD;
-  if (convertToDecimal(bundle.cantoPrice).equals(ZERO_BD)) {
-    trackedAmountCANTO = ZERO_BD;
+  let trackedAmountNOTE: Decimal = trackedAmountUSD;
+  if (convertToDecimal(bundle.notePrice).equals(ZERO_BD)) {
+    trackedAmountNOTE = ZERO_BD;
   } else {
-    trackedAmountCANTO = trackedAmountUSD.div(convertToDecimal(bundle.cantoPrice));
+    trackedAmountNOTE = trackedAmountUSD.div(convertToDecimal(bundle.notePrice));
   }
 
   // update token0 global volume and token liquidity stats
@@ -302,7 +302,7 @@ export async function swapEventHandler(
 
   // update global values, only used tracked amounts for volume
   factory.totalVolumeUSD = convertToDecimal(factory.totalVolumeUSD).plus(trackedAmountUSD);
-  factory.totalVolumeCANTO = convertToDecimal(factory.totalVolumeCANTO).plus(trackedAmountCANTO);
+  factory.totalVolumeNOTE = convertToDecimal(factory.totalVolumeNOTE).plus(trackedAmountNOTE);
   factory.untrackedVolumeUSD =
     convertToDecimal(factory.untrackedVolumeUSD).plus(derivedAmountUSD);
   factory.txCount = convertToDecimal(factory.txCount).plus(ONE_BD);
@@ -368,8 +368,8 @@ export async function swapEventHandler(
   // console.log(stableswapDayData)
   stableswapDayData.dailyVolumeUSD =
     convertToDecimal(stableswapDayData.dailyVolumeUSD).plus(trackedAmountUSD);
-  stableswapDayData.dailyVolumeCANTO =
-    convertToDecimal(stableswapDayData.dailyVolumeCANTO).plus(trackedAmountCANTO);
+  stableswapDayData.dailyVolumeNOTE =
+    convertToDecimal(stableswapDayData.dailyVolumeNOTE).plus(trackedAmountNOTE);
   stableswapDayData.dailyVolumeUntracked =
     convertToDecimal(stableswapDayData.dailyVolumeUntracked).plus(derivedAmountUSD);
   await sddService.save(stableswapDayData);
@@ -395,24 +395,24 @@ export async function swapEventHandler(
   // swap specific updating for token0
   token0DayData.dailyVolumeToken =
     convertToDecimal(token0DayData.dailyVolumeToken).plus(amount0Total);
-  token0DayData.dailyVolumeCANTO = convertToDecimal(token0DayData.dailyVolumeCANTO).plus(
-    amount0Total.times(convertToDecimal(token0.derivedCANTO))
+  token0DayData.dailyVolumeNOTE = convertToDecimal(token0DayData.dailyVolumeNOTE).plus(
+    amount0Total.times(convertToDecimal(token0.derivedNOTE))
   );
   token0DayData.dailyVolumeUSD = convertToDecimal(token0DayData.dailyVolumeUSD).plus(
-    amount0Total.times(convertToDecimal(token0.derivedCANTO)).times(convertToDecimal(bundle.cantoPrice))
-    // amount0Total.times(convertToDecimal(token0.derivedCANTO))
+    amount0Total.times(convertToDecimal(token0.derivedNOTE)).times(convertToDecimal(bundle.notePrice))
+    // amount0Total.times(convertToDecimal(token0.derivedNOTE))
   );
   await tddService.save(token0DayData);
 
   // swap specific updating
   token1DayData.dailyVolumeToken =
     convertToDecimal(token1DayData.dailyVolumeToken).plus(amount1Total);
-  token1DayData.dailyVolumeCANTO = convertToDecimal(token1DayData.dailyVolumeCANTO).plus(
-    amount1Total.times(convertToDecimal(token1.derivedCANTO))
+  token1DayData.dailyVolumeNOTE = convertToDecimal(token1DayData.dailyVolumeNOTE).plus(
+    amount1Total.times(convertToDecimal(token1.derivedNOTE))
   );
   token1DayData.dailyVolumeUSD = convertToDecimal(token1DayData.dailyVolumeUSD).plus(
-    amount1Total.times(convertToDecimal(token1.derivedCANTO)).times(convertToDecimal(bundle.cantoPrice))
-    // amount1Total.times(convertToDecimal(token1.derivedCANTO))
+    amount1Total.times(convertToDecimal(token1.derivedNOTE)).times(convertToDecimal(bundle.notePrice))
+    // amount1Total.times(convertToDecimal(token1.derivedNOTE))
   );
   await tddService.save(token1DayData);
 }
@@ -496,7 +496,7 @@ export async function transferEventHandler(
     }
   }
 
-  // case: direct send first on CANTO withdrawls
+  // case: direct send first on NOTE withdrawls
   if (to == pair.id) {
     let burns = transaction.burns;
 
@@ -633,8 +633,8 @@ export async function syncEventHandler(
   let token1: TokenDb = await tokenService.getByAddress(pair.token1) as TokenDb;
 
   // reset factory liquiuty by subtracting only tracked liquidity
-  factory.totalLiquidityCANTO = convertToDecimal(factory.totalLiquidityCANTO).minus(
-    convertToDecimal(pair.trackedReserveCANTO)
+  factory.totalLiquidityNOTE = convertToDecimal(factory.totalLiquidityNOTE).minus(
+    convertToDecimal(pair.trackedReserveNOTE)
   );
 
   // reset token total liquidity amount
@@ -657,46 +657,46 @@ export async function syncEventHandler(
   }
   await pairService.save(pair);
 
-  // update CANTO price now that reserves could have changed
+  // update NOTE price now that reserves could have changed
   let bundle: BundleDb = await bundleService.get() as BundleDb;
-  bundle.cantoPrice = await getCantoPriceInUSD();
+  bundle.notePrice = await getNotePriceInUSD();
   await bundleService.save(bundle);
 
-  // update derived CANTO values
-  token0.derivedCANTO = await findCantoPerToken(token0);
-  token1.derivedCANTO = await findCantoPerToken(token1);
+  // update derived NOTE values
+  token0.derivedNOTE = await findNotePerToken(token0);
+  token1.derivedNOTE = await findNotePerToken(token1);
   await tokenService.save(token0);
   await tokenService.save(token1);
 
   // get tracked liquidity - will be 0 if neither in whitelist
-  let trackedLiquidityCANTO: Decimal;
-  if (!convertToDecimal(bundle.cantoPrice).equals(ZERO_BD)) {
+  let trackedLiquidityNOTE: Decimal;
+  if (!convertToDecimal(bundle.notePrice).equals(ZERO_BD)) {
     let trackedLiquidityUSD = await getTrackedLiquidityUSD(
       pair.reserve0,
       token0,
       pair.reserve1,
       token1
     );
-    trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.cantoPrice));
-    // trackedLiquidityCANTO = convertToDecimal(trackedLiquidityUSD);
+    trackedLiquidityNOTE = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.notePrice));
+    // trackedLiquidityNOTE = convertToDecimal(trackedLiquidityUSD);
   } else {
-    trackedLiquidityCANTO = ZERO_BD;
+    trackedLiquidityNOTE = ZERO_BD;
   }
 
   // use derived amounts within pair
-  pair.trackedReserveCANTO = trackedLiquidityCANTO;
-  pair.reserveCANTO = convertToDecimal(pair.reserve0)
-    .times(convertToDecimal(token0.derivedCANTO))
-    .plus(convertToDecimal(convertToDecimal(pair.reserve1).times(convertToDecimal(token1.derivedCANTO))));
-  pair.reserveUSD = convertToDecimal(pair.reserveCANTO).times(convertToDecimal(bundle.cantoPrice));
-  // pair.reserveUSD = convertToDecimal(pair.reserveCANTO);
+  pair.trackedReserveNOTE = trackedLiquidityNOTE;
+  pair.reserveNOTE = convertToDecimal(pair.reserve0)
+    .times(convertToDecimal(token0.derivedNOTE))
+    .plus(convertToDecimal(convertToDecimal(pair.reserve1).times(convertToDecimal(token1.derivedNOTE))));
+  pair.reserveUSD = convertToDecimal(pair.reserveNOTE).times(convertToDecimal(bundle.notePrice));
+  // pair.reserveUSD = convertToDecimal(pair.reserveNOTE);
 
   // use tracked amounts globally
-  factory.totalLiquidityCANTO =
-    convertToDecimal(factory.totalLiquidityCANTO).plus(convertToDecimal(trackedLiquidityCANTO));
-  factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityCANTO).times(convertToDecimal(bundle.cantoPrice));
-  // factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityCANTO);
-  // todo: since just multiplication can try to not use USD if all calc based on CANTO
+  factory.totalLiquidityNOTE =
+    convertToDecimal(factory.totalLiquidityNOTE).plus(convertToDecimal(trackedLiquidityNOTE));
+  factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityNOTE).times(convertToDecimal(bundle.notePrice));
+  // factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityNOTE);
+  // todo: since just multiplication can try to not use USD if all calc based on NOTE
 
   // correctly set liquidity amounts for each token
   token0.totalLiquidity = convertToDecimal(token0.totalLiquidity).plus(convertToDecimal(pair.reserve0));

@@ -21,7 +21,7 @@ export class StableswapFactoryDb {
   totalVolumeUSD: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  totalVolumeCANTO: Decimal;
+  totalVolumeNOTE: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   untrackedVolumeUSD: Decimal;
@@ -30,7 +30,7 @@ export class StableswapFactoryDb {
   totalLiquidityUSD: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  totalLiquidityCANTO: Decimal;
+  totalLiquidityNOTE: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   txCount: Decimal;
@@ -44,10 +44,10 @@ export class StableswapFactoryDb {
     this.address = address;
     this.pairCount = 0;
     this.totalVolumeUSD = ZERO_BD;
-    this.totalVolumeCANTO = ZERO_BD;
+    this.totalVolumeNOTE = ZERO_BD;
     this.untrackedVolumeUSD = ZERO_BD;
     this.totalLiquidityUSD = ZERO_BD;
-    this.totalLiquidityCANTO = ZERO_BD;
+    this.totalLiquidityNOTE = ZERO_BD;
     this.txCount = ZERO_BD;
   }
 
@@ -73,7 +73,7 @@ export class StableswapFactory {
   totalVolumeUSD: Decimal;
 
   @Field((type) => DecimalScalar, { nullable: true })
-  totalVolumeCANTO: Decimal;
+  totalVolumeNOTE: Decimal;
 
   @Field((type) => DecimalScalar, { nullable: true })
   untrackedVolumeUSD: Decimal;
@@ -82,7 +82,7 @@ export class StableswapFactory {
   totalLiquidityUSD: Decimal;
 
   @Field((type) => DecimalScalar, { nullable: true })
-  totalLiquidityCANTO: Decimal;
+  totalLiquidityNOTE: Decimal;
 
   @Field((type) => DecimalScalar, { nullable: true })
   txCount: Decimal;
@@ -94,10 +94,10 @@ export class StableswapFactory {
     this.address = "";
     this.pairCount = 0;
     this.totalVolumeUSD = ZERO_BD;
-    this.totalVolumeCANTO = ZERO_BD;
+    this.totalVolumeNOTE = ZERO_BD;
     this.untrackedVolumeUSD = ZERO_BD;
     this.totalLiquidityUSD = ZERO_BD;
-    this.totalLiquidityCANTO = ZERO_BD;
+    this.totalLiquidityNOTE = ZERO_BD;
     this.txCount = ZERO_BD;
   }
 
@@ -106,10 +106,10 @@ export class StableswapFactory {
     this.address = swap.address;
     this.pairCount = swap.pairCount;
     this.totalVolumeUSD = swap.totalVolumeUSD;
-    this.totalVolumeCANTO = swap.totalVolumeCANTO;
+    this.totalVolumeNOTE = swap.totalVolumeNOTE;
     this.untrackedVolumeUSD = swap.untrackedVolumeUSD;
     this.totalLiquidityUSD = swap.totalLiquidityUSD;
-    this.totalLiquidityCANTO = swap.totalLiquidityCANTO;
+    this.totalLiquidityNOTE = swap.totalLiquidityNOTE;
     this.txCount = swap.txCount;
     return this;
   }

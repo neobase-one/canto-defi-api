@@ -16,20 +16,20 @@ import { TokenService } from "../models/token";
 
 // todo: fix types + imports
 
-export async function getCantoPriceInUSD() {
-  const NOTE_CANTO_PAIR = Config.canto.dexDashboard.NOTE_CANTO_PAIR;
-  const pairService = Container.get(PairService);
+// export async function getCantoPriceInUSD() {
+//   const NOTE_CANTO_PAIR = Config.canto.dexDashboard.NOTE_CANTO_PAIR;
+//   const pairService = Container.get(PairService);
 
-  let notePair: any = await pairService.getByAddress(NOTE_CANTO_PAIR); // token1 = wCANTO
+//   let notePair: any = await pairService.getByAddress(NOTE_CANTO_PAIR); // token1 = wCANTO
   
-  let notePerCanto = convertToDecimal(notePair.token0Price)
-  let usdPerNote = await getNotePriceInUSD();
-  let usdPerCanto = notePerCanto.times(usdPerNote);
+//   let notePerCanto = convertToDecimal(notePair.token0Price)
+//   let usdPerNote = await getNotePriceInUSD();
+//   let usdPerCanto = notePerCanto.times(usdPerNote);
 
-  return usdPerCanto;
-}
+//   return usdPerCanto;
+// }
 
-async function getNotePriceInUSD() {
+export async function getNotePriceInUSD() {
   const pairService = Container.get(PairService);
   const NOTE_USDT_PAIR = Config.canto.dexDashboard.NOTE_USDT_PAIR; // token1 = usdt
   const NOTE_USDC_PAIR = Config.canto.dexDashboard.NOTE_USDC_PAIR; // token1 = usdc
@@ -63,9 +63,9 @@ async function getNotePriceInUSD() {
 
 
 /**
- * Search through graph to find derived Canto per token.
+ * Search through graph to find derived NOTE per token.
  **/
-export async function findCantoPerToken(token: TokenDb) {
+export async function findNotePerToken(token: TokenDb) {
   const FACTORY_ADDRESS = Config.contracts.baseV1Factory.addresses[0];
   const wCANTO_ADDRESS = Config.canto.dexDashboard.wCANTO_ADDRESS;
   let WHITELIST: string[] = Config.canto.dexDashboard.WHITELIST;
@@ -82,22 +82,22 @@ export async function findCantoPerToken(token: TokenDb) {
   let factoryContract: any = await new web3.eth.Contract(BaseV1FactoryABI, FACTORY_ADDRESS);
   for (let i = 0; i < WHITELIST.length; ++i) {
     let pairAddress = await getPairAddress(factoryContract, token.id, WHITELIST[i]);
-    // console.log("CANTO PER TOKEN: ", token.id, WHITELIST[i], pairAddress);
+    // console.log("NOTE PER TOKEN: ", token.id, WHITELIST[i], pairAddress);
     if (pairAddress != ADDRESS_ZERO) {
       let pair: any = await pairService.getByAddress(pairAddress);
       if (
         pair.token0 == token.id
-        // && convertToDecimal(pair.reserveCANTO).gt(MINIMUM_LIQUIDITY_THRESHOLD_CANTO)
+        // && convertToDecimal(pair.reserveNOTE).gt(MINIMUM_LIQUIDITY_THRESHOLD_NOTE)
       ) {
-        let token1: any = await tokenService.getByAddress(pair.token1);
-        return convertToDecimal(pair.token1Price).times(convertToDecimal(token1.derivedCANTO)); // return token1 per our token * Eth per token 1
+        let token1: TokenDb = await tokenService.getByAddress(pair.token1) as TokenDb;
+        return convertToDecimal(pair.token1Price).times(convertToDecimal(token1.derivedNOTE)); // return token1 per our token * Eth per token 1
       }
       if (
         pair.token1 == token.id
-        // && convertToDecimal(pair.reserveCANTO).gt(MINIMUM_LIQUIDITY_THRESHOLD_CANTO)
+        // && convertToDecimal(pair.reserveNOTE).gt(MINIMUM_LIQUIDITY_THRESHOLD_NOTE)
       ) {
-        let token0: any = await tokenService.getByAddress(pair.token0);
-        return convertToDecimal(pair.token0Price).times(convertToDecimal(token0.derivedCANTO)); // return token0 per our token * CANTO per token 0
+        let token0: TokenDb = await tokenService.getByAddress(pair.token0) as TokenDb;
+        return convertToDecimal(pair.token0Price).times(convertToDecimal(token0.derivedNOTE)); // return token0 per our token * NOTE per token 0
       }
     }
   }
@@ -140,10 +140,10 @@ export async function getTrackedVolumeUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: BundleDb = await bundleService.get() as BundleDb;
-  let price0 = convertToDecimal(token0.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
-  // let price0 = convertToDecimal(token0.derivedCANTO);
-  let price1 = convertToDecimal(token1.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
-  // let price1 = convertToDecimal(token1.derivedCANTO);
+  let price0 = convertToDecimal(token0.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+  // let price0 = convertToDecimal(token0.derivedNOTE);
+  let price1 = convertToDecimal(token1.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+  // let price1 = convertToDecimal(token1.derivedNOTE);
 
   // dont count tracked volume on these pairs - usually rebass tokens
   if (UNTRACKED_PAIRS.includes(pair.id)) {
@@ -218,10 +218,10 @@ export async function getTrackedLiquidityUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: BundleDb = await bundleService.get() as BundleDb;
-  let price0 = convertToDecimal(token0.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
-  // let price0 = convertToDecimal(token0.derivedCANTO);
-  let price1 = convertToDecimal(token1.derivedCANTO).times(convertToDecimal(bundle.cantoPrice));
-  // let price1 = convertToDecimal(token1.derivedCANTO);
+  let price0 = convertToDecimal(token0.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+  // let price0 = convertToDecimal(token0.derivedNOTE);
+  let price1 = convertToDecimal(token1.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+  // let price1 = convertToDecimal(token1.derivedNOTE);
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {

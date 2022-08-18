@@ -31,13 +31,13 @@ export class PairDb {
   totalSupply: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  reserveCANTO: Decimal;
+  reserveNOTE: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   reserveUSD: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  trackedReserveCANTO: Decimal;
+  trackedReserveNOTE: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   token0Price: Decimal;
@@ -77,9 +77,9 @@ export class PairDb {
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;
-    this.reserveCANTO = ZERO_BD;
+    this.reserveNOTE = ZERO_BD;
     this.reserveUSD = ZERO_BD;
-    this.trackedReserveCANTO = ZERO_BD;
+    this.trackedReserveNOTE = ZERO_BD;
     this.token0Price = ZERO_BD;
     this.token1Price = ZERO_BD;
     this.volumeToken0 = ZERO_BD;
@@ -123,13 +123,13 @@ export class Pair {
   totalSupply: Decimal;
 
   @Field((type) => DecimalScalar)
-  reserveCANTO: Decimal;
+  reserveNOTE: Decimal;
 
   @Field((type) => DecimalScalar)
   reserveUSD: Decimal;
 
   @Field((type) => DecimalScalar)
-  trackedReserveCANTO: Decimal;
+  trackedReserveNOTE: Decimal;
 
   @Field((type) => DecimalScalar)
   token0Price: Decimal;
@@ -169,9 +169,9 @@ export class Pair {
     this.reserve0 = ZERO_BD;
     this.reserve1 = ZERO_BD;
     this.totalSupply = ZERO_BD;
-    this.reserveCANTO = ZERO_BD;
+    this.reserveNOTE = ZERO_BD;
     this.reserveUSD = ZERO_BD;
-    this.trackedReserveCANTO = ZERO_BD;
+    this.trackedReserveNOTE = ZERO_BD;
     this.token0Price = ZERO_BD;
     this.token1Price = ZERO_BD;
     this.volumeToken0 = ZERO_BD;
@@ -192,9 +192,9 @@ export class Pair {
     this.reserve0 = pair.reserve0;
     this.reserve1 = pair.reserve1;
     this.totalSupply = pair.totalSupply;
-    this.reserveCANTO = pair.reserveCANTO;
+    this.reserveNOTE = pair.reserveNOTE;
     this.reserveUSD = pair.reserveUSD;
-    this.trackedReserveCANTO = pair.trackedReserveCANTO;
+    this.trackedReserveNOTE = pair.trackedReserveNOTE;
     this.token0Price = pair.token0Price;
     this.token1Price = pair.token1Price;
     this.volumeToken0 = pair.volumeToken0;

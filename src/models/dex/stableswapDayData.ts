@@ -18,7 +18,7 @@ export class StableswapDayDataDb {
   date: number;
 
   @Property({ default: new Decimal("0"), required: false })
-  dailyVolumeCANTO: Decimal;
+  dailyVolumeNOTE: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   dailyVolumeUSD: Decimal;
@@ -27,10 +27,10 @@ export class StableswapDayDataDb {
   dailyVolumeUntracked: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  totalVolumeCANTO: Decimal;
+  totalVolumeNOTE: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  totalLiquidityCANTO: Decimal;
+  totalLiquidityNOTE: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
   totalVolumeUSD: Decimal;
@@ -45,11 +45,11 @@ export class StableswapDayDataDb {
     this._id = new ObjectId();
     this.id = id;
     this.date = 0;
-    this.dailyVolumeCANTO = ZERO_BD;
+    this.dailyVolumeNOTE = ZERO_BD;
     this.dailyVolumeUSD = ZERO_BD;
     this.dailyVolumeUntracked = ZERO_BD;
-    this.totalVolumeCANTO = ZERO_BD;
-    this.totalLiquidityCANTO = ZERO_BD;
+    this.totalVolumeNOTE = ZERO_BD;
+    this.totalLiquidityNOTE = ZERO_BD;
     this.totalVolumeUSD = ZERO_BD;
     this.totalLiquidityUSD = ZERO_BD;
     this.txCount = ZERO_BD;
@@ -74,7 +74,7 @@ export class StableswapDayData {
   date: number;
 
   @Field((type) => DecimalScalar, { nullable: true })
-  dailyVolumeCANTO: Decimal;
+  dailyVolumeNOTE: Decimal;
 
   @Field((type) => DecimalScalar, { nullable: true })
   dailyVolumeUSD: Decimal;
@@ -83,10 +83,10 @@ export class StableswapDayData {
   dailyVolumeUntracked: Decimal;
 
   @Field((type) => DecimalScalar, { nullable: true })
-  totalVolumeCANTO: Decimal;
+  totalVolumeNOTE: Decimal;
 
   @Field((type) => DecimalScalar, { nullable: true })
-  totalLiquidityCANTO: Decimal;
+  totalLiquidityNOTE: Decimal;
 
   @Field((type) => DecimalScalar, { nullable: true })
   totalVolumeUSD: Decimal;
@@ -101,11 +101,11 @@ export class StableswapDayData {
     this._id = new ObjectId();
     this.id = "";
     this.date = 0;
-    this.dailyVolumeCANTO = ZERO_BD;
+    this.dailyVolumeNOTE = ZERO_BD;
     this.dailyVolumeUSD = ZERO_BD;
     this.dailyVolumeUntracked = ZERO_BD;
-    this.totalVolumeCANTO = ZERO_BD;
-    this.totalLiquidityCANTO = ZERO_BD;
+    this.totalVolumeNOTE = ZERO_BD;
+    this.totalLiquidityNOTE = ZERO_BD;
     this.totalVolumeUSD = ZERO_BD;
     this.totalLiquidityUSD = ZERO_BD;
     this.txCount = ZERO_BD;
@@ -115,11 +115,11 @@ export class StableswapDayData {
     this._id = swap._id;
     this.id = swap.id;
     this.date = swap.date;
-    this.dailyVolumeCANTO = swap.dailyVolumeCANTO;
+    this.dailyVolumeNOTE = swap.dailyVolumeNOTE;
     this.dailyVolumeUSD = swap.dailyVolumeUSD;
     this.dailyVolumeUntracked = swap.dailyVolumeUntracked;
-    this.totalVolumeCANTO = swap.totalVolumeCANTO;
-    this.totalLiquidityCANTO = swap.totalLiquidityCANTO;
+    this.totalVolumeNOTE = swap.totalVolumeNOTE;
+    this.totalLiquidityNOTE = swap.totalLiquidityNOTE;
     this.totalVolumeUSD = swap.totalVolumeUSD;
     this.totalLiquidityUSD = swap.totalLiquidityUSD;
     this.txCount = swap.txCount;

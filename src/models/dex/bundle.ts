@@ -14,13 +14,13 @@ export class BundleDb {
   @Property({ default: "", required: false })
   id: string;
 
-  @Property({ name: "cantoPrice", default: new Decimal("0"), required: false })
-  cantoPrice: Decimal;
+  @Property({ default: new Decimal("0"), required: false })
+  notePrice: Decimal;
 
   constructor(id: string) {
     this._id = new ObjectId();
     this.id = id;
-    this.cantoPrice = ZERO_BD;
+    this.notePrice = ZERO_BD;
   }
 
   toGenerated() {
@@ -40,18 +40,18 @@ export class Bundle {
   id: string;
 
   @Field((type) => DecimalScalar)
-  cantoPrice: Decimal;
+  notePrice: Decimal;
 
   constructor() {
     this._id = new ObjectId();
     this.id = "";
-    this.cantoPrice = ZERO_BD;
+    this.notePrice = ZERO_BD;
   }
 
   fromDb(bundle: BundleDb) {
     this._id = bundle._id;
     this.id = bundle.id;
-    this.cantoPrice = bundle.cantoPrice;
+    this.notePrice = bundle.notePrice;
     return this;
   }
 

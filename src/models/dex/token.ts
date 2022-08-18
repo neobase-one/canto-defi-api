@@ -40,7 +40,7 @@ export class TokenDb {
   totalLiquidity: Decimal;
 
   @Property({ default: new Decimal("0"), required: false })
-  derivedCANTO: Decimal;
+  derivedNOTE: Decimal;
 
   constructor(id: string) {
     this._id = new ObjectId();
@@ -54,7 +54,7 @@ export class TokenDb {
     this.untrackedVolumeUSD = ZERO_BD;
     this.txCount = ZERO_BD;
     this.totalLiquidity = ZERO_BD;
-    this.derivedCANTO = ZERO_BD;
+    this.derivedNOTE = ZERO_BD;
   }
 
   toGenerated() {
@@ -103,7 +103,7 @@ export class Token {
   totalLiquidity: Decimal;
 
   @Field((type) => DecimalScalar, { nullable: true })
-  derivedCANTO: Decimal;
+  derivedNOTE: Decimal;
 
   fromDb(token: TokenDb) {
     this._id = token._id;
@@ -117,7 +117,7 @@ export class Token {
     this.untrackedVolumeUSD = token.untrackedVolumeUSD;
     this.txCount = token.txCount;
     this.totalLiquidity = token.totalLiquidity;
-    this.derivedCANTO = token.derivedCANTO;
+    this.derivedNOTE = token.derivedNOTE;
     return this;
   }
 
@@ -137,6 +137,6 @@ export class Token {
     this.untrackedVolumeUSD = ZERO_BD;
     this.txCount = ZERO_BD;
     this.totalLiquidity = ZERO_BD;
-    this.derivedCANTO = ZERO_BD;
+    this.derivedNOTE = ZERO_BD;
   }
 }
