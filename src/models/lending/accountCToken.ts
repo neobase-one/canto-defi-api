@@ -16,46 +16,46 @@ export class AccountCTokenDb {
     @Property({ default: "", required: true })
     id: string;
 
-    @Property({ default: "", required: true })
+    @Property({ default: "", required: false })
     market: string
 
-    @Property({ default: "", required: true })
+    @Property({ default: "", required: false })
     symbol: string
 
-    @Property({ default: "", required: true })
+    @Property({ default: "", required: false })
     account: string
 
-    @Property({ type: String, default: [], required: true })
+    @Property({ type: String, default: [], required: false })
     transactionHashes: string[]
 
     @Property({ type: Decimal, default: [], required: false })
     transactionTimes: Decimal[]
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     accrualBlockNumber: Decimal
 
-    @Property({ required: true })
+    @Property({ default: false, required: false })
     enteredMarket: Boolean
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     cTokenBalance: Decimal
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     totalUnderlyingSupplied: Decimal
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     totalUnderlyingRedeemed: Decimal
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     accountBorrowIndex: Decimal
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     totalUnderlyingBorrowed: Decimal
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     totalUnderlyingRepaid: Decimal
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     storedBorrowBalance: Decimal
 
     //   # The following values are added by the JS Wrapper, and must be calculated with the most up

@@ -18,9 +18,9 @@ export class MarketDb {
     symbol: string;
     @Property({ default: new Decimal("0"), required: false })
     accrualBlockNumber: Decimal;
-    @Property({ required: false })
+    @Property({ default: new Decimal("0"), required: false })
     totalSupply: Decimal;
-    @Property({ required: false })
+    @Property({ default: new Decimal("0"), required: false })
     exchangeRate: Decimal;
     @Property({ default: new Decimal("0"), required: false })
     totalReserves: Decimal;

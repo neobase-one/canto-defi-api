@@ -20,16 +20,16 @@ export class AccountDb {
     @Property({ type: String, default: [], required: false })
     tokens: string[]
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     countLiquidated: Decimal;
 
-    @Property({ equired: true })
+    @Property({ default: new Decimal("0"), required: false })
     liquidityTokenBalance: Decimal;
 
-    @Property({ required: true })
+    @Property({ default: new Decimal("0"), required: false })
     countLiquidator: Decimal
 
-    @Property({ required: true })
+    @Property({ default: false, required: false })
     hasBorrowed: Boolean
 
     //   # The following values are added by the JS Wrapper, and must be calculated with the most up

@@ -11,19 +11,19 @@ export class ComptrollerDb {
     readonly _id: ObjectId;
 
     // decorator docs: https://typegoose.github.io/typegoose/docs/api/decorators/prop
-    @Property({ name: "id", default: "1", required: false })
+    @Property({ name: "id", default: "1", required: true })
     id: string;
 
-    @Property({ name: "priceOracle", required: false })
+    @Property({ name: "priceOracle", default: "", required: false })
     priceOracle: string
 
-    @Property({ name: "closeFactor", required: false })
+    @Property({ name: "closeFactor", default: new Decimal("0"), required: false })
     closeFactor: Decimal
 
-    @Property({ name: "liquidationIncentive", required: false })
+    @Property({ name: "liquidationIncentive", default: new Decimal("0"), required: false })
     liquidationIncentive: Decimal
 
-    @Property({ name: "maxAssets", required: false })
+    @Property({ name: "maxAssets", default: new Decimal("0"), required: false })
     maxAssets: Decimal
 
     constructor(id: string) {
