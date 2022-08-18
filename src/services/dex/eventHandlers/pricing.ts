@@ -140,10 +140,10 @@ export async function getTrackedVolumeUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: BundleDb = await bundleService.get() as BundleDb;
-  let price0 = convertToDecimal(token0.derivedNOTE).times(convertToDecimal(bundle.notePrice));
-  // let price0 = convertToDecimal(token0.derivedNOTE);
-  let price1 = convertToDecimal(token1.derivedNOTE).times(convertToDecimal(bundle.notePrice));
-  // let price1 = convertToDecimal(token1.derivedNOTE);
+  // let price0 = convertToDecimal(token0.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+  let price0 = convertToDecimal(token0.derivedNOTE);
+  // let price1 = convertToDecimal(token1.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+  let price1 = convertToDecimal(token1.derivedNOTE);
 
   // dont count tracked volume on these pairs - usually rebass tokens
   if (UNTRACKED_PAIRS.includes(pair.id)) {
@@ -218,10 +218,10 @@ export async function getTrackedLiquidityUSD(
   const bundleService = Container.get(BundleService);
 
   let bundle: BundleDb = await bundleService.get() as BundleDb;
-  let price0 = convertToDecimal(token0.derivedNOTE).times(convertToDecimal(bundle.notePrice));
-  // let price0 = convertToDecimal(token0.derivedNOTE);
-  let price1 = convertToDecimal(token1.derivedNOTE).times(convertToDecimal(bundle.notePrice));
-  // let price1 = convertToDecimal(token1.derivedNOTE);
+  // let price0 = convertToDecimal(token0.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+  let price0 = convertToDecimal(token0.derivedNOTE);
+  // let price1 = convertToDecimal(token1.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+  let price1 = convertToDecimal(token1.derivedNOTE);
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {

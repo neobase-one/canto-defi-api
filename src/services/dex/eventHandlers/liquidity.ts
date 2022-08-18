@@ -85,8 +85,10 @@ export async function createLiquiditySnapshot(
   snapshot.user = position.user;
   snapshot.pair = position.pair;
   const notePrice = new Decimal(bundle.notePrice.toString());
-  snapshot.token0PriceUSD = new Decimal(token0.derivedNOTE.toString()).times(notePrice);
-  snapshot.token1PriceUSD = new Decimal(token1.derivedNOTE.toString()).times(notePrice);
+  // snapshot.token0PriceUSD = new Decimal(token0.derivedNOTE.toString()).times(notePrice);
+  snapshot.token0PriceUSD = new Decimal(token0.derivedNOTE.toString());
+  // snapshot.token1PriceUSD = new Decimal(token1.derivedNOTE.toString()).times(notePrice);
+  snapshot.token1PriceUSD = new Decimal(token1.derivedNOTE.toString());
   snapshot.reserve0 = pair.reserve0;
   snapshot.reserve1 = pair.reserve1;
   snapshot.reserveUSD = pair.reserveUSD;

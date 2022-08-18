@@ -103,8 +103,8 @@ export async function mintEventHandler(
   let amountTotalNOTE = convertToDecimal(token1.derivedNOTE)
     .times(token1Amount)
     .plus(convertToDecimal(token0.derivedNOTE).times(token0Amount));
-  let amountTotalUSD = amountTotalNOTE.times(convertToDecimal(bundle.notePrice));
-  // let amountTotalUSD = amountTotalNOTE;
+  // let amountTotalUSD = amountTotalNOTE.times(convertToDecimal(bundle.notePrice));
+  let amountTotalUSD = amountTotalNOTE;
 
   // update txn counts
   pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
@@ -179,8 +179,8 @@ export async function burnEventHandler(
   let amountTotalNOTE = convertToDecimal(token1.derivedNOTE)
     .times(token1Amount)
     .plus(convertToDecimal(token0.derivedNOTE).times(token0Amount));
-  let amountTotalUSD = amountTotalNOTE.times(convertToDecimal(bundle.notePrice));
-  // let amountTotalUSD = amountTotalNOTE;
+  // let amountTotalUSD = amountTotalNOTE.times(convertToDecimal(bundle.notePrice));
+  let amountTotalUSD = amountTotalNOTE;
 
   // update txn counts
   pair.txCount = convertToDecimal(pair.txCount).plus(ONE_BD);
@@ -259,8 +259,8 @@ export async function swapEventHandler(
     .times(amount1Total)
     .plus(convertToDecimal(token0.derivedNOTE).times(amount0Total))
     .div(new Decimal("2"));
-  let derivedAmountUSD = derivedAmountNOTE.times(convertToDecimal(bundle.notePrice));
-  // let derivedAmountUSD = derivedAmountNOTE;
+  // let derivedAmountUSD = derivedAmountNOTE.times(convertToDecimal(bundle.notePrice));
+  let derivedAmountUSD = derivedAmountNOTE;
 
   // only accounts for volume through white listed tokens
   let trackedAmountUSD = await getTrackedVolumeUSD(
@@ -273,9 +273,11 @@ export async function swapEventHandler(
 
   let trackedAmountNOTE: Decimal = trackedAmountUSD;
   if (convertToDecimal(bundle.notePrice).equals(ZERO_BD)) {
-    trackedAmountNOTE = ZERO_BD;
+    // trackedAmountNOTE = ZERO_BD;
+    trackedAmountNOTE = trackedAmountUSD;
   } else {
-    trackedAmountNOTE = trackedAmountUSD.div(convertToDecimal(bundle.notePrice));
+    // trackedAmountNOTE = trackedAmountUSD.div(convertToDecimal(bundle.notePrice));
+    trackedAmountNOTE = trackedAmountUSD;
   }
 
   // update token0 global volume and token liquidity stats
@@ -399,8 +401,8 @@ export async function swapEventHandler(
     amount0Total.times(convertToDecimal(token0.derivedNOTE))
   );
   token0DayData.dailyVolumeUSD = convertToDecimal(token0DayData.dailyVolumeUSD).plus(
-    amount0Total.times(convertToDecimal(token0.derivedNOTE)).times(convertToDecimal(bundle.notePrice))
-    // amount0Total.times(convertToDecimal(token0.derivedNOTE))
+    // amount0Total.times(convertToDecimal(token0.derivedNOTE)).times(convertToDecimal(bundle.notePrice))
+    amount0Total.times(convertToDecimal(token0.derivedNOTE))
   );
   await tddService.save(token0DayData);
 
@@ -411,8 +413,8 @@ export async function swapEventHandler(
     amount1Total.times(convertToDecimal(token1.derivedNOTE))
   );
   token1DayData.dailyVolumeUSD = convertToDecimal(token1DayData.dailyVolumeUSD).plus(
-    amount1Total.times(convertToDecimal(token1.derivedNOTE)).times(convertToDecimal(bundle.notePrice))
-    // amount1Total.times(convertToDecimal(token1.derivedNOTE))
+    // amount1Total.times(convertToDecimal(token1.derivedNOTE)).times(convertToDecimal(bundle.notePrice))
+    amount1Total.times(convertToDecimal(token1.derivedNOTE))
   );
   await tddService.save(token1DayData);
 }
@@ -670,17 +672,18 @@ export async function syncEventHandler(
 
   // get tracked liquidity - will be 0 if neither in whitelist
   let trackedLiquidityNOTE: Decimal;
+  let trackedLiquidityUSD = await getTrackedLiquidityUSD(
+    pair.reserve0,
+    token0,
+    pair.reserve1,
+    token1
+  );
   if (!convertToDecimal(bundle.notePrice).equals(ZERO_BD)) {
-    let trackedLiquidityUSD = await getTrackedLiquidityUSD(
-      pair.reserve0,
-      token0,
-      pair.reserve1,
-      token1
-    );
-    trackedLiquidityNOTE = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.notePrice));
-    // trackedLiquidityNOTE = convertToDecimal(trackedLiquidityUSD);
+    // trackedLiquidityNOTE = convertToDecimal(trackedLiquidityUSD).div(convertToDecimal(bundle.notePrice));
+    trackedLiquidityNOTE = convertToDecimal(trackedLiquidityUSD);
   } else {
-    trackedLiquidityNOTE = ZERO_BD;
+    // trackedLiquidityNOTE = ZERO_BD;
+    trackedLiquidityNOTE = convertToDecimal(trackedLiquidityUSD);
   }
 
   // use derived amounts within pair
@@ -688,14 +691,14 @@ export async function syncEventHandler(
   pair.reserveNOTE = convertToDecimal(pair.reserve0)
     .times(convertToDecimal(token0.derivedNOTE))
     .plus(convertToDecimal(convertToDecimal(pair.reserve1).times(convertToDecimal(token1.derivedNOTE))));
-  pair.reserveUSD = convertToDecimal(pair.reserveNOTE).times(convertToDecimal(bundle.notePrice));
-  // pair.reserveUSD = convertToDecimal(pair.reserveNOTE);
+  // pair.reserveUSD = convertToDecimal(pair.reserveNOTE).times(convertToDecimal(bundle.notePrice));
+  pair.reserveUSD = convertToDecimal(pair.reserveNOTE);
 
   // use tracked amounts globally
   factory.totalLiquidityNOTE =
     convertToDecimal(factory.totalLiquidityNOTE).plus(convertToDecimal(trackedLiquidityNOTE));
-  factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityNOTE).times(convertToDecimal(bundle.notePrice));
-  // factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityNOTE);
+  // factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityNOTE).times(convertToDecimal(bundle.notePrice));
+  factory.totalLiquidityUSD = convertToDecimal(factory.totalLiquidityNOTE);
   // todo: since just multiplication can try to not use USD if all calc based on NOTE
 
   // correctly set liquidity amounts for each token

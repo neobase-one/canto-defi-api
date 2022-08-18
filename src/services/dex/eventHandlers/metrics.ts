@@ -138,16 +138,16 @@ export async function updateTokenDayData(token: TokenDb, event: EventData) {
     tokenDayData = new TokenDayDataDb(tokenDayId);
     tokenDayData.date = dayStartTimestamp;
     tokenDayData.token = token.id;
-    tokenDayData.priceUSD = convertToDecimal(token.derivedNOTE).times(convertToDecimal(bundle.notePrice));
-    // tokenDayData.priceUSD = convertToDecimal(token.derivedNOTE);
+    // tokenDayData.priceUSD = convertToDecimal(token.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+    tokenDayData.priceUSD = convertToDecimal(token.derivedNOTE);
     await new TokenDayDataModel(tokenDayData).save();
   }
-  tokenDayData.priceUSD = convertToDecimal(token.derivedNOTE).times(convertToDecimal(bundle.notePrice));
-  // tokenDayData.priceUSD = convertToDecimal(token.derivedNOTE);
+  // tokenDayData.priceUSD = convertToDecimal(token.derivedNOTE).times(convertToDecimal(bundle.notePrice));
+  tokenDayData.priceUSD = convertToDecimal(token.derivedNOTE);
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
   tokenDayData.totalLiquidityNOTE = convertToDecimal(token.totalLiquidity).times(convertToDecimal(token.derivedNOTE));
-  tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityNOTE).times(convertToDecimal(bundle.notePrice));
-  // tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityNOTE);
+  // tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityNOTE).times(convertToDecimal(bundle.notePrice));
+  tokenDayData.totalLiquidityUSD = convertToDecimal(tokenDayData.totalLiquidityNOTE);
   tokenDayData.dailyTxns = convertToDecimal(tokenDayData.dailyTxns).plus(ONE_BD);
   await tokenDayDataService.save(tokenDayData);
 
