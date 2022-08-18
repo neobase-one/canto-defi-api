@@ -2,7 +2,6 @@ import { isNullOrUndefined } from "@typegoose/typegoose/lib/internal/utils";
 import Decimal from "decimal.js";
 import { Arg, Query, Resolver } from "type-graphql";
 import { StableswapFactory, StableswapFactoryModel } from "../../../models/dex/stableswapFactory";
-import { UniswapFactory, UniswapFactoryModel } from "../../../models/dex/uniswapFactory";
 import { UniswapFactoriesInput } from "../inputs/queryInputs";
 
 @Resolver()
