@@ -99,6 +99,7 @@ export async function handleNewCollateralFactorEvent(
 
     let market: MarketDb = await marketService.getByAddress(event.address) as MarketDb;
     if (market !== null) {
+        // todo: div by mantissa factor
         market.collateralFactor = input.newCollateralFactorMantissa;
 
         await marketService.save(market);

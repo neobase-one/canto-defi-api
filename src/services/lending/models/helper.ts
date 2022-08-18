@@ -158,7 +158,6 @@ export async function updateMarket(
   let mantissaFactorBD: Decimal = exponentToBigDecimal(18)
   let cTokenDecimalsBD: Decimal = exponentToBigDecimal(8)
 
-  console.log("enter")
   const marketService = Container.get(MarketService);
   const accountService = Container.get(AccountService);
 

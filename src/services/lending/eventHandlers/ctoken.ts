@@ -37,7 +37,7 @@ export async function handleBorrowEvent(
       timestamp,
       event.blockNumber,
     )
-    let previousBorrow = cTokenStats.storedBorrowBalance;
+    let previousBorrow = convertToDecimal(cTokenStats.storedBorrowBalance);
     cTokenStats.storedBorrowBalance = input.accountBorrows;
     cTokenStats.accountBorrowIndex = market.borrowIndex;
     cTokenStats.totalUnderlyingBorrowed = convertToDecimal(cTokenStats.totalUnderlyingBorrowed).plus(
@@ -105,7 +105,7 @@ export async function handleRepayBorrowEvent(
       account = await createAccount(accountID);
     }
 
-    if (cTokenStats.storedBorrowBalance.equals(ZERO_BD)) {
+    if (convertToDecimal(cTokenStats.storedBorrowBalance).equals(ZERO_BD)) {
       market.numberOfBorrowers = convertToDecimal(market.numberOfBorrowers).minus(1);
 
       await marketService.save(market);
@@ -186,10 +186,9 @@ export async function handleTransferEvent(
       )
     }
   }
-  let market = marketDb as MarketDb;
-  let exchangeRate = convertToDecimal(market.exchangeRate);
+  let exchangeRate = convertToDecimal(marketDb.exchangeRate);
   let amountUnderlying = exchangeRate.times(input.amount);
-  let marketUnderlyingDecimals = convertToDecimal(market.underlyingDecimals).toNumber();
+  let marketUnderlyingDecimals = convertToDecimal(marketDb.underlyingDecimals).toNumber();
   let amountUnderylingTruncated = amountUnderlying.toDecimalPlaces(marketUnderlyingDecimals);
 
   let accountFromID = input.from;
@@ -205,8 +204,8 @@ export async function handleTransferEvent(
     // Update cTokenStats common for all events, and return the stats to update unique
     // values for each event
     let cTokenStatsFrom = await updateCommonCTokenStats(
-      market.id,
-      market.symbol,
+      marketDb.id,
+      marketDb.symbol,
       accountFromID,
       event.transactionHash,
       timestamp,
@@ -223,10 +222,10 @@ export async function handleTransferEvent(
 
     await actService.save(cTokenStatsFrom);
 
-    if (cTokenStatsFrom.cTokenBalance.equals(ZERO_BD)) {
-      market.numberOfSuppliers = convertToDecimal(market.numberOfSuppliers).minus(1);
+    if (convertToDecimal(cTokenStatsFrom.cTokenBalance).equals(ZERO_BD)) {
+      marketDb.numberOfSuppliers = convertToDecimal(marketDb.numberOfSuppliers).minus(1);
 
-      await marketService.save(market);
+      await marketService.save(marketDb);
     }
   }
 
@@ -244,8 +243,8 @@ export async function handleTransferEvent(
     // Update cTokenStats common for all events, and return the stats to update unique
     // values for each event
     let cTokenStatsTo = await updateCommonCTokenStats(
-      market.id,
-      market.symbol,
+      marketDb.id,
+      marketDb.symbol,
       accountToID,
       event.transactionHash,
       timestamp,
@@ -266,9 +265,9 @@ export async function handleTransferEvent(
       previousCTokenBalanceTo.equals(ZERO_BD) &&
       !input.amount.equals(ZERO_BD) // checking edge case for transfers of 0
     ) {
-      market.numberOfSuppliers = convertToDecimal(market.numberOfSuppliers).plus(1);
+      marketDb.numberOfSuppliers = convertToDecimal(marketDb.numberOfSuppliers).plus(1);
 
-      await marketService.save(market);
+      await marketService.save(marketDb);
     }
   }
 }
