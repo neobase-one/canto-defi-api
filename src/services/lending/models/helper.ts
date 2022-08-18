@@ -9,6 +9,7 @@ import { Config } from '../../../config';
 import { web3 } from '../../../loaders/web3';
 import { AccountDb, AccountModel } from '../../../models/lending/account';
 import { AccountCTokenDb, AccountCTokenModel } from '../../../models/lending/accountCToken';
+import { ComptrollerDb } from '../../../models/lending/comptroller';
 import { Market, MarketDb, MarketModel } from '../../../models/lending/market';
 import { BaseV1RouterABI } from '../../../utils/abiParser/baseV1Router';
 import { cTokenABI } from '../../../utils/abiParser/ctoken';
@@ -16,6 +17,7 @@ import { ADDRESS_ZERO, ZERO_BD } from '../../../utils/constants';
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from '../../../utils/dex/token';
 import { convertToDecimal, exponentToBigDecimal } from '../../../utils/helper';
 import { AccountService } from './account';
+import { AccountCTokenService } from './accountCToken';
 import { ComptrollerService } from './comptroller';
 import { MarketService } from './market';
 
@@ -39,8 +41,9 @@ export async function createAccountCToken(
   cTokenStats.totalUnderlyingRepaid = ZERO_BD
   cTokenStats.storedBorrowBalance = ZERO_BD
   cTokenStats.enteredMarket = false
-  const cToken = new AccountCTokenModel(cTokenStats);
-  await cToken.save();
+
+  await new AccountCTokenModel(cTokenStats).save();
+
   return cTokenStats
 }
 
@@ -49,9 +52,10 @@ export async function createAccount(accountID: string): Promise<AccountDb> {
   accountDb.countLiquidated = ZERO_BD
   accountDb.countLiquidator = ZERO_BD
   accountDb.hasBorrowed = false
-  const account = new AccountModel(accountDb);
-  await account.save();
-  return account
+
+  await new AccountModel(accountDb).save();
+
+  return accountDb;
 }
 
 export async function updateCommonCTokenStats(
@@ -63,8 +67,8 @@ export async function updateCommonCTokenStats(
   blockNumber: number,
 ): Promise<AccountCTokenDb> {
   let cTokenStatsID = marketID.concat('-').concat(accountID)
-  const accountService = Container.get(AccountService);
-  let cTokenStats: any = await accountService.getById(cTokenStatsID);
+  const actService = Container.get(AccountCTokenService);
+  let cTokenStats: AccountCTokenDb = await actService.getById(cTokenStatsID) as AccountCTokenDb;
   if (cTokenStats == null) {
     cTokenStats = await createAccountCToken(cTokenStatsID, marketSymbol, accountID, marketID)
   }
@@ -74,14 +78,14 @@ export async function updateCommonCTokenStats(
   }
   txHashes.push(txHash)
   cTokenStats.transactionHashes = txHashes
-  let txTimes = cTokenStats.transactionTimes as number[];
+  let txTimes = cTokenStats.transactionTimes as Decimal[];
   if (isNullOrUndefined(txTimes)) {
     txTimes = [];
   }
-  txTimes.push(timestamp)
+  txTimes.push(convertToDecimal(timestamp))
   cTokenStats.transactionTimes = txTimes
-  cTokenStats.accrualBlockNumber = blockNumber
-  cTokenStats.isNew = false;
+  cTokenStats.accrualBlockNumber = convertToDecimal(blockNumber)
+
   return cTokenStats as AccountCTokenDb
 }
 
@@ -136,8 +140,8 @@ export async function createMarket(marketAddress: string): Promise<MarketDb> {
   market.reserveFactor = ZERO_BD;
   market.underlyingPriceUSD = ZERO_BD;
 
-  let m = new MarketModel(market);
-  await m.save();
+  await new MarketModel(market).save();
+
   return market
 }
 
@@ -145,7 +149,7 @@ export async function updateMarket(
   marketAddress: string,
   blockNumber: number,
   blockTimestamp: number,
-): Promise<Market> {
+): Promise<MarketDb> {
   let cUSDCAddress = Config.canto.lendingDashboard.cUSDC_ADDRESS;
   let cETHAddress = Config.canto.lendingDashboard.cETH_ADDRESS;
 
@@ -158,7 +162,7 @@ export async function updateMarket(
   const marketService = Container.get(MarketService);
   const accountService = Container.get(AccountService);
 
-  let market: any = await marketService.getByAddress(marketAddress);
+  let market: MarketDb = await marketService.getByAddress(marketAddress) as MarketDb;
   if (market === null) {
     market = await createMarket(marketAddress);
   }
@@ -197,7 +201,7 @@ export async function updateMarket(
 
     let accrualBlockNumber = await contract.methods.accrualBlockNumber().call();
     market.accrualBlockNumber = convertToDecimal(accrualBlockNumber);
-    market.blockTimestamp = blockTimestamp;
+    market.blockTimestamp = convertToDecimal(blockTimestamp);
     let totalSupply = await contract.methods.totalSupply().call();
     market.totalSupply = convertToDecimal(totalSupply).div(cTokenDecimalsBD);
 
@@ -257,8 +261,7 @@ export async function updateMarket(
       console.log("cToken ", blockNumber, market.id, " supplyRatePerBlock() failed")
     }
 
-    market.isNew = false;
-    await market.save();
+    await marketService.save(market);
   }
 
   return market;
@@ -274,7 +277,7 @@ async function getTokenPrice(
   let comptrollerService = Container.get(ComptrollerService);
 
   // 
-  let comptroller = await comptrollerService.getById('1');
+  let comptroller: ComptrollerDb = await comptrollerService.getById('1') as ComptrollerDb;
   let oracleAddress = Config.contracts.baseV1Router.addresses[0];
   if (comptroller !== null) {
     oracleAddress = comptroller.priceOracle;
@@ -296,7 +299,7 @@ async function getUSDCPrice(blockNumber: number) {
   let comptrollerService = Container.get(ComptrollerService);
 
   // 
-  let comptroller = await comptrollerService.getById('1');
+  let comptroller: ComptrollerDb = await comptrollerService.getById('1') as ComptrollerDb;
   let oracleAddress = Config.contracts.baseV1Router.addresses[0];
   if (comptroller !== null) {
     oracleAddress = comptroller.priceOracle;

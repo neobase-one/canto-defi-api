@@ -43,6 +43,8 @@ export class MarketDb {
     @Property({ default: new Decimal("0"), required: false })
     borrowRate: Decimal;
     @Property({ default: new Decimal("0"), required: false })
+    cash: Decimal;
+    @Property({ default: new Decimal("0"), required: false })
     collateralFactor: Decimal;
     @Property({ default: "", required: false })
     interestRateModelAddress: string
@@ -50,6 +52,8 @@ export class MarketDb {
     numberOfBorrowers: Decimal;
     @Property({ default: new Decimal("0"), required: false })
     numberOfSuppliers: Decimal;
+    @Property({ default: new Decimal("0"), required: false })
+    reserves: Decimal;
     @Property({ default: new Decimal("0"), required: false })
     supplyRate: Decimal;
     @Property({ default: "", required: false })

@@ -2,8 +2,10 @@ import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { AccountCTokenModel } from "../../../models/lending/accountCToken";
 import { ComptrollerDb } from "../../../models/lending/comptroller";
+import { Market, MarketDb } from "../../../models/lending/market";
 import { MarketEnteredInput, MarketExitedInput, MarketListedInput, NewCloseFactorInput, NewCollateralFactorInput, NewLiquidationIncentiveInput, NewPriceOracleInput } from "../../../types/event/lending/comptroller";
 import { getTimestamp } from "../../../utils/helper";
+import { AccountCTokenService } from "../models/accountCToken";
 import { ComptrollerService } from "../models/comptroller";
 import { createMarket, updateCommonCTokenStats } from "../models/helper";
 import { MarketService } from "../models/market";
@@ -16,7 +18,7 @@ export async function handleMarketListedEvent(
     // service
     const marketService = Container.get(MarketService);
 
-    let market: any = await marketService.getByAddress(event.address);
+    let market: MarketDb = await marketService.getByAddress(event.address) as MarketDb;
     if (market === null) {
         let address = input.cToken;
         await createMarket(address);
@@ -29,7 +31,9 @@ export async function handleMarketEnteredEvent(
 ) {
     // service
     const marketService = Container.get(MarketService);
-    let market = await marketService.getByAddress(event.address);
+    let actService = Container.get(AccountCTokenService);
+
+    let market: MarketDb = await marketService.getByAddress(event.address) as MarketDb;
     if (market !== null) {
         let accountID = input.account;
         let timestamp = await getTimestamp(event.blockNumber);
@@ -42,9 +46,7 @@ export async function handleMarketEnteredEvent(
             event.blockNumber,
         )
         cTokenStats.enteredMarket = true
-        const cToken = new AccountCTokenModel(cTokenStats);
-        cToken.isNew = false;
-        await cToken.save();
+        await actService.save(cTokenStats);
     }
 }
 
@@ -54,11 +56,13 @@ export async function handleMarketExitedEvent(
 ) {
     // service
     const marketService = Container.get(MarketService);
-    let market = await marketService.getByAddress(event.address);
+    let actService = Container.get(AccountCTokenService);
+
+    let market: MarketDb = await marketService.getByAddress(event.address) as MarketDb;
     if (market !== null) {
         let accountID = input.account;
         let timestamp = await getTimestamp(event.blockNumber);
-        let cTokenStats = await updateCommonCTokenStats(
+        let cTokenStats  = await updateCommonCTokenStats(
             market.id,
             market.symbol,
             accountID,
@@ -67,9 +71,8 @@ export async function handleMarketExitedEvent(
             event.blockNumber,
         )
         cTokenStats.enteredMarket = false
-        const cToken = new AccountCTokenModel(cTokenStats);
-        cToken.isNew = false;
-        await cToken.save();
+
+        await actService.save(cTokenStats);
     }
 }
 
@@ -80,11 +83,11 @@ export async function handleNewCloseFactorEvent(
     // service
     const comptrollerService = Container.get(ComptrollerService);
 
-    let comptroller = await comptrollerService.getById('1');
+    let comptroller: ComptrollerDb = await comptrollerService.getById('1') as ComptrollerDb;
     if (comptroller !== null) {
         comptroller.closeFactor = input.newCloseFactorMantissa
-        comptroller.isNew = false;
-        await comptroller.save();
+
+        await comptrollerService.save(comptroller);
     }
 }
 
@@ -94,11 +97,11 @@ export async function handleNewCollateralFactorEvent(
 ) {// service
     const marketService = Container.get(MarketService);
 
-    let market = await marketService.getByAddress(event.address);
+    let market: MarketDb = await marketService.getByAddress(event.address) as MarketDb;
     if (market !== null) {
         market.collateralFactor = input.newCollateralFactorMantissa;
-        market.isNew = false;
-        await market.save();
+
+        await marketService.save(market);
     }
 }
 
@@ -109,11 +112,11 @@ export async function handleNewLiquidationIncentiveEvent(
     // service
     const comptrollerService = Container.get(ComptrollerService);
 
-    let comptroller = await comptrollerService.getById('1');
+    let comptroller: ComptrollerDb = await comptrollerService.getById('1') as ComptrollerDb;
     if (comptroller !== null) {
         comptroller.liquidationIncentive = input.newLiquidationIncentiveMantissa;
-        comptroller.isNew = false;
-        await comptroller.save();
+
+        await comptrollerService.save(comptroller);
     }
 }
 
@@ -124,12 +127,11 @@ export async function handleNewPriceOracleEvent(
     // service
     const comptrollerService = Container.get(ComptrollerService);
 
-    let comptroller: any = await comptrollerService.getById('1');
+    let comptroller: ComptrollerDb = await comptrollerService.getById('1') as ComptrollerDb;
     if (comptroller === null) {
         comptroller = new ComptrollerDb('1');
-    } else {
-        comptroller.isNew = false;
     }
+
     comptroller.priceOracle = input.newPriceOracle;
-    await comptroller.save();
+    await comptrollerService.save(comptroller);
 }

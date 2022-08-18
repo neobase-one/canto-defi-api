@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Config } from '../../../config';
 import { web3 } from '../../../loaders/web3';
-import { MarketModel } from '../../../models/lending/market';
+import { MarketDb, MarketModel } from '../../../models/lending/market';
 import { cTokenABI } from '../../../utils/abiParser/ctoken';
 import { DAYS_IN_YEAR_DB, HUNDRED_DB, NEG_ONE_DB, ONE_BD, SECONDS_IN_DAY_BD } from '../../../utils/constants';
 import { convertToDecimal, exponentToBigDecimal } from '../../../utils/helper';
@@ -10,6 +10,12 @@ import { convertToDecimal, exponentToBigDecimal } from '../../../utils/helper';
 export class MarketService {
   async getByAddress(address: string) {
     return await MarketModel.findOne({ address: address }).exec();
+  }
+
+  async save(bundle: MarketDb) {
+    let model = new MarketModel(bundle);
+    model.isNew = false;
+    await model.save();
   }
 
   async getSupplyAPY(marketId: string) {

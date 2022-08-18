@@ -3,11 +3,12 @@ import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { AccountDb, AccountModel } from "../../../models/lending/account";
 import { AccountCTokenModel } from "../../../models/lending/accountCToken";
-import { MarketDb, MarketModel } from "../../../models/lending/market";
+import { Market, MarketDb, MarketModel } from "../../../models/lending/market";
 import { AccrueInterestInput, BorrowInput, LiquidateBorrowInput, NewMarketInterestRateModelInput, NewReserveFactorInput, RepayBorrowInput, TransferInput } from "../../../types/event/lending/ctoken";
-import { ZERO_BD } from "../../../utils/constants";
+import { ONE_BD, ZERO_BD } from "../../../utils/constants";
 import { convertToDecimal, getTimestamp } from "../../../utils/helper";
 import { AccountService } from "../models/account";
+import { AccountCTokenService } from "../models/accountCToken";
 import { createAccount, createMarket, updateCommonCTokenStats, updateMarket } from "../models/helper";
 import { MarketService } from "../models/market";
 
@@ -19,8 +20,9 @@ export async function handleBorrowEvent(
 ) {
   const marketService = Container.get(MarketService);
   const accountService = Container.get(AccountService);
+  let actService = Container.get(AccountCTokenService);
 
-  let market = await marketService.getByAddress(event.address);
+  let market: MarketDb = await marketService.getByAddress(event.address) as MarketDb;
   let accountID = input.borrower;
 
   // Update cTokenStats common for all events, and return the stats to update unique
@@ -41,26 +43,25 @@ export async function handleBorrowEvent(
     cTokenStats.totalUnderlyingBorrowed = convertToDecimal(cTokenStats.totalUnderlyingBorrowed).plus(
       input.borrowAmount
     );
-    const cToken = new AccountCTokenModel(cTokenStats);
-    cToken.isNew = false;
-    await cToken.save();
 
-    let accountDb: any = await accountService.getById(accountID);
+    await actService.save(cTokenStats);
+
+    let accountDb: AccountDb = await accountService.getById(accountID) as AccountDb;
     if (accountDb == null) {
       accountDb = await createAccount(accountID);
     }
     accountDb.hasBorrowed = true;
     const account = new AccountModel(accountDb as AccountDb);
-    account.isNew = false;
-    await account.save();
+
+    await accountService.save(account);
 
     if (
       previousBorrow.equals(ZERO_BD) &&
       !input.accountBorrows.equals(ZERO_BD) // checking edge case for borrwing 0
     ) {
       market.numberOfBorrowers = convertToDecimal(market.numberOfBorrowers).add(1);
-      market.isNew = false;
-      await market.save();
+
+      await marketService.save(market);
     }
   }
 }
@@ -71,8 +72,9 @@ export async function handleRepayBorrowEvent(
 ) {
   const marketService = Container.get(MarketService);
   const accountService = Container.get(AccountService);
+  let actService = Container.get(AccountCTokenService);
 
-  let market = await marketService.getByAddress(event.address);
+  let market: MarketDb = await marketService.getByAddress(event.address) as MarketDb;
   let accountID = input.borrower;
 
   // Update cTokenStats common for all events, and return the stats to update unique
@@ -96,19 +98,17 @@ export async function handleRepayBorrowEvent(
     cTokenStats.totalUnderlyingRepaid = convertToDecimal(cTokenStats.totalUnderlyingRepaid).plus(
       repayAmountBD
     )
-    const cToken = new AccountCTokenModel(cTokenStats);
-    cToken.isNew = false;
-    await cToken.save();
+    await actService.save(cTokenStats)
 
-    let account: any = await accountService.getById(accountID);
+    let account: AccountDb = await accountService.getById(accountID) as AccountDb;
     if (account == null) {
       account = await createAccount(accountID);
     }
 
     if (cTokenStats.storedBorrowBalance.equals(ZERO_BD)) {
       market.numberOfBorrowers = convertToDecimal(market.numberOfBorrowers).minus(1);
-      market.isNew = false;
-      await market.save();
+
+      await marketService.save(market);
     }
   }
 }
@@ -120,24 +120,24 @@ export async function handleLiquidateBorrowEvent(
   const accountService = Container.get(AccountService);
 
   let liquidatorID = input.liquidator;
-  let liquidatorDb: any = await accountService.getById(liquidatorID);
+  let liquidatorDb: AccountDb = await accountService.getById(liquidatorID) as AccountDb;
   if (liquidatorDb == null) {
     liquidatorDb = await createAccount(liquidatorID);
   }
-  liquidatorDb.countLiquidator = liquidatorDb.countLiquidator + 1;
-  const liquidator = new AccountModel(liquidatorDb as AccountDb);
-  liquidator.isNew = false;
-  await liquidator.save();
+  liquidatorDb.countLiquidator = convertToDecimal(liquidatorDb.countLiquidator)
+    .plus(ONE_BD);
+
+    await accountService.save(liquidatorDb);
 
   let borrowerID = input.borrower;
-  let borrowerDb: any = await accountService.getById(borrowerID);
+  let borrowerDb: AccountDb = await accountService.getById(borrowerID) as AccountDb;
   if (borrowerDb == null) {
     borrowerDb = await createAccount(borrowerID);
   }
-  borrowerDb.countLiquidated = borrowerDb.countLiquidated + 1;
-  const borrower = new AccountModel(borrowerDb as AccountDb);
-  borrower.isNew = false;
-  await borrower.save();
+  borrowerDb.countLiquidated = convertToDecimal(borrowerDb.countLiquidated)
+    .plus(ONE_BD);
+
+  await accountService.save(borrowerDb);
 }
 
 export async function handleAccrueInterestEvent(
@@ -154,11 +154,11 @@ export async function handleNewReserveFactorEvent(
 ) {
   const marketService = Container.get(MarketService);
 
-  let market = await marketService.getByAddress(event.address);
+  let market: MarketDb = await marketService.getByAddress(event.address) as MarketDb;
   if (market !== null) {
     market.reserveFactor = input.newReserveFactorMantissa;
-    market.isNew = false;
-    await market.save()
+
+    await marketService.save(market);
   }
 }
 
@@ -168,10 +168,12 @@ export async function handleTransferEvent(
 ) {
   const marketService = Container.get(MarketService);
   const accountService = Container.get(AccountService);
+  let actService = Container.get(AccountCTokenService);
+
   let timestamp = await getTimestamp(event.blockNumber);
 
   let marketID = event.address;
-  let marketDb: any = await marketService.getByAddress(marketID);
+  let marketDb: MarketDb = await marketService.getByAddress(marketID) as MarketDb;
 
   if (marketDb !== null) {
     let accrualBlockNumber = marketDb.accrualBlockNumber as Decimal;
@@ -195,7 +197,7 @@ export async function handleTransferEvent(
   // Checking if the tx is FROM the cToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations
   if (accountFromID != marketID) {
-    let accountFrom = await accountService.getById(accountFromID);
+    let accountFrom: AccountDb = await accountService.getById(accountFromID) as AccountDb;
     if (accountFrom == null) {
       await createAccount(accountFromID)
     }
@@ -218,15 +220,13 @@ export async function handleTransferEvent(
     cTokenStatsFrom.totalUnderlyingRedeemed = convertToDecimal(cTokenStatsFrom.totalUnderlyingRedeemed).plus(
       amountUnderylingTruncated,
     )
-    const cTokenStats = new AccountCTokenModel(cTokenStatsFrom);
-    cTokenStats.isNew = false;
-    await cTokenStats.save();
+
+    await actService.save(cTokenStatsFrom);
 
     if (cTokenStatsFrom.cTokenBalance.equals(ZERO_BD)) {
       market.numberOfSuppliers = convertToDecimal(market.numberOfSuppliers).minus(1);
-      let model = new MarketModel(market);
-      model.isNew = false;
-      await model.save();
+
+      await marketService.save(market);
     }
   }
 
@@ -236,7 +236,7 @@ export async function handleTransferEvent(
   // cTokens to a cToken contract, where it will not get recorded. Right now it would
   // be messy to include, so we are leaving it out for now TODO fix this in future
   if (accountToID != marketID) {
-    let accountTo = await accountService.getById(accountToID);
+    let accountTo: AccountDb = await accountService.getById(accountToID) as AccountDb;
     if (accountTo == null) {
       await createAccount(accountToID);
     }
@@ -260,18 +260,15 @@ export async function handleTransferEvent(
     cTokenStatsTo.totalUnderlyingSupplied = convertToDecimal(cTokenStatsTo.totalUnderlyingSupplied).plus(
       amountUnderylingTruncated,
     )
-    let model = new AccountCTokenModel(cTokenStatsTo);
-    model.isNew = false;
-    await model.save();
+    await actService.save(cTokenStatsTo);
 
     if (
       previousCTokenBalanceTo.equals(ZERO_BD) &&
       !input.amount.equals(ZERO_BD) // checking edge case for transfers of 0
     ) {
       market.numberOfSuppliers = convertToDecimal(market.numberOfSuppliers).plus(1);
-      let marketModel = new MarketModel(market);
-      marketModel.isNew = false;
-      await marketModel.save();
+
+      await marketService.save(market);
     }
   }
 }
@@ -283,12 +280,11 @@ export async function handleNewMarketInterestRateModelEvent(
   const marketService = Container.get(MarketService);
 
   let marketID = event.address;
-  let market: any = await marketService.getByAddress(marketID);
+  let market: MarketDb = await marketService.getByAddress(marketID) as MarketDb;
   if (market == null) {
     market = await createMarket(marketID);
   }
   market.interestRateModelAddress = input.newInterestRateModel;
-  let model = new MarketModel(market as MarketDb);
-  model.isNew = false;
-  await model.save();
+  
+  await marketService.save(market);
 }
