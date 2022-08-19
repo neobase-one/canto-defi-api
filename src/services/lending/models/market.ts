@@ -9,13 +9,20 @@ import { convertToDecimal, exponentToBigDecimal } from '../../../utils/helper';
 @Service()
 export class MarketService {
   async getByAddress(address: string) {
-    return await MarketModel.findOne({ address: address }).exec();
+    return await MarketModel.findOne({ id: address }).exec();
   }
 
-  async save(bundle: MarketDb) {
-    let model = new MarketModel(bundle);
-    model.isNew = false;
-    await model.save();
+  async save(market: MarketDb) {
+    let marketdb = await MarketModel.findOne({ id: market.id }).exec();
+    let model = new MarketModel(market);
+    if (marketdb !== null) {
+      model._id = marketdb._id;
+      delete model.__v;
+      model.isNew = false;
+      await model.save();
+    } else {
+      await model.save();
+    }
   }
 
   async getSupplyAPY(marketId: string) {

@@ -10,9 +10,16 @@ export class ComptrollerService {
     return await ComptrollerModel.findOne({ id: id }).exec();
   }
 
-  async save(bundle: ComptrollerDb) {
-    let model = new ComptrollerModel(bundle);
-    model.isNew = false;
-    await model.save();
+  async save(comptroller: ComptrollerDb) {
+    let comptrollerdb = await ComptrollerModel.findOne({ id: comptroller.id }).exec();
+    let model = new ComptrollerModel(comptroller);
+    if (comptrollerdb !== null) {
+      model._id = comptrollerdb._id;
+      delete model.__v;
+      model.isNew = false;
+      await model.save();
+    } else {
+      await model.save();
+    }
   }
 }

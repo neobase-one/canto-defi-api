@@ -7,9 +7,17 @@ export class AccountService {
     return await AccountModel.findOne({ id: id }).exec();
   }
 
-  async save(bundle: AccountDb) {
-    let model = new AccountModel(bundle);
-    model.isNew = false;
-    await model.save();
+  async save(account: AccountDb) {
+    let accountdb = await AccountModel.findOne({ id: account.id }).exec();
+    let model = new AccountModel(account);
+    if (accountdb !== null) {
+      model._id = accountdb._id;
+      delete model.__v;
+      model.isNew = false;
+      await model.save();
+    } else {
+      await model.save();
+    }
+    
   }
 }

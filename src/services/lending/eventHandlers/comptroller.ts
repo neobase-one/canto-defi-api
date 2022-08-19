@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import Container from "typedi";
 import { EventData } from "web3-eth-contract";
 import { AccountCTokenModel } from "../../../models/lending/accountCToken";
@@ -85,7 +86,7 @@ export async function handleNewCloseFactorEvent(
 
     let comptroller: ComptrollerDb = await comptrollerService.getById('1') as ComptrollerDb;
     if (comptroller !== null) {
-        comptroller.closeFactor = input.newCloseFactorMantissa
+        comptroller.closeFactor = (input.newCloseFactorMantissa).div(new Decimal(10^18));
 
         await comptrollerService.save(comptroller);
     }
@@ -100,7 +101,7 @@ export async function handleNewCollateralFactorEvent(
     let market: MarketDb = await marketService.getByAddress(event.address) as MarketDb;
     if (market !== null) {
         // todo: div by mantissa factor
-        market.collateralFactor = input.newCollateralFactorMantissa;
+        market.collateralFactor = (input.newCollateralFactorMantissa).div(new Decimal(10^18));
 
         await marketService.save(market);
     }
@@ -115,7 +116,7 @@ export async function handleNewLiquidationIncentiveEvent(
 
     let comptroller: ComptrollerDb = await comptrollerService.getById('1') as ComptrollerDb;
     if (comptroller !== null) {
-        comptroller.liquidationIncentive = input.newLiquidationIncentiveMantissa;
+        comptroller.liquidationIncentive = (input.newLiquidationIncentiveMantissa).div(new Decimal(10^18));
 
         await comptrollerService.save(comptroller);
     }
