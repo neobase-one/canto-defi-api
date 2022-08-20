@@ -10,8 +10,8 @@ import { Market } from "./market";
 
 // db object
 export class AccountCTokenDb {
-    @Property({ default: "", required: true })
-    readonly _id: ObjectId;
+    @Property({ default: new ObjectId(), required: true })
+    _id: ObjectId;
 
     @Property({ default: "", required: true })
     id: string;

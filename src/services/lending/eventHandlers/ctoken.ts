@@ -51,9 +51,7 @@ export async function handleBorrowEvent(
       accountDb = await createAccount(accountID);
     }
     accountDb.hasBorrowed = true;
-    const account = new AccountModel(accountDb as AccountDb);
-
-    await accountService.save(account);
+    await accountService.save(accountDb);
 
     if (
       previousBorrow.equals(ZERO_BD) &&

@@ -8,7 +8,8 @@ import { ZERO_BD } from "../../utils/constants";
 
 // mongo database object
 export class ComptrollerDb {
-    readonly _id: ObjectId;
+    @Property({ default: new ObjectId(), required: true })
+    _id: ObjectId;
 
     // decorator docs: https://typegoose.github.io/typegoose/docs/api/decorators/prop
     @Property({ name: "id", default: "1", required: true })

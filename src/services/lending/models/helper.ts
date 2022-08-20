@@ -42,9 +42,7 @@ export async function createAccountCToken(
   cTokenStats.storedBorrowBalance = ZERO_BD
   cTokenStats.enteredMarket = false
 
-  await new AccountCTokenModel(cTokenStats).save();
-
-  return cTokenStats
+  return await new AccountCTokenModel(cTokenStats).save();
 }
 
 export async function createAccount(accountID: string): Promise<AccountDb> {
@@ -53,9 +51,7 @@ export async function createAccount(accountID: string): Promise<AccountDb> {
   accountDb.countLiquidator = ZERO_BD
   accountDb.hasBorrowed = false
 
-  await new AccountModel(accountDb).save();
-
-  return accountDb;
+  return await new AccountModel(accountDb).save();
 }
 
 export async function updateCommonCTokenStats(
@@ -140,9 +136,7 @@ export async function createMarket(marketAddress: string): Promise<MarketDb> {
   market.reserveFactor = ZERO_BD;
   market.underlyingPriceUSD = ZERO_BD;
 
-  await new MarketModel(market).save();
-
-  return market
+  return await new MarketModel(market).save();
 }
 
 export async function updateMarket(

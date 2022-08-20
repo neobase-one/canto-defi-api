@@ -11,8 +11,8 @@ import { AccountCToken } from "./accountCToken";
 // db object
 export class AccountDb {
 
-    @Property({ default: "", required: false })
-    readonly _id: ObjectId;
+    @Property({ default: new ObjectId(), required: false })
+    _id: ObjectId;
 
     @Property({ default: "", required: true })
     id: string;

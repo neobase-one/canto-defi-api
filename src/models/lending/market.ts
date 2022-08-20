@@ -8,7 +8,8 @@ import { ZERO_BD } from "../../utils/constants";
 
 // mongo database object
 export class MarketDb {
-    readonly _id: ObjectId;
+    @Property({ default: new ObjectId(), required: true })
+    _id: ObjectId;
 
     @Property({ default: "", required: false })
     id: string;
