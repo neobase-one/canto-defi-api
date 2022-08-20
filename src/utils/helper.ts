@@ -49,5 +49,8 @@ export async function getTimestamp(blockNumber: number) {
 }
 
 export function convertToDecimal(decimal128: any) {
+  if (decimal128 == null || decimal128 == undefined) {
+    return ZERO_BD;
+  }
   return new Decimal(decimal128.toString());
 }
