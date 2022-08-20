@@ -89,7 +89,7 @@ export const Config = {
   // CONTRACT ADDRESSES
   contracts: {
     baseV1Factory: {
-      addresses: ["0xE387067f12561e579C5f7d4294f51867E0c1cFba"],
+      addresses: ["0xE387067f12561e579C5f7d4294f51867E0c1cFba"], // 224994
       events: {
         pairCreated: {
           signature: Web3.utils.keccak256(PairCreatedEventSignature),
@@ -137,7 +137,7 @@ export const Config = {
       },
     },
     comptroller: {
-      addresses: ["0x5E23dC409Fc2F832f83CEc191E245A191a4bCc5C"], // use unitroller address
+      addresses: ["0x5E23dC409Fc2F832f83CEc191E245A191a4bCc5C"], // 224994 // use unitroller address
       events: {
         marketEntered: {
           signature: Web3.utils.keccak256(MarketEnteredEventSignature),
@@ -171,7 +171,7 @@ export const Config = {
     },
     cToken: {
       addresses: [
-        "0x8c1D2b6b650a85aBC1c033580e88DD5d9D9aC40A", // cNoteDelegator
+        "0xEe602429Ef7eCe0a13e4FfE8dBC16e101049504C", // cNoteDelegator
         "0x0dD6241bFE519fB1c1B654877b66311c355804c5", // cUsdcDelegator
         "0xD7Ff6Ba11422D47Aeff3DAE08CC1Ff5F30975D80", // cUsdtDelegator
         "0x732Dcd6021fE992a935a26A6C5861312f0cBE5B2", // cAtomDelegator
