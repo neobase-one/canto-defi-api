@@ -104,9 +104,14 @@ export async function createMarket(marketAddress: string): Promise<MarketDb> {
     // It is all other CERC20 contracts
   } else {
     market = new MarketDb(marketAddress);
-    let underLyingAddress = await contract.methods.underlying().call();
-    market.underlyingAddress = String(underLyingAddress);
-    market.underlyingDecimals = new Decimal(fetchTokenDecimals(market.underlyingAddress));
+    let underLyingAddress = "";
+    try {
+      underLyingAddress = await contract.methods.underlying().call() as string;
+    } catch (e) {
+      console.error("createMarket", marketAddress, e);
+    }
+    market.underlyingAddress = underLyingAddress as string;
+    market.underlyingDecimals = new Decimal(await fetchTokenDecimals(market.underlyingAddress));
     market.underlyingName = await fetchTokenName(market.underlyingAddress);
     market.underlyingSymbol = await fetchTokenSymbol(market.underlyingAddress);
 
