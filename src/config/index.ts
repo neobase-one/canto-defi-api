@@ -137,7 +137,7 @@ export const Config = {
       },
     },
     comptroller: {
-      addresses: ["0x6F64C2a8c8417fF18CED8782cCA7125E52dF31B4"],
+      addresses: ["0x5E23dC409Fc2F832f83CEc191E245A191a4bCc5C"], // use unitroller address
       events: {
         marketEntered: {
           signature: Web3.utils.keccak256(MarketEnteredEventSignature),
