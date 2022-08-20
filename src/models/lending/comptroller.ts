@@ -9,7 +9,7 @@ import { ZERO_BD } from "../../utils/constants";
 // mongo database object
 export class ComptrollerDb {
     @Property({ default: new ObjectId(), required: true })
-    _id: ObjectId;
+    _id?: ObjectId;
 
     // decorator docs: https://typegoose.github.io/typegoose/docs/api/decorators/prop
     @Property({ name: "id", default: "1", required: true })
@@ -47,7 +47,7 @@ export class ComptrollerDb {
 @ObjectType()
 export class Comptroller {
     @Field((type) => ObjectIdScalar)
-    _id: ObjectId;
+    _id?: ObjectId;
 
     @Field((type) => ID)
     id: string;

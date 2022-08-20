@@ -8,16 +8,20 @@ export class AccountService {
   }
 
   async save(account: AccountDb) {
-    let accountdb = await AccountModel.findOne({ id: account.id }).exec();
-    let model = new AccountModel(account);
-    if (accountdb !== null) {
-      model._id = accountdb._id;
-      delete model.__v;
-      model.isNew = false;
-      await model.save();
-    } else {
-      await model.save();
-    }
-    
+    // let accountdb = await AccountModel.findOne({ id: account.id }).exec();
+    // let model = new AccountModel(account);
+    // if (accountdb !== null) {
+    //   model._id = accountdb._id;
+    //   delete model.__v;
+    //   model.isNew = false;
+    //   await model.save();
+    // } else {
+    //   await model.save();
+    // }
+    var doc = AccountModel.hydrate(account);
+    doc = doc.toObject();
+    delete doc._id;
+    // console.log(doc, account)
+    await AccountModel.updateOne({id: account.id}, doc, {upsert: true}).exec();
   }
 }

@@ -12,7 +12,7 @@ import { AccountCToken } from "./accountCToken";
 export class AccountDb {
 
     @Property({ default: new ObjectId(), required: false })
-    _id: ObjectId;
+    _id?: ObjectId;
 
     @Property({ default: "", required: true })
     id: string;
@@ -65,7 +65,7 @@ export const AccountModel = getModelForClass(AccountDb);
 @ObjectType()
 export class Account {
     @Field((type) => ObjectIdScalar)
-    _id: ObjectId;
+    _id?: ObjectId;
 
     @Field((type) => ID)
     id: string;

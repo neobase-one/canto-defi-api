@@ -9,7 +9,7 @@ import { ZERO_BD } from "../../utils/constants";
 // mongo database object
 export class MarketDb {
     @Property({ default: new ObjectId(), required: true })
-    _id: ObjectId;
+    _id?: ObjectId;
 
     @Property({ default: "", required: false })
     id: string;
@@ -105,7 +105,7 @@ export const MarketModel = getModelForClass(MarketDb);
 @ObjectType()
 export class Market {
     @Field((type) => ObjectIdScalar)
-    _id: ObjectId;
+    _id?: ObjectId;
 
     @Field((type) => ID)
     id: string;

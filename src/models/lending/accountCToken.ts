@@ -11,7 +11,7 @@ import { Market } from "./market";
 // db object
 export class AccountCTokenDb {
     @Property({ default: new ObjectId(), required: true })
-    _id: ObjectId;
+    _id?: ObjectId;
 
     @Property({ default: "", required: true })
     id: string;
@@ -104,7 +104,7 @@ export const AccountCTokenModel = getModelForClass(AccountCTokenDb);
 @ObjectType()
 export class AccountCToken {
     @Field((type) => ObjectIdScalar)
-    _id: ObjectId;
+    _id?: ObjectId;
 
     @Field((type) => ID)
     id: string;

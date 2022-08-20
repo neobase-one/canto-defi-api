@@ -13,16 +13,21 @@ export class MarketService {
   }
 
   async save(market: MarketDb) {
-    let marketdb = await MarketModel.findOne({ id: market.id }).exec();
-    let model = new MarketModel(market);
-    if (marketdb !== null) {
-      model._id = marketdb._id;
-      delete model.__v;
-      model.isNew = false;
-      await model.save();
-    } else {
-      await model.save();
-    }
+    // let marketdb = await MarketModel.findOne({ id: market.id }).exec();
+    // let model = new MarketModel(market);
+    // if (marketdb !== null) {
+    //   model._id = marketdb._id;
+    //   delete model.__v;
+    //   model.isNew = false;
+    //   await model.save();
+    // } else {
+    //   await model.save();
+    // }
+    var doc = MarketModel.hydrate(market);
+    doc = doc.toObject();
+    delete doc._id;
+    // console.log(doc, market)
+    await MarketModel.updateOne({id: market.id}, doc, {upsert: true}).exec();
   }
 
   async getSupplyAPY(marketId: string) {
